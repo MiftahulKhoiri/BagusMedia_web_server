@@ -12,7 +12,7 @@ app.config['UPLOAD_FOLDER'] = 'upload'
 app.config['VIDEO_FOLDER'] = 'video'
 app.config['MP3_FOLDER'] = 'mp3'
 app.config['ICON_FOLDER'] = 'icon'
-app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB max file size
+app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024  # 100MB max file size
 
 # Ekstensi file yang diizinkan
 ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mkv', 'mov', 'wmv', 'mp3', 'wav', 'ogg'}
