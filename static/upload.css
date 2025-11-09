@@ -1,0 +1,216 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    color: white;
+    min-height: 100vh;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.logo-container h1 {
+    font-size: 28px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.menu {
+    display: flex;
+    gap: 20px;
+}
+
+.menu-item {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    border: 2px solid transparent;
+}
+
+.menu-item:hover, .menu-item.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: white;
+    transform: translateY(-2px);
+}
+
+.main-content {
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    min-height: calc(100vh - 120px);
+}
+
+.upload-container {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.upload-area {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 60px 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.upload-area:hover, .upload-area.drag-over {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.upload-icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.upload-area h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.upload-area p {
+    font-size: 16px;
+    opacity: 0.8;
+}
+
+#file-input {
+    display: none;
+}
+
+.upload-progress-container {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.upload-progress-container h3 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#upload-progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.progress-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.filename {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 10px;
+}
+
+.status {
+    font-weight: 600;
+}
+
+.status.success {
+    color: #4CAF50;
+}
+
+.status.error {
+    color: #f44336;
+}
+
+.progress-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: white;
+    transition: width 0.3s ease;
+}
+
+.progress-fill.success {
+    background: #4CAF50;
+}
+
+.progress-fill.error {
+    background: #f44336;
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        gap: 20px;
+        padding: 15px;
+    }
+    
+    .logo-container h1 {
+        font-size: 22px;
+    }
+    
+    .main-content {
+        padding: 20px;
+    }
+    
+    .upload-area {
+        padding: 40px 20px;
+    }
+    
+    .upload-area h2 {
+        font-size: 20px;
+    }
+    
+    .progress-info {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
