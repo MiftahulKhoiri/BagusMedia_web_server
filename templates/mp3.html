@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pemutar Musik MP3 - BAGUS MEDIA SERVER</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='mp3.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='icon/mp3.png') }}" alt="Logo MP3" class="logo">
+            <h1>Pemutar Musik MP3</h1>
+        </div>
+        <nav class="menu">
+            <a href="/" class="menu-item">Home</a>
+            <a href="/upload" class="menu-item">Upload Media</a>
+            <a href="/update" class="menu-item">Update</a>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="player-container">
+            <!-- Pemutar Musik -->
+            <div class="music-player">
+                <div class="now-playing">
+                    <h2 id="now-playing-title">Pilih lagu untuk memutar</h2>
+                </div>
+                
+                <div class="player-controls">
+                    <button id="prev-btn" class="control-btn">⏮</button>
+                    <button id="play-btn" class="control-btn play">▶</button>
+                    <button id="pause-btn" class="control-btn">⏸</button>
+                    <button id="next-btn" class="control-btn">⏭</button>
+                </div>
+                
+                <div class="progress-container">
+                    <span id="current-time">0:00</span>
+                    <div class="progress-bar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    <span id="duration">0:00</span>
+                </div>
+                
+                <div class="volume-control">
+                    <span>🔊</span>
+                    <input type="range" id="volume-slider" min="0" max="100" value="50">
+                </div>
+            </div>
+            
+            <!-- Daftar Lagu -->
+            <div class="playlist-container">
+                <h3>Daftar Lagu</h3>
+                <div class="playlist" id="playlist">
+                    {% for file in mp3_files %}
+                    <div class="playlist-item" data-src="{{ url_for('serve_media', folder='mp3', filename=file) }}">
+                        <span class="track-name">{{ file }}</span>
+                        <button class="play-track">▶</button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <audio id="audio-player"></audio>
+
+    <script>
+        const audioPlayer = document.getElementById('audio-player');
+        const playBtn = document.getElementById('play-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const progress = document.getElementById('progress');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationEl = document.getElementById('duration');
+        const volumeSlider = document.getElementById('volume-slider');
+        const nowPlayingTitle = document.getElementById('now-playing-title');
+        const playlistItems = document.querySelectorAll('.playlist-item');
+        
+        let currentTrackIndex = 0;
+        const tracks = Array.from(playlistItems);
+        
+        // Format waktu dari detik ke menit:detik
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        // Memuat dan memutar trek
+        function loadTrack(index) {
+            if (tracks.length === 0) return;
+            
+            currentTrackIndex = index;
+            const track = tracks[currentTrackIndex];
+            const trackSrc = track.getAttribute('data-src');
+            const trackName = track.querySelector('.track-name').textContent;
+            
+            audioPlayer.src = trackSrc;
+            nowPlayingTitle.textContent = trackName;
+            
+            // Reset progress
+            progress.style.width = '0%';
+            currentTimeEl.textContent = '0:00';
+            
+            // Update UI untuk trek yang sedang aktif
+            tracks.forEach(item => item.classList.remove('active'));
+            track.classList.add('active');
+            
+            // Memuat metadata untuk mendapatkan durasi
+            audioPlayer.addEventListener('loadedmetadata', function() {
+                durationEl.textContent = formatTime(audioPlayer.duration);
+            }, { once: true });
+            
+            playTrack();
+        }
+        
+        // Memutar trek
+        function playTrack() {
+            audioPlayer.play();
+            playBtn.style.display = 'none';
+            pauseBtn.style.display = 'inline-block';
+        }
+        
+        // Menjeda trek
+        function pauseTrack() {
+            audioPlayer.pause();
+            playBtn.style.display = 'inline-block';
+            pauseBtn.style.display = 'none';
+        }
+        
+        // Trek berikutnya
+        function nextTrack() {
+            currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+            loadTrack(currentTrackIndex);
+        }
+        
+        // Trek sebelumnya
+        function prevTrack() {
+            currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+            loadTrack(currentTrackIndex);
+        }
+        
+        // Event Listeners
+        playBtn.addEventListener('click', playTrack);
+        pauseBtn.addEventListener('click', pauseTrack);
+        nextBtn.addEventListener('click', nextTrack);
+        prevBtn.addEventListener('click', prevTrack);
+        
+        // Kontrol volume
+        volumeSlider.addEventListener('input', function() {
+            audioPlayer.volume = this.value / 100;
+        });
+        
+        // Update progress bar
+        audioPlayer.addEventListener('timeupdate', function() {
+            const currentTime = audioPlayer.currentTime;
+            const duration = audioPlayer.duration;
+            
+            if (duration) {
+                const progressPercent = (currentTime / duration) * 100;
+                progress.style.width = `${progressPercent}%`;
+                currentTimeEl.textContent = formatTime(currentTime);
+            }
+        });
+        
+        // Klik pada progress bar untuk seek
+        document.querySelector('.progress-bar').addEventListener('click', function(e) {
+            const progressBar = this;
+            const clickPosition = e.offsetX;
+            const progressBarWidth = progressBar.offsetWidth;
+            const seekTime = (clickPosition / progressBarWidth) * audioPlayer.duration;
+            
+            audioPlayer.currentTime = seekTime;
+        });
+        
+        // Auto play next track ketika track selesai
+        audioPlayer.addEventListener('ended', nextTrack);
+        
+        // Klik pada item playlist
+        playlistItems.forEach((item, index) => {
+            item.querySelector('.play-track').addEventListener('click', function() {
+                loadTrack(index);
+            });
+        });
+        
+        // Muat trek pertama jika ada
+        if (tracks.length > 0) {
+            loadTrack(0);
+        }
+    </script>
+</body>
+</html>
