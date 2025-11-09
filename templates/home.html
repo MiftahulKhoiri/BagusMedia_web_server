@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAGUS MEDIA SERVER</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='icon/icon.png') }}" alt="Logo" class="logo">
+            <h1>BAGUS MEDIA SERVER</h1>
+        </div>
+        <nav class="menu">
+            <a href="/" class="menu-item active">Home</a>
+            <a href="/upload" class="menu-item">Upload Media</a>
+            <a href="/update" class="menu-item">Update</a>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="media-options">
+            <a href="/mp3" class="media-option">
+                <div class="option-icon">
+                    <img src="{{ url_for('static', filename='icon/mp3.png') }}" alt="MP3 Player">
+                </div>
+                <h2>Pemutar Musik MP3</h2>
+            </a>
+            
+            <a href="/video" class="media-option">
+                <div class="option-icon">
+                    <img src="{{ url_for('static', filename='icon/video.png') }}" alt="Video Player">
+                </div>
+                <h2>Pemutar Video</h2>
+            </a>
+        </div>
+    </main>
+
+    <script>
+        // Menandai menu aktif
+        document.querySelectorAll('.menu-item').forEach(item => {
+            if (item.href === window.location.href) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
