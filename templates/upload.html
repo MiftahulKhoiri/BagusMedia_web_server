@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Media - BAGUS MEDIA SERVER</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='upload.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='icon/icon.png') }}" alt="Logo" class="logo">
+            <h1>Upload Media</h1>
+        </div>
+        <nav class="menu">
+            <a href="/" class="menu-item">Home</a>
+            <a href="/upload" class="menu-item active">Upload Media</a>
+            <a href="/update" class="menu-item">Update</a>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="upload-container">
+            <div class="upload-area" id="upload-area">
+                <div class="upload-icon">📁</div>
+                <h2>Seret file ke sini atau klik untuk memilih</h2>
+                <p>Unggah file video atau audio (MP4, AVI, MKV, MOV, WMV, MP3, WAV, OGG)</p>
+                <input type="file" id="file-input" multiple accept=".mp4,.avi,.mkv,.mov,.wmv,.mp3,.wav,.ogg">
+            </div>
+            
+            <div class="upload-progress-container">
+                <h3>Progress Upload</h3>
+                <div id="upload-progress-list"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const progressList = document.getElementById('upload-progress-list');
+
+        // Event untuk area upload
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        // Fungsi untuk menangani file yang dipilih
+        function handleFiles(files) {
+            if (files.length === 0) return;
+            
+            const formData = new FormData();
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files', files[i]);
+            }
+            
+            // Buat elemen progress untuk setiap file
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const progressItem = createProgressItem(file.name);
+                progressList.appendChild(progressItem);
+            }
+            
+            // Kirim file ke server
+            uploadFiles(formData);
+        }
+
+        // Membuat elemen progress untuk setiap file
+        function createProgressItem(filename) {
+            const progressItem = document.createElement('div');
+            progressItem.className = 'progress-item';
+            progressItem.innerHTML = `
+                <div class="progress-info">
+                    <span class="filename">${filename}</span>
+                    <span class="status">Mempersiapkan...</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            `;
+            return progressItem;
+        }
+
+        // Mengupload file ke server
+        function uploadFiles(formData) {
+            const xhr = new XMLHttpRequest();
+            
+            xhr.upload.addEventListener('progress', (e) => {
+                if (e.lengthComputable) {
+                    const percentComplete = (e.loaded / e.total) * 100;
+                    // Update progress bar untuk semua file (karena kita mengupload banyak file sekaligus)
+                    const progressFills = document.querySelectorAll('.progress-fill');
+                    progressFills.forEach(fill => {
+                        fill.style.width = percentComplete + '%';
+                    });
+                    
+                    // Update status
+                    const statusElements = document.querySelectorAll('.status');
+                    statusElements.forEach(status => {
+                        status.textContent = `Mengupload... ${percentComplete.toFixed(1)}%`;
+                    });
+                }
+            });
+            
+            xhr.addEventListener('load', () => {
+                if (xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    updateUploadResults(response.results);
+                } else {
+                    alert('Terjadi kesalahan saat mengupload file.');
+                }
+            });
+            
+            xhr.addEventListener('error', () => {
+                alert('Terjadi kesalahan jaringan.');
+            });
+            
+            xhr.open('POST', '/api/upload');
+            xhr.send(formData);
+        }
+
+        // Memperbarui hasil upload
+        function updateUploadResults(results) {
+            results.forEach((result, index) => {
+                const progressItem = progressList.children[index];
+                const statusElement = progressItem.querySelector('.status');
+                const progressFill = progressItem.querySelector('.progress-fill');
+                
+                if (result.status === 'success') {
+                    statusElement.textContent = 'Berhasil!';
+                    statusElement.className = 'status success';
+                    progressFill.className = 'progress-fill success';
+                } else {
+                    statusElement.textContent = result.message;
+                    statusElement.className = 'status error';
+                    progressFill.className = 'progress-fill error';
+                }
+            });
+            
+            // Reset input file
+            fileInput.value = '';
+        }
+    </script>
+</body>
+</html>
