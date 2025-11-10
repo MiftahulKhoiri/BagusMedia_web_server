@@ -1,3 +1,6 @@
+/* === video.css (final interaktif versi elegan) === */
+/* Tema: Biru lembut profesional + efek transisi smooth */
+
 * {
     margin: 0;
     padding: 0;
@@ -6,305 +9,306 @@
 }
 
 body {
-    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-    color: white;
+    background: linear-gradient(135deg, #d9e7ff, #bcd4ff);
+    color: #1a2a4f;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    animation: fadeInBody 1s ease forwards;
 }
 
+/* === Animasi utama masuk halaman === */
+@keyframes fadeInBody {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* === Header === */
 header {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    padding: 15px 25px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 20px 40px;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    justify-content: space-between;
+    border-bottom: 2px solid rgba(30, 80, 180, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    animation: slideDown 0.7s ease forwards;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-25px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 .logo-container {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
 }
 
 .logo {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 2px solid white;
+    width: 48px;
+    height: 48px;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+.logo:hover {
+    transform: scale(1.05) rotate(3deg);
 }
 
-.logo-container h1 {
-    font-size: 28px;
-    font-weight: 700;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+h1 {
+    font-size: 1.8em;
+    font-weight: 600;
+    color: #1a3b7b;
 }
 
 .menu {
     display: flex;
-    gap: 20px;
+    gap: 15px;
 }
 
 .menu-item {
-    color: white;
     text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 25px;
+    color: #1a3b7b;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 8px;
     transition: all 0.3s ease;
-    font-weight: 600;
-    border: 2px solid transparent;
 }
 
 .menu-item:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: white;
+    background: rgba(26, 59, 123, 0.1);
     transform: translateY(-2px);
 }
 
+/* === Konten Utama === */
 .main-content {
-    padding: 40px;
+    flex: 1;
     display: flex;
     justify-content: center;
-    min-height: calc(100vh - 120px);
+    padding: 40px;
 }
 
 .player-container {
-    display: flex;
-    gap: 40px;
-    width: 100%;
-    max-width: 1400px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    width: 90%;
+    max-width: 1300px;
 }
 
+/* === Area Pemutar Video === */
 .video-player-section {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 30px;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(15px);
+    padding: 20px;
     border-radius: 20px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    align-items: center;
+    animation: fadeUp 0.9s ease forwards;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .video-container {
     width: 100%;
-    background: black;
-    border-radius: 10px;
+    border-radius: 16px;
     overflow: hidden;
+    background: #000;
+    transition: all 0.3s ease;
+}
+.video-container:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
-#video-player {
+video {
     width: 100%;
     height: auto;
-    max-height: 500px;
-    outline: none;
+    border-radius: 16px;
 }
 
+/* === Tombol Kontrol === */
 .video-controls {
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin: 10px 0;
+    margin: 18px 0;
 }
 
 .control-btn {
-    background: rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, #a3c4ff, #7ea4ff);
     border: none;
+    color: #fff;
+    font-size: 1.4em;
+    padding: 12px 18px;
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    font-size: 18px;
-    color: white;
     cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .control-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
+    background: linear-gradient(135deg, #7ea4ff, #5f8dff);
+    transform: scale(1.15);
 }
 
-.control-btn.play {
-    background: rgba(255, 255, 255, 0.3);
-    width: 60px;
-    height: 60px;
-    font-size: 20px;
+.play {
+    background: linear-gradient(135deg, #6ea8ff, #4d7fff);
 }
 
+/* === Progress Bar === */
 .video-progress-container {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin: 10px 0;
-}
-
-.video-progress-container .progress-bar {
-    flex: 1;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    cursor: pointer;
-    position: relative;
-}
-
-.video-progress-container .progress {
-    height: 100%;
-    background: white;
-    border-radius: 4px;
-    width: 0%;
-    transition: width 0.1s ease;
-}
-
-.video-volume-control {
+    width: 100%;
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-top: 10px;
+    margin-top: 8px;
+    color: #1a2a4f;
+    font-size: 0.9em;
 }
 
-#video-volume-slider {
+.progress-bar {
     flex: 1;
-    height: 6px;
-    -webkit-appearance: none;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
-    outline: none;
-}
-
-#video-volume-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: white;
+    height: 8px;
+    background: rgba(30, 80, 180, 0.2);
+    border-radius: 5px;
     cursor: pointer;
+    overflow: hidden;
+    position: relative;
 }
 
+.progress {
+    height: 100%;
+    background: linear-gradient(90deg, #5f8dff, #3c6dff);
+    width: 0%;
+    transition: width 0.2s ease;
+}
+
+/* === Volume === */
+.video-volume-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+    color: #1a3b7b;
+}
+
+.video-volume-control input[type=range] {
+    width: 120px;
+    accent-color: #4d7fff;
+}
+
+/* === Judul Now Playing === */
 .now-playing {
     text-align: center;
-    margin-top: 10px;
+    margin-top: 15px;
+    animation: fadeIn 1.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .now-playing h2 {
-    font-size: 20px;
-    font-weight: 600;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #1a2a4f;
 }
 
+/* === Playlist === */
 .playlist-container {
-    width: 350px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.75);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    animation: fadeUp 1s ease;
 }
 
 .playlist-container h3 {
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.3);
-    margin: 0;
+    font-size: 1.3em;
+    color: #1a3b7b;
+    margin-bottom: 12px;
     text-align: center;
-    font-size: 20px;
 }
 
 .playlist {
-    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 500px;
     overflow-y: auto;
-    max-height: 600px;
 }
 
 .playlist-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    background: rgba(30, 80, 180, 0.08);
+    padding: 10px 14px;
+    border-radius: 10px;
     cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .playlist-item:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(30, 80, 180, 0.15);
+    transform: scale(1.02);
 }
 
 .playlist-item.active {
-    background: rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, #8fb9ff, #5f8dff);
+    color: #fff;
+    transform: scale(1.03);
 }
 
 .video-name {
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding-right: 10px;
+    font-size: 0.95em;
+    font-weight: 500;
 }
 
 .play-track {
-    background: rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, #6ea8ff, #4d7fff);
     border: none;
+    color: #fff;
+    padding: 8px 12px;
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    color: white;
     cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px;
     transition: all 0.3s ease;
+    font-size: 1em;
 }
 
 .play-track:hover {
-    background: rgba(255, 255, 255, 0.3);
     transform: scale(1.1);
+    background: linear-gradient(135deg, #4d7fff, #3c6dff);
 }
 
-/* Scrollbar styling */
+/* === Scrollbar === */
 .playlist::-webkit-scrollbar {
     width: 8px;
 }
-
-.playlist::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-
 .playlist::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
+    background: rgba(30, 80, 180, 0.3);
+    border-radius: 10px;
 }
-
 .playlist::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(30, 80, 180, 0.5);
 }
 
-@media (max-width: 968px) {
+/* === Responsif === */
+@media (max-width: 900px) {
     .player-container {
-        flex-direction: column;
+        grid-template-columns: 1fr;
     }
-    
     .playlist-container {
-        width: 100%;
-    }
-    
-    header {
-        flex-direction: column;
-        gap: 20px;
-        padding: 15px;
-    }
-    
-    .logo-container h1 {
-        font-size: 22px;
-    }
-    
-    .main-content {
-        padding: 20px;
+        margin-top: 25px;
     }
 }
