@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='video.css') }}">
 </head>
 <body>
+    <!-- === HEADER === -->
     <header>
         <div class="logo-container">
             <img src="{{ url_for('static', filename='icon/Video.png') }}" alt="Logo Video" class="logo">
@@ -17,16 +18,20 @@
         </nav>
     </header>
 
-    <main class="main-content">
+    <!-- === VIDEO PLAYER FULL WIDTH === -->
+    <section class="video-player-full">
+        <div class="video-container">
+            <video id="video-player" controls>
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </section>
 
-        <!-- 🔔 PERUBAHAN BAGIAN INI -->
-        <!-- Sebelumnya: video-player ada di dalam .player-container -->
-        <!-- Sekarang: dipindahkan ke luar container agar tampil lebar penuh -->
-        <section class="video-player-full">
-            <div class="video-container">
-                <video id="video-player" controls>
-                    Your browser does not support the video tag.
-                </video>
+    <!-- === KONTENER KONTROL + PLAYLIST === -->
+    <main class="main-content">
+        <div class="player-panel">
+            <div class="video-info">
+                <h2 id="now-playing-title">Pilih video untuk memutar</h2>
             </div>
 
             <!-- Kontrol Video -->
@@ -38,6 +43,7 @@
                 <button id="video-fullscreen-btn" class="control-btn">⛶</button>
             </div>
 
+            <!-- Progress Bar -->
             <div class="video-progress-container">
                 <span id="video-current-time">0:00</span>
                 <div class="progress-bar">
@@ -46,18 +52,14 @@
                 <span id="video-duration">0:00</span>
             </div>
 
+            <!-- Volume -->
             <div class="video-volume-control">
                 <span>🔊</span>
                 <input type="range" id="video-volume-slider" min="0" max="100" value="50">
             </div>
+        </div>
 
-            <div class="now-playing">
-                <h2 id="now-playing-title">Pilih video untuk memutar</h2>
-            </div>
-        </section>
-        <!-- 🔔 AKHIR PERUBAHAN BAGIAN PEMUTAR VIDEO -->
-
-        <!-- Bagian daftar video tetap di dalam container -->
+        <!-- === DAFTAR VIDEO === -->
         <div class="playlist-container">
             <h3>Daftar Video</h3>
             <div class="playlist" id="playlist">
@@ -71,7 +73,7 @@
         </div>
     </main>
 
-    <!-- Script tetap sama -->
+    <!-- === SCRIPT === -->
     <script>
         const videoPlayer = document.getElementById('video-player');
         const videoPlayBtn = document.getElementById('video-play-btn');
