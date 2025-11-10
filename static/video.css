@@ -1,8 +1,5 @@
-/* ============================================================
-   video.css — Tampilan Profesional Biru Lembut
-   ============================================================ */
+/* ===== video.css (versi profesional biru lembut modern) ===== */
 
-/* === RESET & DASAR === */
 * {
     margin: 0;
     padding: 0;
@@ -17,18 +14,35 @@ body {
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    overflow-x: hidden;
 }
 
-/* === HEADER === */
+/* === Header === */
 header {
     width: 100%;
     padding: 20px;
-    background: rgba(240, 248, 255, 0.85);
-    backdrop-filter: blur(10px);
+    background: rgba(240, 248, 255, 0.9);
+    backdrop-filter: blur(8px);
     border-bottom: 1px solid #b0c7e8;
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 80, 180, 0.08);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 46px;
+    height: 46px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 70, 140, 0.2));
+    transition: transform 0.3s ease;
+}
+.logo:hover {
+    transform: rotate(-4deg) scale(1.05);
 }
 
 header h1 {
@@ -37,85 +51,66 @@ header h1 {
     font-weight: 600;
 }
 
-/* === LOGO DI HEADER === */
-.logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 8px;
+.menu {
+    margin-top: 10px;
+}
+.menu-item {
+    color: #10427a;
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+.menu-item:hover {
+    color: #0077ff;
 }
 
-.logo {
-    width: 48px;
-    height: 48px;
-    object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0, 70, 140, 0.2));
-    transition: transform 0.3s ease;
-}
-
-.logo:hover {
-    transform: rotate(-5deg) scale(1.05);
-}
-
-/* === BAGIAN UTAMA VIDEO === */
-.video-section {
+/* === Video Player Full Width === */
+.video-player-full {
     width: 100%;
-    max-width: 900px;
-    padding: 30px;
-    animation: fadeIn 0.8s ease-in-out;
-}
-
-/* === PEMUTAR VIDEO === */
-.video-player {
-    width: 100%;
-    border-radius: 18px;
-    overflow: hidden;
     background: #000;
     box-shadow: 0 6px 20px rgba(0, 70, 140, 0.15);
-    margin-bottom: 25px;
-    position: relative;
-    transition: transform 0.3s ease;
 }
 
-.video-player:hover {
-    transform: scale(1.005);
-}
-
-video {
+.video-container video {
     width: 100%;
     height: auto;
     display: block;
+}
+
+/* === Panel Pemutar === */
+.main-content {
+    width: 100%;
+    max-width: 900px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
     border-radius: 18px;
+    box-shadow: 0 6px 20px rgba(0, 70, 140, 0.12);
+    margin-top: 25px;
+    padding: 25px;
+    animation: fadeIn 0.8s ease-in-out;
 }
 
-/* === NOTIFIKASI ATAS VIDEO === */
-.video-notification {
-    position: absolute;
-    top: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.9);
+.player-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.video-info h2 {
     color: #10427a;
-    padding: 6px 14px;
-    border-radius: 12px;
-    font-size: 0.9em;
-    box-shadow: 0 2px 6px rgba(0, 70, 140, 0.15);
-    opacity: 0;
-    transition: opacity 0.4s ease;
+    font-weight: 600;
+    font-size: 1.2em;
+    text-align: center;
 }
 
-.video-notification.show {
-    opacity: 1;
-}
-
-/* === TOMBOL KONTROL VIDEO === */
+/* === Tombol Kontrol === */
 .video-controls {
     display: flex;
     justify-content: center;
-    align-items: center;
     gap: 16px;
-    padding: 15px 0;
 }
 
 .control-btn {
@@ -128,66 +123,98 @@ video {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    font-size: 1.2em;
+    color: #10427a;
     box-shadow: 0 2px 6px rgba(0, 70, 140, 0.15);
     transition: all 0.3s ease;
 }
-
 .control-btn:hover {
     background: #cce4ff;
     transform: translateY(-3px);
     box-shadow: 0 4px 10px rgba(0, 70, 140, 0.2);
 }
 
-.control-btn img {
-    width: 22px;
-    height: 22px;
-    filter: brightness(0.3);
+/* === Progress Bar === */
+.video-progress-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+.video-progress-container span {
+    font-size: 0.9em;
+    color: #10427a;
+    width: 45px;
+    text-align: center;
+}
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #dce9ff;
+    border-radius: 5px;
+    cursor: pointer;
+    overflow: hidden;
+}
+.progress {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #007bff, #5bb9ff);
+    border-radius: 5px;
+    transition: width 0.3s ease;
 }
 
-/* === DAFTAR VIDEO === */
-.video-list {
-    margin-top: 25px;
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(10px);
-    border-radius: 18px;
-    box-shadow: 0 4px 12px rgba(0, 70, 140, 0.1);
-    padding: 20px;
+/* === Volume Control === */
+.video-volume-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #10427a;
+}
+.video-volume-control input[type="range"] {
+    width: 120px;
+}
+
+/* === Playlist === */
+.playlist-container {
+    margin-top: 10px;
+    width: 100%;
+}
+.playlist-container h3 {
+    font-size: 1.1em;
+    color: #10427a;
+    margin-bottom: 10px;
+}
+.playlist {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
-
-.video-item {
+.playlist-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(16, 58, 110, 0.1);
+    border-radius: 12px;
     padding: 10px 15px;
-    border-bottom: 1px solid rgba(16, 58, 110, 0.1);
-    border-radius: 10px;
-    color: #103a6e;
-    cursor: pointer;
     transition: all 0.3s ease;
+    cursor: pointer;
 }
-
-.video-item:hover {
+.playlist-item:hover {
     background: #d6e8ff;
-    transform: translateX(6px);
+    transform: translateX(4px);
 }
-
-.video-item:last-child {
-    border-bottom: none;
+.playlist-item.active {
+    background: #cce4ff;
+    border-left: 4px solid #007bff;
 }
-
-/* === TEKS JUDUL VIDEO === */
 .video-name {
     flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-weight: 500;
+    color: #103a6e;
 }
-
-/* === TOMBOL PUTAR TRACK === */
 .play-track {
     background: #cce4ff;
     border: none;
@@ -198,34 +225,33 @@ video {
     font-weight: 600;
     transition: background 0.3s ease, transform 0.2s ease;
 }
-
 .play-track:hover {
     background: #a9d2ff;
     transform: scale(1.05);
 }
 
-/* === ANIMASI === */
+/* === Animasi & Responsif === */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* === RESPONSIF === */
 @media (max-width: 768px) {
-    .video-section {
-        padding: 20px;
+    .main-content {
+        padding: 15px;
+        border-radius: 14px;
     }
-
     .control-btn {
         width: 40px;
         height: 40px;
+        font-size: 1em;
     }
-
-    .control-btn img {
-        width: 20px;
+    .video-volume-control input[type="range"] {
+        width: 90px;
     }
-
-    header h1 {
-        font-size: 1.5em;
+    .playlist-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
     }
 }
