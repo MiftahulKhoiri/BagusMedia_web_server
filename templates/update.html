@@ -7,160 +7,98 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='update.css') }}">
 </head>
 <body>
-    <header>
-        <div class="logo-container">
-            <img src="{{ url_for('static', filename='icon/update.png') }}" alt="Logo Update" class="logo">
-            <h1>Pembaruan Sistem</h1>
+<header>
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='icon/update.png') }}" alt="Logo Update" class="logo">
+        <h1>Pembaruan Sistem</h1>
+    </div>
+    <nav class="menu">
+        <a href="/" class="menu-item">Home</a>
+        <a href="/upload" class="menu-item">Upload Media</a>
+        <a href="/update" class="menu-item active">Update</a>
+    </nav>
+</header>
+
+<main class="main-content">
+    <div class="update-container">
+        <h2>Pembaruan Sistem Real-time</h2>
+        <p>Sistem akan memeriksa dan memperbarui kode langsung dari GitHub.</p>
+
+        <div class="update-controls">
+            <button id="check-update-btn" class="update-btn">Cek Pembaruan</button>
+            <button id="update-btn" class="update-btn" disabled>Jalankan Pembaruan</button>
+            <button id="restart-btn" class="update-btn" disabled>Restart Sistem</button>
         </div>
-        <nav class="menu">
-            <a href="/" class="menu-item">Home</a>
-            <a href="/upload" class="menu-item">Upload Media</a>
-            <a href="/update" class="menu-item active">Update</a>
-        </nav>
-    </header>
 
-    <main class="main-content">
-        <div class="update-container">
-            <div class="update-info">
-                <h2>Pembaruan Sistem Real-time</h2>
-                <p>Sistem akan memeriksa, mengunduh, dan menginstal pembaruan terbaru dari server.</p>
-            </div>
-
-            <div class="update-controls">
-                <button id="check-update-btn" class="update-btn">Cek Pembaruan</button>
-                <button id="update-btn" class="update-btn" disabled>Jalankan Pembaruan</button>
-                <button id="restart-btn" class="update-btn" disabled>Restart Sistem</button>
-            </div>
-
-            <div class="update-progress">
-                <h3>Log Proses Pembaruan</h3>
-                <div class="progress-log" id="progress-log">
-                    <div class="log-entry">Sistem siap. Klik "Cek Pembaruan" untuk memulai.</div>
-                </div>
-            </div>
-
-            <div class="progress-bars">
-                <div class="progress-step">
-                    <h4>Memeriksa Pembaruan</h4>
-                    <div class="step-progress">
-                        <div class="step-bar" id="check-bar"></div>
-                    </div>
-                    <span class="step-status" id="check-status">Menunggu</span>
-                </div>
-
-                <div class="progress-step">
-                    <h4>Mengunduh Pembaruan</h4>
-                    <div class="step-progress">
-                        <div class="step-bar" id="download-bar"></div>
-                    </div>
-                    <span class="step-status" id="download-status">Menunggu</span>
-                </div>
-
-                <div class="progress-step">
-                    <h4>Menginstal Pembaruan</h4>
-                    <div class="step-progress">
-                        <div class="step-bar" id="install-bar"></div>
-                    </div>
-                    <span class="step-status" id="install-status">Menunggu</span>
-                </div>
+        <div class="update-progress">
+            <h3>Log Pembaruan</h3>
+            <div class="progress-log" id="progress-log">
+                <div class="log-entry">Sistem siap. Klik "Cek Pembaruan" untuk memulai.</div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 
-    <script>
-        const checkUpdateBtn = document.getElementById('check-update-btn');
-        const updateBtn = document.getElementById('update-btn');
-        const restartBtn = document.getElementById('restart-btn');
-        const progressLog = document.getElementById('progress-log');
-        const checkBar = document.getElementById('check-bar');
-        const downloadBar = document.getElementById('download-bar');
-        const installBar = document.getElementById('install-bar');
-        const checkStatus = document.getElementById('check-status');
-        const downloadStatus = document.getElementById('download-status');
-        const installStatus = document.getElementById('install-status');
+<script>
+const checkUpdateBtn = document.getElementById('check-update-btn');
+const updateBtn = document.getElementById('update-btn');
+const restartBtn = document.getElementById('restart-btn');
+const progressLog = document.getElementById('progress-log');
 
-        function addLogEntry(message, type = 'info') {
-            const logEntry = document.createElement('div');
-            logEntry.className = `log-entry ${type}`;
-            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            progressLog.appendChild(logEntry);
-            progressLog.scrollTop = progressLog.scrollHeight;
+function addLogEntry(msg, type='info') {
+    const entry = document.createElement('div');
+    entry.className = `log-entry ${type}`;
+    entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+    progressLog.appendChild(entry);
+    progressLog.scrollTop = progressLog.scrollHeight;
+}
+
+// Cek pembaruan
+checkUpdateBtn.addEventListener('click', async () => {
+    addLogEntry("Memeriksa pembaruan dari GitHub...");
+    try {
+        const res = await fetch('/api/check-update');
+        const data = await res.json();
+        if (data.update_available) {
+            addLogEntry("Pembaruan tersedia!", "success");
+            updateBtn.disabled = false;
+        } else {
+            addLogEntry("Sistem sudah versi terbaru.", "info");
         }
+    } catch (e) {
+        addLogEntry("Gagal memeriksa pembaruan: " + e.message, "error");
+    }
+});
 
-        function updateProgressBar(bar, status, percentage, message) {
-            bar.style.width = `${percentage}%`;
-            status.textContent = message;
-            if (percentage === 100) {
-                bar.classList.add('complete');
-            } else if (percentage > 0) {
-                bar.classList.add('in-progress');
-            }
-        }
+// Jalankan pembaruan via WebSocket
+updateBtn.addEventListener('click', () => {
+    updateBtn.disabled = true;
+    addLogEntry("Menghubungkan ke server pembaruan...");
 
-        function resetProgress() {
-            [checkBar, downloadBar, installBar].forEach(bar => {
-                bar.style.width = '0%';
-                bar.className = 'step-bar';
-            });
-            [checkStatus, downloadStatus, installStatus].forEach(status => {
-                status.textContent = 'Menunggu';
-            });
-            updateBtn.disabled = true;
-            restartBtn.disabled = true;
-        }
+    const socket = new WebSocket(`ws://${window.location.host}/ws/update`);
 
-        // ---- FUNGSI UTAMA UNTUK KONEKSI FLASK BACKEND ----
+    socket.onopen = () => addLogEntry("Koneksi ke server berhasil, memulai pembaruan...");
+    socket.onmessage = (event) => {
+        const msg = event.data.trim();
+        if (msg.includes("[INFO]")) addLogEntry(msg.replace("[INFO]", "").trim(), "info");
+        else if (msg.includes("[SUCCESS]")) addLogEntry(msg.replace("[SUCCESS]", "").trim(), "success");
+        else if (msg.includes("[ERROR]")) addLogEntry(msg.replace("[ERROR]", "").trim(), "error");
+        else if (msg === "[DONE]") {
+            addLogEntry("Pembaruan selesai!", "success");
+            restartBtn.disabled = false;
+            socket.close();
+        } else addLogEntry(msg, "info");
+    };
+    socket.onerror = (err) => addLogEntry("Kesalahan WebSocket: " + err.message, "error");
+});
 
-        checkUpdateBtn.addEventListener('click', async () => {
-            resetProgress();
-            addLogEntry('Memeriksa pembaruan dari server...');
-
-            try {
-                const response = await fetch('/api/check-update');
-                const data = await response.json();
-
-                updateProgressBar(checkBar, checkStatus, 100, 'Selesai');
-
-                if (data.update_available) {
-                    addLogEntry('Pembaruan tersedia!', 'success');
-                    updateBtn.disabled = false;
-                } else {
-                    addLogEntry('Tidak ada pembaruan baru. Sistem sudah up-to-date.', 'info');
-                }
-            } catch (error) {
-                updateProgressBar(checkBar, checkStatus, 100, 'Gagal');
-                addLogEntry('Gagal memeriksa pembaruan: ' + error.message, 'error');
-            }
-        });
-
-        updateBtn.addEventListener('click', async () => {
-            addLogEntry('Menjalankan proses pembaruan...');
-            updateBtn.disabled = true;
-
-            try {
-                updateProgressBar(downloadBar, downloadStatus, 20, 'Mengunduh...');
-                const response = await fetch('/api/update', { method: 'POST' });
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    updateProgressBar(downloadBar, downloadStatus, 100, 'Unduhan selesai');
-                    updateProgressBar(installBar, installStatus, 100, 'Instalasi selesai');
-                    addLogEntry('Pembaruan berhasil diinstal.', 'success');
-                    restartBtn.disabled = false;
-                } else {
-                    addLogEntry('Proses pembaruan gagal.', 'error');
-                }
-            } catch (error) {
-                addLogEntry('Kesalahan saat memperbarui sistem: ' + error.message, 'error');
-            }
-        });
-
-        restartBtn.addEventListener('click', () => {
-            addLogEntry('Merestart sistem...', 'warning');
-            setTimeout(() => {
-                addLogEntry('Sistem telah direstart. Silakan refresh halaman.', 'success');
-            }, 1500);
-        });
-    </script>
+// Restart sistem
+restartBtn.addEventListener('click', async () => {
+    addLogEntry("Merestart server...");
+    restartBtn.disabled = true;
+    await fetch('/api/restart', { method: 'POST' });
+    addLogEntry("Server direstart. Tunggu beberapa detik dan refresh halaman.", "success");
+});
+</script>
 </body>
 </html>
