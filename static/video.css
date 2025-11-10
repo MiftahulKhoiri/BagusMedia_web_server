@@ -161,6 +161,46 @@ video {
     background: #d6e8ff;
     transform: translateX(6px);
 }
+/* === Struktur Layout Playlist Lebih Rapi === */
+.video-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.video-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(16, 58, 110, 0.1);
+}
+
+.video-item:last-child {
+    border-bottom: none;
+}
+
+.video-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.play-track {
+    background: #cce4ff;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+    color: #10427a;
+    font-weight: 600;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.play-track:hover {
+    background: #a9d2ff;
+    transform: scale(1.05);
+}
 
 /* === Animasi === */
 @keyframes fadeIn {
