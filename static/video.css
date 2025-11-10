@@ -1,3 +1,4 @@
+/* RESET DASAR DAN GAYA UMUM */
 * {
     margin: 0;
     padding: 0;
@@ -11,6 +12,7 @@ body {
     min-height: 100vh;
 }
 
+/* HEADER (Logo dan Menu Navigasi) */
 header {
     display: flex;
     justify-content: space-between;
@@ -61,6 +63,7 @@ header {
     transform: translateY(-2px);
 }
 
+/* AREA UTAMA (KONTEN PEMUTAR) */
 .main-content {
     padding: 40px;
     display: flex;
@@ -68,15 +71,17 @@ header {
     min-height: calc(100vh - 120px);
 }
 
+/* === BAGIAN PLAYER CONTAINER === */
 .player-container {
     display: flex;
     gap: 40px;
     width: 100%;
-    max-width: 1400px;
+    max-width: 1600px;  /* 🔹 Diperbesar dari 1400px → 1600px */
 }
 
+/* === PEMUTAR VIDEO === */
 .video-player-section {
-    flex: 1;
+    flex: 2;  /* 🔹 Diperbesar (sebelumnya 1). Sekarang video mengambil 2x ruang dari playlist */
     background: rgba(255, 255, 255, 0.1);
     padding: 30px;
     border-radius: 20px;
@@ -87,6 +92,7 @@ header {
     gap: 20px;
 }
 
+/* Kontainer Video */
 .video-container {
     width: 100%;
     background: black;
@@ -94,13 +100,16 @@ header {
     overflow: hidden;
 }
 
+/* Tag <video> */
 #video-player {
     width: 100%;
     height: auto;
-    max-height: 500px;
+    max-height: 600px;  /* 🔹 Ditinggikan agar tampak sinematik */
     outline: none;
+    border-radius: 10px;
 }
 
+/* === KONTROL VIDEO === */
 .video-controls {
     display: flex;
     justify-content: center;
@@ -130,11 +139,12 @@ header {
 
 .control-btn.play {
     background: rgba(255, 255, 255, 0.3);
-    width: 60px;
-    height: 60px;
-    font-size: 20px;
+    width: 65px;
+    height: 65px;
+    font-size: 22px;
 }
 
+/* PROGRESS DAN VOLUME */
 .video-progress-container {
     display: flex;
     align-items: center;
@@ -184,19 +194,21 @@ header {
     cursor: pointer;
 }
 
+/* JUDUL VIDEO YANG SEDANG DIPUTAR */
 .now-playing {
     text-align: center;
     margin-top: 10px;
 }
 
 .now-playing h2 {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 600;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
+/* === PLAYLIST === */
 .playlist-container {
-    width: 350px;
+    width: 300px;  /* 🔹 Dikecilkan dari 350px → 300px agar video tampak lebih besar */
     background: rgba(255, 255, 255, 0.1);
     border-radius: 20px;
     backdrop-filter: blur(10px);
@@ -266,7 +278,7 @@ header {
     transform: scale(1.1);
 }
 
-/* Scrollbar styling */
+/* SCROLLBAR */
 .playlist::-webkit-scrollbar {
     width: 8px;
 }
@@ -285,25 +297,26 @@ header {
     background: rgba(255, 255, 255, 0.5);
 }
 
+/* === RESPONSIVE (LAYAR KECIL) === */
 @media (max-width: 968px) {
     .player-container {
         flex-direction: column;
     }
-    
+
     .playlist-container {
         width: 100%;
     }
-    
+
     header {
         flex-direction: column;
         gap: 20px;
         padding: 15px;
     }
-    
+
     .logo-container h1 {
         font-size: 22px;
     }
-    
+
     .main-content {
         padding: 20px;
     }
