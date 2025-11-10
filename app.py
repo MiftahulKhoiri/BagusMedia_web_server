@@ -1,11 +1,15 @@
 from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask_sock import Sock
 import os
 import shutil
 from werkzeug.utils import secure_filename
 import subprocess
 import threading
+import sys
+import time
 
 app = Flask(__name__)
+sock = Sock(app)
 
 # Konfigurasi folder
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -19,11 +23,9 @@ app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024  # 1GB
 ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mkv', 'mov', 'wmv', 'mp3', 'wav', 'ogg'}
 
 def allowed_file(filename):
-    """Memeriksa apakah ekstensi file diizinkan"""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def get_media_files(folder, extensions):
-    """Mendapatkan daftar file media dari folder tertentu"""
     media_files = []
     if os.path.exists(folder):
         for file in os.listdir(folder):
@@ -33,34 +35,32 @@ def get_media_files(folder, extensions):
 
 @app.route('/')
 def home():
-    """Route halaman utama"""
     return render_template('home.html')
 
 @app.route('/mp3')
 def mp3_player():
-    """Route pemutar MP3"""
     mp3_files = get_media_files(app.config['MP3_FOLDER'], ['.mp3', '.wav', '.ogg'])
     return render_template('mp3.html', mp3_files=mp3_files)
 
 @app.route('/video')
 def video_player():
-    """Route pemutar video"""
     video_files = get_media_files(app.config['VIDEO_FOLDER'], ['.mp4', '.avi', '.mkv', '.mov', '.wmv'])
     return render_template('video.html', video_files=video_files)
 
 @app.route('/upload')
 def upload_page():
-    """Route halaman upload"""
     return render_template('upload.html')
 
 @app.route('/update')
 def update_page():
-    """Route halaman update sistem"""
     return render_template('update.html')
 
+
+# ===============================
+# ✅ UPLOAD FILE (tanpa perubahan)
+# ===============================
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
-    """API untuk mengunggah file"""
     if 'files' not in request.files:
         return jsonify({'error': 'Tidak ada file yang dipilih'}), 400
 
@@ -75,112 +75,96 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             temp_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-
-            # Simpan sementara
             file.save(temp_path)
 
-            # Tentukan folder tujuan
-            file_extension = filename.rsplit('.', 1)[1].lower()
-            if file_extension in ['mp3', 'wav', 'ogg']:
-                destination_folder = app.config['MP3_FOLDER']
-            else:
-                destination_folder = app.config['VIDEO_FOLDER']
+            ext = filename.rsplit('.', 1)[1].lower()
+            destination_folder = app.config['MP3_FOLDER'] if ext in ['mp3', 'wav', 'ogg'] else app.config['VIDEO_FOLDER']
+            shutil.move(temp_path, os.path.join(destination_folder, filename))
 
-            # Pindahkan file ke folder tujuan
-            destination_path = os.path.join(destination_folder, filename)
-            shutil.move(temp_path, destination_path)
-
-            results.append({
-                'filename': filename, 
-                'status': 'success', 
-                'message': f'File berhasil diupload ke {destination_folder}'
-            })
+            results.append({'filename': filename, 'status': 'success', 'message': f'File berhasil diupload ke {destination_folder}'})
         else:
-            results.append({
-                'filename': file.filename, 
-                'status': 'error', 
-                'message': 'Tipe file tidak diizinkan'
-            })
+            results.append({'filename': file.filename, 'status': 'error', 'message': 'Tipe file tidak diizinkan'})
 
     return jsonify({'results': results})
 
 
-@app.route('/api/update', methods=['POST'])
-def update_system():
-    """API untuk memperbarui sistem dari GitHub"""
-    repo_path = BASE_DIR  # Folder tempat app.py berada
-
-    def run_update():
-        log_file = os.path.join(BASE_DIR, "update_log.txt")
-        try:
-            with open(log_file, "w") as log:
-                log.write("=== Memulai pembaruan dari GitHub ===\n")
-
-                # Pastikan folder adalah repo git
-                if not os.path.exists(os.path.join(repo_path, ".git")):
-                    log.write("ERROR: Folder ini bukan repository Git!\n")
-                    return
-
-                commands = [
-                    "git fetch origin",
-                    "git reset --hard origin/main",  # pastikan update penuh
-                    "git pull origin main"
-                ]
-
-                for cmd in commands:
-                    log.write(f"\nMenjalankan: {cmd}\n")
-                    process = subprocess.Popen(
-                        cmd, cwd=repo_path, shell=True,
-                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-                    )
-                    stdout, stderr = process.communicate()
-                    log.write(stdout)
-                    if stderr:
-                        log.write("ERROR: " + stderr)
-
-                log.write("\n=== Pembaruan selesai ===\n")
-
-        except Exception as e:
-            with open(log_file, "a") as log:
-                log.write(f"Kesalahan saat update: {str(e)}\n")
-
-    # Jalankan update di thread terpisah
-    thread = threading.Thread(target=run_update)
-    thread.daemon = True
-    thread.start()
-
-    return jsonify({'status': 'success', 'message': 'Proses pembaruan dimulai. Lihat file update_log.txt untuk detail.'})
-
-
+# ===============================
+# ✅ CEK PEMBARUAN DARI GITHUB
+# ===============================
 @app.route('/api/check-update', methods=['GET'])
 def check_update():
-    """API untuk memeriksa apakah ada pembaruan dari GitHub"""
     repo_path = BASE_DIR
-
     try:
-        fetch_cmd = subprocess.run(
-            ["git", "fetch"], cwd=repo_path,
-            capture_output=True, text=True
-        )
-        status_cmd = subprocess.run(
-            ["git", "status", "-uno"], cwd=repo_path,
-            capture_output=True, text=True
-        )
-
-        output = fetch_cmd.stdout + "\n" + status_cmd.stdout
+        subprocess.run(["git", "fetch"], cwd=repo_path, capture_output=True, text=True)
+        status_cmd = subprocess.run(["git", "status", "-uno"], cwd=repo_path, capture_output=True, text=True)
         update_available = "Your branch is behind" in status_cmd.stdout
-
         return jsonify({
             'update_available': update_available,
-            'output': output
+            'output': status_cmd.stdout
         })
     except Exception as e:
         return jsonify({'update_available': False, 'error': str(e)}), 500
 
 
+# ===============================
+# ✅ PROSES UPDATE REALTIME (WEBSOCKET)
+# ===============================
+@sock.route('/ws/update')
+def ws_update(ws):
+    def send(msg):
+        try:
+            ws.send(msg)
+        except Exception:
+            pass
+
+    repo_path = BASE_DIR
+    send("[INFO] Memulai proses update dari GitHub...\n")
+
+    # Pastikan repo valid
+    if not os.path.exists(os.path.join(repo_path, ".git")):
+        send("[ERROR] Folder ini bukan repository Git!\n")
+        ws.close()
+        return
+
+    process = subprocess.Popen(
+        ["git", "pull"],
+        cwd=repo_path,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1
+    )
+
+    for line in process.stdout:
+        send(line.strip())
+
+    process.wait()
+    if process.returncode == 0:
+        send("[SUCCESS] Pembaruan selesai.\n")
+        send("[SUCCESS] Sistem siap direstart.\n")
+    else:
+        send(f"[ERROR] Proses gagal (kode {process.returncode}).\n")
+
+    send("[DONE]")
+
+
+# ===============================
+# ✅ RESTART SERVER
+# ===============================
+@app.route('/api/restart', methods=['POST'])
+def restart_server():
+    def delayed_restart():
+        time.sleep(1)
+        os.execl(sys.executable, sys.executable, *sys.argv)
+    threading.Thread(target=delayed_restart).start()
+    return jsonify({"message": "Server akan direstart..."})
+
+
+# ===============================
+# ✅ SERVE MEDIA FILES
+# ===============================
 @app.route('/media/<folder>/<filename>')
 def serve_media(folder, filename):
-    """Route untuk menyajikan file media"""
     if folder == 'mp3':
         return send_from_directory(app.config['MP3_FOLDER'], filename)
     elif folder == 'video':
@@ -189,7 +173,7 @@ def serve_media(folder, filename):
         return "Folder tidak valid", 404
 
 
-# Pastikan semua folder tersedia
+# Pastikan folder tersedia
 for folder in [app.config['UPLOAD_FOLDER'], app.config['VIDEO_FOLDER'], app.config['MP3_FOLDER'], app.config['ICON_FOLDER']]:
     os.makedirs(folder, exist_ok=True)
 
