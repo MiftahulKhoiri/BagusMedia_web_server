@@ -23,22 +23,22 @@
         <div class="update-container">
             <div class="update-info">
                 <h2>Pembaruan Sistem Real-time</h2>
-                <p>Sistem akan memeriksa, mengunduh, dan menginstal pembaruan terbaru dari GitHub.</p>
+                <p>Sistem akan memeriksa, mengunduh, dan menginstal pembaruan terbaru dari server.</p>
             </div>
-            
+
             <div class="update-controls">
                 <button id="check-update-btn" class="update-btn">Cek Pembaruan</button>
                 <button id="update-btn" class="update-btn" disabled>Jalankan Pembaruan</button>
                 <button id="restart-btn" class="update-btn" disabled>Restart Sistem</button>
             </div>
-            
+
             <div class="update-progress">
                 <h3>Log Proses Pembaruan</h3>
                 <div class="progress-log" id="progress-log">
                     <div class="log-entry">Sistem siap. Klik "Cek Pembaruan" untuk memulai.</div>
                 </div>
             </div>
-            
+
             <div class="progress-bars">
                 <div class="progress-step">
                     <h4>Memeriksa Pembaruan</h4>
@@ -47,7 +47,7 @@
                     </div>
                     <span class="step-status" id="check-status">Menunggu</span>
                 </div>
-                
+
                 <div class="progress-step">
                     <h4>Mengunduh Pembaruan</h4>
                     <div class="step-progress">
@@ -55,7 +55,7 @@
                     </div>
                     <span class="step-status" id="download-status">Menunggu</span>
                 </div>
-                
+
                 <div class="progress-step">
                     <h4>Menginstal Pembaruan</h4>
                     <div class="step-progress">
@@ -79,7 +79,6 @@
         const downloadStatus = document.getElementById('download-status');
         const installStatus = document.getElementById('install-status');
 
-        // Menambahkan entri log
         function addLogEntry(message, type = 'info') {
             const logEntry = document.createElement('div');
             logEntry.className = `log-entry ${type}`;
@@ -88,11 +87,9 @@
             progressLog.scrollTop = progressLog.scrollHeight;
         }
 
-        // Memperbarui progress bar
         function updateProgressBar(bar, status, percentage, message) {
             bar.style.width = `${percentage}%`;
             status.textContent = message;
-            
             if (percentage === 100) {
                 bar.classList.add('complete');
             } else if (percentage > 0) {
@@ -100,114 +97,70 @@
             }
         }
 
-        // Reset semua progress
         function resetProgress() {
             [checkBar, downloadBar, installBar].forEach(bar => {
                 bar.style.width = '0%';
                 bar.className = 'step-bar';
             });
-            
             [checkStatus, downloadStatus, installStatus].forEach(status => {
                 status.textContent = 'Menunggu';
             });
-            
             updateBtn.disabled = true;
             restartBtn.disabled = true;
         }
 
-        // Simulasi proses update
-        checkUpdateBtn.addEventListener('click', () => {
-            resetProgress();
-            addLogEntry('Memeriksa pembaruan dari GitHub...');
-            
-            // Simulasi pemeriksaan pembaruan
-            setTimeout(() => {
-                updateProgressBar(checkBar, checkStatus, 100, 'Selesai');
-                addLogEntry('Pembaruan tersedia!', 'success');
-                
-                // Enable tombol update
-                updateBtn.disabled = false;
-                addLogEntry('Klik "Jalankan Pembaruan" untuk memulai proses update.');
-            }, 2000);
-        });
+        // ---- FUNGSI UTAMA UNTUK KONEKSI FLASK BACKEND ----
 
-        updateBtn.addEventListener('click', () => {
-            addLogEntry('Memulai proses pembaruan...');
-            updateBtn.disabled = true;
-            
-            // Simulasi mengunduh pembaruan
-            addLogEntry('Mengunduh pembaruan...');
-            let downloadProgress = 0;
-            const downloadInterval = setInterval(() => {
-                downloadProgress += 10;
-                updateProgressBar(downloadBar, downloadStatus, downloadProgress, `Mengunduh... ${downloadProgress}%`);
-                
-                if (downloadProgress === 100) {
-                    clearInterval(downloadInterval);
-                    addLogEntry('Unduhan selesai!', 'success');
-                    
-                    // Simulasi menginstal pembaruan
-                    addLogEntry('Menginstal pembaruan...');
-                    let installProgress = 0;
-                    const installInterval = setInterval(() => {
-                        installProgress += 20;
-                        updateProgressBar(installBar, installStatus, installProgress, `Menginstal... ${installProgress}%`);
-                        
-                        if (installProgress === 100) {
-                            clearInterval(installInterval);
-                            addLogEntry('Instalasi selesai!', 'success');
-                            addLogEntry('Sistem berhasil diperbarui.', 'success');
-                            
-                            // Enable tombol restart
-                            restartBtn.disabled = false;
-                        }
-                    }, 500);
-                }
-            }, 300);
-        });
-
-        restartBtn.addEventListener('click', () => {
-            addLogEntry('Merestart sistem...', 'warning');
-            // Di sini biasanya akan ada kode untuk restart aplikasi
-            setTimeout(() => {
-                addLogEntry('Sistem telah direstart. Silakan refresh halaman.', 'success');
-            }, 1500);
-        });
-
-        // Untuk koneksi dengan backend yang sesungguhnya, kita akan menggunakan fetch API
-        /*
-        // Contoh untuk check update dengan backend
         checkUpdateBtn.addEventListener('click', async () => {
+            resetProgress();
+            addLogEntry('Memeriksa pembaruan dari server...');
+
             try {
                 const response = await fetch('/api/check-update');
                 const data = await response.json();
-                
+
+                updateProgressBar(checkBar, checkStatus, 100, 'Selesai');
+
                 if (data.update_available) {
                     addLogEntry('Pembaruan tersedia!', 'success');
                     updateBtn.disabled = false;
                 } else {
-                    addLogEntry('Sistem sudah up-to-date.', 'info');
+                    addLogEntry('Tidak ada pembaruan baru. Sistem sudah up-to-date.', 'info');
                 }
             } catch (error) {
+                updateProgressBar(checkBar, checkStatus, 100, 'Gagal');
                 addLogEntry('Gagal memeriksa pembaruan: ' + error.message, 'error');
             }
         });
 
-        // Contoh untuk menjalankan update dengan backend
         updateBtn.addEventListener('click', async () => {
+            addLogEntry('Menjalankan proses pembaruan...');
+            updateBtn.disabled = true;
+
             try {
+                updateProgressBar(downloadBar, downloadStatus, 20, 'Mengunduh...');
                 const response = await fetch('/api/update', { method: 'POST' });
                 const data = await response.json();
-                
+
                 if (data.status === 'success') {
-                    addLogEntry('Proses pembaruan dimulai...', 'info');
-                    // Bisa menggunakan WebSocket atau polling untuk update progress real-time
+                    updateProgressBar(downloadBar, downloadStatus, 100, 'Unduhan selesai');
+                    updateProgressBar(installBar, installStatus, 100, 'Instalasi selesai');
+                    addLogEntry('Pembaruan berhasil diinstal.', 'success');
+                    restartBtn.disabled = false;
+                } else {
+                    addLogEntry('Proses pembaruan gagal.', 'error');
                 }
             } catch (error) {
-                addLogEntry('Gagal memulai pembaruan: ' + error.message, 'error');
+                addLogEntry('Kesalahan saat memperbarui sistem: ' + error.message, 'error');
             }
         });
-        */
+
+        restartBtn.addEventListener('click', () => {
+            addLogEntry('Merestart sistem...', 'warning');
+            setTimeout(() => {
+                addLogEntry('Sistem telah direstart. Silakan refresh halaman.', 'success');
+            }, 1500);
+        });
     </script>
 </body>
 </html>
