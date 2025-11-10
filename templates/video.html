@@ -3,165 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pemutar Video Sinematik</title>
-    <link rel="stylesheet" href="video.css">
+    <title>Pemutar Video - BAGUS MEDIA SERVER</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='video.css') }}">
 </head>
 <body>
-
-    <!-- === HEADER === -->
     <header>
         <div class="logo-container">
-            <img src="logo.png" alt="Logo" class="logo">
-            <h1>Vidio-MP3Web</h1>
+            <img src="{{ url_for('static', filename='icon/video.png') }}" alt="Logo Video" class="logo">
+            <h1>Pemutar Video</h1>
         </div>
-
         <nav class="menu">
-            <a href="#" class="menu-item">Beranda</a>
-            <a href="#" class="menu-item">Musik</a>
-            <a href="#" class="menu-item">Video</a>
-            <a href="#" class="menu-item">Tentang</a>
+            <a href="/" class="menu-item">Home</a>
+            <a href="/upload" class="menu-item">Upload Media</a>
+            <a href="/update" class="menu-item">Update</a>
         </nav>
     </header>
 
-    <!-- === KONTEN UTAMA === -->
     <main class="main-content">
-        <section class="player-container">
-
-            <!-- BAGIAN PEMUTAR VIDEO -->
+        <div class="player-container">
+            <!-- Pemutar Video -->
             <div class="video-player-section">
-
                 <div class="video-container">
-                    <video id="video-player" controls poster="thumbnail.jpg">
-                        <source src="static/video/sample1.mp4" type="video/mp4">
-                        Browser kamu tidak mendukung pemutar video HTML5.
+                    <video id="video-player" controls>
+                        Your browser does not support the video tag.
                     </video>
                 </div>
-
-                <!-- KONTROL VIDEO -->
+                
                 <div class="video-controls">
-                    <button class="control-btn" id="prev-btn">⏮️</button>
-                    <button class="control-btn play" id="play-btn">▶️</button>
-                    <button class="control-btn" id="next-btn">⏭️</button>
-                    <button class="control-btn" id="restart-btn">🔄</button>
-                    <button class="control-btn" id="shuffle-btn">🔀</button>
+                    <button id="video-prev-btn" class="control-btn">⏮</button>
+                    <button id="video-play-btn" class="control-btn play">▶</button>
+                    <button id="video-pause-btn" class="control-btn">⏸</button>
+                    <button id="video-next-btn" class="control-btn">⏭</button>
+                    <button id="video-fullscreen-btn" class="control-btn">⛶</button>
                 </div>
-
-                <!-- PROGRESS BAR -->
+                
                 <div class="video-progress-container">
-                    <div class="progress-bar" id="progress-bar">
-                        <div class="progress" id="progress"></div>
+                    <span id="video-current-time">0:00</span>
+                    <div class="progress-bar">
+                        <div class="progress" id="video-progress"></div>
                     </div>
-                    <span id="time-current">0:00</span>
-                    <span id="time-total">0:00</span>
+                    <span id="video-duration">0:00</span>
                 </div>
-
-                <!-- KONTROL VOLUME -->
+                
                 <div class="video-volume-control">
-                    🔊
-                    <input type="range" id="video-volume-slider" min="0" max="1" step="0.05" value="0.8">
+                    <span>🔊</span>
+                    <input type="range" id="video-volume-slider" min="0" max="100" value="50">
                 </div>
-
-                <!-- INFO VIDEO -->
+                
                 <div class="now-playing">
-                    <h2 id="now-playing-title">Now Playing: Sample Video 1</h2>
+                    <h2 id="now-playing-title">Pilih video untuk memutar</h2>
                 </div>
             </div>
-
-            <!-- PLAYLIST DI BAWAH -->
-            <div class="playlist-container" id="playlist">
-                <div class="playlist-item active" data-src="static/video/sample1.mp4">
-                    <div class="video-name">Sample Video 1</div>
-                </div>
-                <div class="playlist-item" data-src="static/video/sample2.mp4">
-                    <div class="video-name">Sample Video 2</div>
-                </div>
-                <div class="playlist-item" data-src="static/video/sample3.mp4">
-                    <div class="video-name">Sample Video 3</div>
-                </div>
-                <div class="playlist-item" data-src="static/video/sample4.mp4">
-                    <div class="video-name">Sample Video 4</div>
+            
+            <!-- Daftar Video -->
+            <div class="playlist-container">
+                <h3>Daftar Video</h3>
+                <div class="playlist" id="playlist">
+                    {% for file in video_files %}
+                    <div class="playlist-item" data-src="{{ url_for('serve_media', folder='video', filename=file) }}">
+                        <span class="video-name">{{ file }}</span>
+                        <button class="play-track">▶</button>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
-
-        </section>
+        </div>
     </main>
 
-    <!-- === SCRIPT KONTROL === -->
     <script>
-        const video = document.getElementById('video-player');
-        const playBtn = document.getElementById('play-btn');
-        const progressBar = document.getElementById('progress-bar');
-        const progress = document.getElementById('progress');
-        const playlist = document.getElementById('playlist');
-        const nowPlaying = document.getElementById('now-playing-title');
-        const volumeSlider = document.getElementById('video-volume-slider');
-
-        const timeCurrent = document.getElementById('time-current');
-        const timeTotal = document.getElementById('time-total');
-
-        let currentIndex = 0;
-        const items = Array.from(document.querySelectorAll('.playlist-item'));
-
-        /* === PLAY / PAUSE === */
-        playBtn.addEventListener('click', () => {
-            if (video.paused) {
-                video.play();
-                playBtn.textContent = '⏸️';
+        const videoPlayer = document.getElementById('video-player');
+        const videoPlayBtn = document.getElementById('video-play-btn');
+        const videoPauseBtn = document.getElementById('video-pause-btn');
+        const videoPrevBtn = document.getElementById('video-prev-btn');
+        const videoNextBtn = document.getElementById('video-next-btn');
+        const videoFullscreenBtn = document.getElementById('video-fullscreen-btn');
+        const videoProgress = document.getElementById('video-progress');
+        const videoCurrentTimeEl = document.getElementById('video-current-time');
+        const videoDurationEl = document.getElementById('video-duration');
+        const videoVolumeSlider = document.getElementById('video-volume-slider');
+        const nowPlayingTitle = document.getElementById('now-playing-title');
+        const playlistItems = document.querySelectorAll('.playlist-item');
+        
+        let currentVideoIndex = 0;
+        const videos = Array.from(playlistItems);
+        
+        // Format waktu dari detik ke menit:detik
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        // Memuat dan memutar video
+        function loadVideo(index) {
+            if (videos.length === 0) return;
+            
+            currentVideoIndex = index;
+            const video = videos[currentVideoIndex];
+            const videoSrc = video.getAttribute('data-src');
+            const videoName = video.querySelector('.video-name').textContent;
+            
+            videoPlayer.src = videoSrc;
+            nowPlayingTitle.textContent = videoName;
+            
+            // Reset progress
+            videoProgress.style.width = '0%';
+            videoCurrentTimeEl.textContent = '0:00';
+            
+            // Update UI untuk video yang sedang aktif
+            videos.forEach(item => item.classList.remove('active'));
+            video.classList.add('active');
+            
+            // Memuat metadata untuk mendapatkan durasi
+            videoPlayer.addEventListener('loadedmetadata', function() {
+                videoDurationEl.textContent = formatTime(videoPlayer.duration);
+            }, { once: true });
+            
+            playVideo();
+        }
+        
+        // Memutar video
+        function playVideo() {
+            videoPlayer.play();
+            videoPlayBtn.style.display = 'none';
+            videoPauseBtn.style.display = 'inline-block';
+        }
+        
+        // Menjeda video
+        function pauseVideo() {
+            videoPlayer.pause();
+            videoPlayBtn.style.display = 'inline-block';
+            videoPauseBtn.style.display = 'none';
+        }
+        
+        // Video berikutnya
+        function nextVideo() {
+            currentVideoIndex = (currentVideoIndex + 1) % videos.length;
+            loadVideo(currentVideoIndex);
+        }
+        
+        // Video sebelumnya
+        function prevVideo() {
+            currentVideoIndex = (currentVideoIndex - 1 + videos.length) % videos.length;
+            loadVideo(currentVideoIndex);
+        }
+        
+        // Fullscreen
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                videoPlayer.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
             } else {
-                video.pause();
-                playBtn.textContent = '▶️';
+                document.exitFullscreen();
+            }
+        }
+        
+        // Event Listeners
+        videoPlayBtn.addEventListener('click', playVideo);
+        videoPauseBtn.addEventListener('click', pauseVideo);
+        videoNextBtn.addEventListener('click', nextVideo);
+        videoPrevBtn.addEventListener('click', prevVideo);
+        videoFullscreenBtn.addEventListener('click', toggleFullscreen);
+        
+        // Kontrol volume
+        videoVolumeSlider.addEventListener('input', function() {
+            videoPlayer.volume = this.value / 100;
+        });
+        
+        // Update progress bar
+        videoPlayer.addEventListener('timeupdate', function() {
+            const currentTime = videoPlayer.currentTime;
+            const duration = videoPlayer.duration;
+            
+            if (duration) {
+                const progressPercent = (currentTime / duration) * 100;
+                videoProgress.style.width = `${progressPercent}%`;
+                videoCurrentTimeEl.textContent = formatTime(currentTime);
             }
         });
-
-        /* === PROGRESS BAR === */
-        video.addEventListener('timeupdate', () => {
-            const progressPercent = (video.currentTime / video.duration) * 100;
-            progress.style.width = progressPercent + '%';
-            updateTimeDisplay();
+        
+        // Klik pada progress bar untuk seek
+        document.querySelector('.video-progress-container .progress-bar').addEventListener('click', function(e) {
+            const progressBar = this;
+            const clickPosition = e.offsetX;
+            const progressBarWidth = progressBar.offsetWidth;
+            const seekTime = (clickPosition / progressBarWidth) * videoPlayer.duration;
+            
+            videoPlayer.currentTime = seekTime;
         });
-
-        progressBar.addEventListener('click', (e) => {
-            const newTime = (e.offsetX / progressBar.offsetWidth) * video.duration;
-            video.currentTime = newTime;
+        
+        // Auto play next video ketika video selesai
+        videoPlayer.addEventListener('ended', nextVideo);
+        
+        // Klik pada item playlist
+        playlistItems.forEach((item, index) => {
+            item.querySelector('.play-track').addEventListener('click', function() {
+                loadVideo(index);
+            });
         });
-
-        /* === VOLUME CONTROL === */
-        volumeSlider.addEventListener('input', () => {
-            video.volume = volumeSlider.value;
-        });
-
-        /* === GANTI VIDEO DARI PLAYLIST === */
-        playlist.addEventListener('click', (e) => {
-            const item = e.target.closest('.playlist-item');
-            if (!item) return;
-
-            items.forEach(el => el.classList.remove('active'));
-            item.classList.add('active');
-
-            const src = item.getAttribute('data-src');
-            video.src = src;
-            nowPlaying.textContent = 'Now Playing: ' + item.querySelector('.video-name').textContent;
-            video.play();
-            playBtn.textContent = '⏸️';
-        });
-
-        /* === UPDATE WAKTU === */
-        function updateTimeDisplay() {
-            const formatTime = (time) => {
-                const minutes = Math.floor(time / 60);
-                const seconds = Math.floor(time % 60).toString().padStart(2, '0');
-                return `${minutes}:${seconds}`;
-            };
-            timeCurrent.textContent = formatTime(video.currentTime);
-            timeTotal.textContent = formatTime(video.duration || 0);
+        
+        // Muat video pertama jika ada
+        if (videos.length > 0) {
+            loadVideo(0);
         }
-
-        /* === SAAT VIDEO SELESAI, LANJUT KE BERIKUTNYA === */
-        video.addEventListener('ended', () => {
-            currentIndex = (currentIndex + 1) % items.length;
-            items[currentIndex].click();
-        });
     </script>
-
 </body>
 </html>
