@@ -181,12 +181,28 @@ header {
 }
 
 .progress-item {
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.85);
     border-radius: 15px;
     padding: 15px 20px;
     margin-bottom: 15px;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
     animation: fadeInItem 0.5s ease;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Efek Fokus (Aktif Upload) + Napas Lembut */
+.progress-item.active {
+    background: rgba(248, 251, 255, 0.95);
+    box-shadow: 0 0 15px rgba(91, 143, 211, 0.5);
+    transform: scale(1.02);
+    animation: breathing 2.5s ease-in-out infinite;
+}
+
+@keyframes breathing {
+    0%   { box-shadow: 0 0 10px rgba(91, 143, 211, 0.3); }
+    50%  { box-shadow: 0 0 25px rgba(91, 143, 211, 0.7); }
+    100% { box-shadow: 0 0 10px rgba(91, 143, 211, 0.3); }
 }
 
 @keyframes fadeInItem {
@@ -215,13 +231,14 @@ header {
     width: 0;
     background: linear-gradient(90deg, #5b8fd3, #1e2a38);
     border-radius: 10px;
-    transition: width 0.3s ease;
+    transition: width 0.4s ease, background 0.3s ease;
 }
 
-/* Status Warna */
+/* ======== Status dan Warna ======== */
 .status {
     font-weight: 600;
     color: #1e2a38;
+    transition: color 0.3s ease;
 }
 
 .status.success {
