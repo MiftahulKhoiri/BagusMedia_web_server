@@ -11,7 +11,9 @@ import time
 app = Flask(__name__)
 sock = Sock(app)
 
-# Konfigurasi folder
+# ==============================
+# 🔧 Konfigurasi Folder
+# ==============================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'upload')
 app.config['VIDEO_FOLDER'] = os.path.join(BASE_DIR, 'video')
@@ -19,20 +21,23 @@ app.config['MP3_FOLDER'] = os.path.join(BASE_DIR, 'mp3')
 app.config['ICON_FOLDER'] = os.path.join(BASE_DIR, 'icon')
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024  # 1GB
 
-# Ekstensi file yang diizinkan
 ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mkv', 'mov', 'wmv', 'mp3', 'wav', 'ogg'}
 
+# ==============================
+# 🧩 Fungsi utilitas
+# ==============================
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def get_media_files(folder, extensions):
-    media_files = []
-    if os.path.exists(folder):
-        for file in os.listdir(folder):
-            if any(file.lower().endswith(ext) for ext in extensions):
-                media_files.append(file)
-    return media_files
+    if not os.path.exists(folder):
+        return []
+    return [f for f in os.listdir(folder) if any(f.lower().endswith(ext) for ext in extensions)]
 
+
+# ==============================
+# 🏠 Halaman Utama
+# ==============================
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -56,9 +61,9 @@ def update_page():
     return render_template('update.html')
 
 
-# ===============================
-# ✅ UPLOAD FILE (tanpa perubahan)
-# ===============================
+# ==============================
+# 📤 Upload File
+# ==============================
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
     if 'files' not in request.files:
@@ -78,37 +83,34 @@ def upload_file():
             file.save(temp_path)
 
             ext = filename.rsplit('.', 1)[1].lower()
-            destination_folder = app.config['MP3_FOLDER'] if ext in ['mp3', 'wav', 'ogg'] else app.config['VIDEO_FOLDER']
-            shutil.move(temp_path, os.path.join(destination_folder, filename))
+            dest_folder = app.config['MP3_FOLDER'] if ext in ['mp3', 'wav', 'ogg'] else app.config['VIDEO_FOLDER']
+            shutil.move(temp_path, os.path.join(dest_folder, filename))
 
-            results.append({'filename': filename, 'status': 'success', 'message': f'File berhasil diupload ke {destination_folder}'})
+            results.append({'filename': filename, 'status': 'success', 'message': f'File berhasil diupload ke {dest_folder}'})
         else:
             results.append({'filename': file.filename, 'status': 'error', 'message': 'Tipe file tidak diizinkan'})
 
     return jsonify({'results': results})
 
 
-# ===============================
-# ✅ CEK PEMBARUAN DARI GITHUB
-# ===============================
+# ==============================
+# 🔍 Cek Pembaruan GitHub
+# ==============================
 @app.route('/api/check-update', methods=['GET'])
 def check_update():
     repo_path = BASE_DIR
     try:
         subprocess.run(["git", "fetch"], cwd=repo_path, capture_output=True, text=True)
-        status_cmd = subprocess.run(["git", "status", "-uno"], cwd=repo_path, capture_output=True, text=True)
-        update_available = "Your branch is behind" in status_cmd.stdout
-        return jsonify({
-            'update_available': update_available,
-            'output': status_cmd.stdout
-        })
+        status = subprocess.run(["git", "status", "-uno"], cwd=repo_path, capture_output=True, text=True)
+        update_available = "Your branch is behind" in status.stdout
+        return jsonify({'update_available': update_available, 'output': status.stdout})
     except Exception as e:
         return jsonify({'update_available': False, 'error': str(e)}), 500
 
 
-# ===============================
-# ✅ PROSES UPDATE REALTIME (WEBSOCKET)
-# ===============================
+# ==============================
+# ⚙️ Proses Update Real-time via WebSocket
+# ==============================
 @sock.route('/ws/update')
 def ws_update(ws):
     def send(msg):
@@ -118,9 +120,8 @@ def ws_update(ws):
             pass
 
     repo_path = BASE_DIR
-    send("[INFO] Memulai proses update dari GitHub...\n")
+    send("[INFO] Memulai proses pembaruan dari GitHub...\n")
 
-    # Pastikan repo valid
     if not os.path.exists(os.path.join(repo_path, ".git")):
         send("[ERROR] Folder ini bukan repository Git!\n")
         ws.close()
@@ -148,9 +149,9 @@ def ws_update(ws):
     send("[DONE]")
 
 
-# ===============================
-# ✅ RESTART SERVER
-# ===============================
+# ==============================
+# 🔁 Restart Server
+# ==============================
 @app.route('/api/restart', methods=['POST'])
 def restart_server():
     def delayed_restart():
@@ -160,9 +161,9 @@ def restart_server():
     return jsonify({"message": "Server akan direstart..."})
 
 
-# ===============================
-# ✅ SERVE MEDIA FILES
-# ===============================
+# ==============================
+# 🎵 Serve File Media
+# ==============================
 @app.route('/media/<folder>/<filename>')
 def serve_media(folder, filename):
     if folder == 'mp3':
@@ -173,10 +174,11 @@ def serve_media(folder, filename):
         return "Folder tidak valid", 404
 
 
-# Pastikan folder tersedia
+# ==============================
+# 🚀 Jalankan Server
+# ==============================
 for folder in [app.config['UPLOAD_FOLDER'], app.config['VIDEO_FOLDER'], app.config['MP3_FOLDER'], app.config['ICON_FOLDER']]:
     os.makedirs(folder, exist_ok=True)
-
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
