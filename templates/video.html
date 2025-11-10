@@ -18,56 +18,60 @@
     </header>
 
     <main class="main-content">
-        <div class="player-container">
-            <!-- Pemutar Video -->
-            <div class="video-player-section">
-                <div class="video-container">
-                    <video id="video-player" controls>
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-                
-                <div class="video-controls">
-                    <button id="video-prev-btn" class="control-btn">⏮</button>
-                    <button id="video-play-btn" class="control-btn play">▶</button>
-                    <button id="video-pause-btn" class="control-btn">⏸</button>
-                    <button id="video-next-btn" class="control-btn">⏭</button>
-                    <button id="video-fullscreen-btn" class="control-btn">⛶</button>
-                </div>
-                
-                <div class="video-progress-container">
-                    <span id="video-current-time">0:00</span>
-                    <div class="progress-bar">
-                        <div class="progress" id="video-progress"></div>
-                    </div>
-                    <span id="video-duration">0:00</span>
-                </div>
-                
-                <div class="video-volume-control">
-                    <span>🔊</span>
-                    <input type="range" id="video-volume-slider" min="0" max="100" value="50">
-                </div>
-                
-                <div class="now-playing">
-                    <h2 id="now-playing-title">Pilih video untuk memutar</h2>
-                </div>
+
+        <!-- 🔔 PERUBAHAN BAGIAN INI -->
+        <!-- Sebelumnya: video-player ada di dalam .player-container -->
+        <!-- Sekarang: dipindahkan ke luar container agar tampil lebar penuh -->
+        <section class="video-player-full">
+            <div class="video-container">
+                <video id="video-player" controls>
+                    Your browser does not support the video tag.
+                </video>
             </div>
-            
-            <!-- Daftar Video -->
-            <div class="playlist-container">
-                <h3>Daftar Video</h3>
-                <div class="playlist" id="playlist">
-                    {% for file in video_files %}
-                    <div class="playlist-item" data-src="{{ url_for('serve_media', folder='video', filename=file) }}">
-                        <span class="video-name">{{ file }}</span>
-                        <button class="play-track">▶</button>
-                    </div>
-                    {% endfor %}
+
+            <!-- Kontrol Video -->
+            <div class="video-controls">
+                <button id="video-prev-btn" class="control-btn">⏮</button>
+                <button id="video-play-btn" class="control-btn play">▶</button>
+                <button id="video-pause-btn" class="control-btn">⏸</button>
+                <button id="video-next-btn" class="control-btn">⏭</button>
+                <button id="video-fullscreen-btn" class="control-btn">⛶</button>
+            </div>
+
+            <div class="video-progress-container">
+                <span id="video-current-time">0:00</span>
+                <div class="progress-bar">
+                    <div class="progress" id="video-progress"></div>
                 </div>
+                <span id="video-duration">0:00</span>
+            </div>
+
+            <div class="video-volume-control">
+                <span>🔊</span>
+                <input type="range" id="video-volume-slider" min="0" max="100" value="50">
+            </div>
+
+            <div class="now-playing">
+                <h2 id="now-playing-title">Pilih video untuk memutar</h2>
+            </div>
+        </section>
+        <!-- 🔔 AKHIR PERUBAHAN BAGIAN PEMUTAR VIDEO -->
+
+        <!-- Bagian daftar video tetap di dalam container -->
+        <div class="playlist-container">
+            <h3>Daftar Video</h3>
+            <div class="playlist" id="playlist">
+                {% for file in video_files %}
+                <div class="playlist-item" data-src="{{ url_for('serve_media', folder='video', filename=file) }}">
+                    <span class="video-name">{{ file }}</span>
+                    <button class="play-track">▶</button>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </main>
 
+    <!-- Script tetap sama -->
     <script>
         const videoPlayer = document.getElementById('video-player');
         const videoPlayBtn = document.getElementById('video-play-btn');
@@ -81,72 +85,60 @@
         const videoVolumeSlider = document.getElementById('video-volume-slider');
         const nowPlayingTitle = document.getElementById('now-playing-title');
         const playlistItems = document.querySelectorAll('.playlist-item');
-        
+
         let currentVideoIndex = 0;
         const videos = Array.from(playlistItems);
-        
-        // Format waktu dari detik ke menit:detik
+
         function formatTime(seconds) {
             const mins = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
             return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
-        
-        // Memuat dan memutar video
+
         function loadVideo(index) {
             if (videos.length === 0) return;
-            
             currentVideoIndex = index;
             const video = videos[currentVideoIndex];
             const videoSrc = video.getAttribute('data-src');
             const videoName = video.querySelector('.video-name').textContent;
-            
+
             videoPlayer.src = videoSrc;
             nowPlayingTitle.textContent = videoName;
-            
-            // Reset progress
             videoProgress.style.width = '0%';
             videoCurrentTimeEl.textContent = '0:00';
-            
-            // Update UI untuk video yang sedang aktif
+
             videos.forEach(item => item.classList.remove('active'));
             video.classList.add('active');
-            
-            // Memuat metadata untuk mendapatkan durasi
+
             videoPlayer.addEventListener('loadedmetadata', function() {
                 videoDurationEl.textContent = formatTime(videoPlayer.duration);
             }, { once: true });
-            
+
             playVideo();
         }
-        
-        // Memutar video
+
         function playVideo() {
             videoPlayer.play();
             videoPlayBtn.style.display = 'none';
             videoPauseBtn.style.display = 'inline-block';
         }
-        
-        // Menjeda video
+
         function pauseVideo() {
             videoPlayer.pause();
             videoPlayBtn.style.display = 'inline-block';
             videoPauseBtn.style.display = 'none';
         }
-        
-        // Video berikutnya
+
         function nextVideo() {
             currentVideoIndex = (currentVideoIndex + 1) % videos.length;
             loadVideo(currentVideoIndex);
         }
-        
-        // Video sebelumnya
+
         function prevVideo() {
             currentVideoIndex = (currentVideoIndex - 1 + videos.length) % videos.length;
             loadVideo(currentVideoIndex);
         }
-        
-        // Fullscreen
+
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 videoPlayer.requestFullscreen().catch(err => {
@@ -156,52 +148,43 @@
                 document.exitFullscreen();
             }
         }
-        
-        // Event Listeners
+
         videoPlayBtn.addEventListener('click', playVideo);
         videoPauseBtn.addEventListener('click', pauseVideo);
         videoNextBtn.addEventListener('click', nextVideo);
         videoPrevBtn.addEventListener('click', prevVideo);
         videoFullscreenBtn.addEventListener('click', toggleFullscreen);
-        
-        // Kontrol volume
+
         videoVolumeSlider.addEventListener('input', function() {
             videoPlayer.volume = this.value / 100;
         });
-        
-        // Update progress bar
+
         videoPlayer.addEventListener('timeupdate', function() {
             const currentTime = videoPlayer.currentTime;
             const duration = videoPlayer.duration;
-            
             if (duration) {
                 const progressPercent = (currentTime / duration) * 100;
                 videoProgress.style.width = `${progressPercent}%`;
                 videoCurrentTimeEl.textContent = formatTime(currentTime);
             }
         });
-        
-        // Klik pada progress bar untuk seek
+
         document.querySelector('.video-progress-container .progress-bar').addEventListener('click', function(e) {
             const progressBar = this;
             const clickPosition = e.offsetX;
             const progressBarWidth = progressBar.offsetWidth;
             const seekTime = (clickPosition / progressBarWidth) * videoPlayer.duration;
-            
             videoPlayer.currentTime = seekTime;
         });
-        
-        // Auto play next video ketika video selesai
+
         videoPlayer.addEventListener('ended', nextVideo);
-        
-        // Klik pada item playlist
+
         playlistItems.forEach((item, index) => {
             item.querySelector('.play-track').addEventListener('click', function() {
                 loadVideo(index);
             });
         });
-        
-        // Muat video pertama jika ada
+
         if (videos.length > 0) {
             loadVideo(0);
         }
