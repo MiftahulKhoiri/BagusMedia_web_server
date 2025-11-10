@@ -1,9 +1,5 @@
-/* =========================================================
-   BAGUS MEDIA SERVER - VIDEO PLAYER STYLES
-   Tema: Biru lembut profesional
-   ========================================================= */
+/* ===== video.css (lanjutan profesional biru lembut) ===== */
 
-/* Reset dan dasar */
 * {
     margin: 0;
     padding: 0;
@@ -12,253 +8,158 @@
 }
 
 body {
-    background: linear-gradient(135deg, #e7f0ff, #f4f8ff);
-    color: #333;
+    background: linear-gradient(135deg, #eaf3ff, #c9dfff);
+    color: #1a355c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
 }
 
-/* =========================================================
-   HEADER
-   ========================================================= */
+/* === Header Umum === */
 header {
-    background: linear-gradient(90deg, #4a90e2, #1e63b6);
-    color: white;
-    padding: 15px 30px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    padding: 20px;
+    background: rgba(240, 248, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #b0c7e8;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 80, 180, 0.08);
 }
 
-.logo-container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+header h1 {
+    color: #10427a;
+    font-size: 1.8em;
+    font-weight: 600;
 }
 
-.logo {
-    height: 45px;
-    width: 45px;
-    border-radius: 10px;
-    object-fit: cover;
+/* === Kontainer Utama === */
+.video-section {
+    width: 100%;
+    max-width: 900px;
+    padding: 30px;
+    animation: fadeIn 0.8s ease-in-out;
 }
 
-.menu .menu-item {
-    color: white;
-    text-decoration: none;
-    margin-left: 20px;
-    padding: 8px 14px;
-    border-radius: 8px;
-    transition: background 0.3s;
-    font-weight: 500;
+/* === Pemutar Video === */
+.video-player {
+    width: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 6px 20px rgba(0, 70, 140, 0.15);
+    margin-bottom: 20px;
+    position: relative;
+    transition: transform 0.3s ease;
 }
 
-.menu .menu-item:hover {
-    background: rgba(255, 255, 255, 0.2);
+.video-player:hover {
+    transform: scale(1.005);
 }
 
-/* =========================================================
-   FULL-WIDTH VIDEO PLAYER
-   ========================================================= */
-
-/* 🔔 BAGIAN INI ADALAH TAMBAHAN BARU UNTUK VIDEO LEBAR PENUH */
-.video-player-full {
-    width: 100vw; /* lebar penuh layar */
-    margin-left: calc(50% - 50vw); /* agar sejajar kiri-kanan penuh */
-    background: #0e1a2b;
-    padding: 30px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+/* === Video Elemen === */
+video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 18px;
 }
 
-.video-player-full video {
-    width: 90%;
-    max-width: 1200px;
-    border-radius: 14px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+/* === Notifikasi Ringan di Atas Video === */
+.video-notification {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.85);
+    color: #10427a;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    box-shadow: 0 2px 6px rgba(0, 70, 140, 0.15);
+    opacity: 0;
+    transition: opacity 0.4s ease;
 }
 
-/* =========================================================
-   KONTROL VIDEO
-   ========================================================= */
+.video-notification.show {
+    opacity: 1;
+}
+
+/* === Tombol Kontrol === */
 .video-controls {
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 14px;
-    margin-top: 18px;
-    color: white;
+    gap: 16px;
+    padding: 15px 0;
 }
 
 .control-btn {
-    background: #3a7bd5;
+    background: rgba(255, 255, 255, 0.7);
     border: none;
-    padding: 10px 14px;
     border-radius: 50%;
-    color: white;
-    font-size: 18px;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 70, 140, 0.15);
     transition: all 0.3s ease;
 }
 
 .control-btn:hover {
-    background: #0052a3;
-    transform: scale(1.1);
+    background: #cce4ff;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 70, 140, 0.2);
 }
 
-/* =========================================================
-   PROGRESS BAR
-   ========================================================= */
-.video-progress-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 12px 0;
-    color: white;
-    width: 90%;
-    max-width: 1200px;
+.control-btn img {
+    width: 22px;
+    height: 22px;
+    filter: brightness(0.3);
 }
 
-.progress-bar {
-    flex: 1;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.25);
-    border-radius: 4px;
-    overflow: hidden;
-    cursor: pointer;
+/* === Daftar Video === */
+.video-list {
+    margin-top: 25px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0, 70, 140, 0.1);
+    padding: 20px;
 }
 
-.progress {
-    height: 100%;
-    background: linear-gradient(90deg, #3a7bd5, #00d2ff);
-    width: 0%;
-    border-radius: 4px;
-    transition: width 0.2s ease;
-}
-
-#video-current-time, #video-duration {
-    font-size: 14px;
-}
-
-/* =========================================================
-   KONTROL VOLUME
-   ========================================================= */
-.video-volume-control {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    color: white;
-    width: 90%;
-    max-width: 1200px;
-}
-
-.video-volume-control input[type="range"] {
-    width: 200px;
-    accent-color: #4a90e2;
-    cursor: pointer;
-}
-
-/* =========================================================
-   NOW PLAYING
-   ========================================================= */
-.now-playing {
-    margin-top: 18px;
-    text-align: center;
-    color: #cfe2ff;
-    font-size: 18px;
-}
-
-/* =========================================================
-   DAFTAR VIDEO / PLAYLIST
-   ========================================================= */
-.playlist-container {
-    background: white;
-    margin: 30px auto;
-    border-radius: 16px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    width: 90%;
-    max-width: 1100px;
-    padding: 20px 30px;
-}
-
-.playlist-container h3 {
-    color: #1e63b6;
-    margin-bottom: 16px;
-    border-bottom: 2px solid #d9e7ff;
-    padding-bottom: 6px;
-}
-
-.playlist {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.playlist-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 16px;
-    background: #f7faff;
+.video-item {
+    padding: 10px 15px;
     border-radius: 10px;
-    transition: background 0.3s, transform 0.3s;
-}
-
-.playlist-item:hover {
-    background: #e2edff;
-    transform: scale(1.01);
-}
-
-.playlist-item.active {
-    background: #cde1ff;
-    border-left: 5px solid #4a90e2;
-}
-
-.playlist-item .video-name {
-    color: #333;
-    font-weight: 500;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.playlist-item .play-track {
-    background: #4a90e2;
-    color: white;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 6px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background 0.3s;
+    transition: all 0.3s ease;
+    color: #103a6e;
 }
 
-.playlist-item .play-track:hover {
-    background: #1e63b6;
+.video-item:hover {
+    background: #d6e8ff;
+    transform: translateX(6px);
 }
 
-/* =========================================================
-   RESPONSIVE DESIGN
-   ========================================================= */
+/* === Animasi === */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* === Responsif === */
 @media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        text-align: center;
+    .video-section {
+        padding: 20px;
     }
 
-    .video-player-full video {
-        width: 100%;
-        max-width: 100%;
-        border-radius: 0;
+    .control-btn {
+        width: 40px;
+        height: 40px;
     }
 
-    .playlist-container {
-        width: 95%;
-        padding: 15px;
+    .control-btn img {
+        width: 20px;
     }
 }
