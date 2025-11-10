@@ -1,4 +1,9 @@
-/* ====== Tampilan Umum ====== */
+/* =========================================================
+   BAGUS MEDIA SERVER - VIDEO PLAYER STYLES
+   Tema: Biru lembut profesional
+   ========================================================= */
+
+/* Reset dan dasar */
 * {
     margin: 0;
     padding: 0;
@@ -7,22 +12,24 @@
 }
 
 body {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    color: white;
+    background: linear-gradient(135deg, #e7f0ff, #f4f8ff);
+    color: #333;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-/* ====== Header ====== */
+/* =========================================================
+   HEADER
+   ========================================================= */
 header {
-    background: rgba(0, 0, 0, 0.25);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background: linear-gradient(90deg, #4a90e2, #1e63b6);
+    color: white;
     padding: 15px 30px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .logo-container {
@@ -32,213 +39,226 @@ header {
 }
 
 .logo {
-    width: 55px;
-    height: 55px;
+    height: 45px;
+    width: 45px;
+    border-radius: 10px;
+    object-fit: cover;
 }
 
-header h1 {
-    font-size: 1.4em;
-    letter-spacing: 1px;
-    color: #e0f7ff;
-}
-
-.menu a {
+.menu .menu-item {
+    color: white;
     text-decoration: none;
-    color: #fff;
-    font-weight: 600;
-    margin-left: 15px;
-    transition: 0.3s;
+    margin-left: 20px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: background 0.3s;
+    font-weight: 500;
 }
 
-.menu a:hover {
-    color: #00d4ff;
+.menu .menu-item:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
 
-/* ====== Konten Utama ====== */
-.main-content {
-    flex: 1;
+/* =========================================================
+   FULL-WIDTH VIDEO PLAYER
+   ========================================================= */
+
+/* 🔔 BAGIAN INI ADALAH TAMBAHAN BARU UNTUK VIDEO LEBAR PENUH */
+.video-player-full {
+    width: 100vw; /* lebar penuh layar */
+    margin-left: calc(50% - 50vw); /* agar sejajar kiri-kanan penuh */
+    background: #0e1a2b;
+    padding: 30px 0;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 40px 20px;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
-/* ====== Player Container ====== */
-.player-container {
-    display: flex;
-    gap: 30px;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
+.video-player-full video {
+    width: 90%;
     max-width: 1200px;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
-/* ====== Video Player Section ====== */
-.video-player-section {
-    flex: 2;
-    min-width: 400px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 25px;
-    border-radius: 16px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.4);
-    backdrop-filter: blur(10px);
-    transition: 0.3s ease;
-}
-
-.video-player-section:hover {
-    box-shadow: 0 0 30px rgba(0,212,255,0.3);
-    transform: translateY(-4px);
-}
-
-/* ====== Video Container ====== */
-.video-container {
-    position: relative;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #000;
-    margin-bottom: 15px;
-}
-
-#video-player {
-    width: 100%;
-    height: auto;
-    max-height: 60vh;
-    border-radius: 12px;
-}
-
-/* ====== Tombol Kontrol ====== */
+/* =========================================================
+   KONTROL VIDEO
+   ========================================================= */
 .video-controls {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin: 15px 0;
+    align-items: center;
+    gap: 14px;
+    margin-top: 18px;
+    color: white;
 }
 
 .control-btn {
-    background: rgba(255,255,255,0.15);
+    background: #3a7bd5;
     border: none;
-    color: #fff;
-    padding: 12px 18px;
-    font-size: 1.3em;
+    padding: 10px 14px;
     border-radius: 50%;
+    color: white;
+    font-size: 18px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s ease;
 }
 
 .control-btn:hover {
-    background: #00d4ff;
-    color: #000;
-    box-shadow: 0 0 15px #00d4ff;
+    background: #0052a3;
     transform: scale(1.1);
 }
 
-/* ====== Progress Bar ====== */
+/* =========================================================
+   PROGRESS BAR
+   ========================================================= */
 .video-progress-container {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 10px;
+    margin: 12px 0;
+    color: white;
+    width: 90%;
+    max-width: 1200px;
 }
 
 .progress-bar {
     flex: 1;
-    height: 6px;
-    background: rgba(255,255,255,0.3);
+    height: 8px;
+    background: rgba(255, 255, 255, 0.25);
     border-radius: 4px;
     overflow: hidden;
     cursor: pointer;
 }
 
 .progress {
-    width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, #00d4ff, #0077ff);
-    transition: width 0.25s ease;
+    background: linear-gradient(90deg, #3a7bd5, #00d2ff);
+    width: 0%;
+    border-radius: 4px;
+    transition: width 0.2s ease;
 }
 
-/* ====== Volume Control ====== */
+#video-current-time, #video-duration {
+    font-size: 14px;
+}
+
+/* =========================================================
+   KONTROL VOLUME
+   ========================================================= */
 .video-volume-control {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
-    margin-bottom: 15px;
+    color: white;
+    width: 90%;
+    max-width: 1200px;
 }
 
-.video-volume-control input {
-    width: 100%;
-    accent-color: #00d4ff;
+.video-volume-control input[type="range"] {
+    width: 200px;
+    accent-color: #4a90e2;
+    cursor: pointer;
 }
 
-/* ====== Now Playing ====== */
+/* =========================================================
+   NOW PLAYING
+   ========================================================= */
 .now-playing {
+    margin-top: 18px;
     text-align: center;
-    margin-top: 15px;
+    color: #cfe2ff;
+    font-size: 18px;
 }
 
-.now-playing h2 {
-    font-size: 1.1em;
-    color: #aeefff;
-    animation: fadeIn 0.6s ease;
-}
-
-/* ====== Playlist ====== */
+/* =========================================================
+   DAFTAR VIDEO / PLAYLIST
+   ========================================================= */
 .playlist-container {
-    flex: 1;
-    min-width: 300px;
-    background: rgba(255, 255, 255, 0.08);
+    background: white;
+    margin: 30px auto;
     border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    max-height: 600px;
-    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    width: 90%;
+    max-width: 1100px;
+    padding: 20px 30px;
 }
 
 .playlist-container h3 {
-    text-align: center;
-    color: #aeefff;
-    margin-bottom: 12px;
+    color: #1e63b6;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #d9e7ff;
+    padding-bottom: 6px;
+}
+
+.playlist {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .playlist-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(255,255,255,0.1);
-    padding: 10px 15px;
-    margin: 6px 0;
+    padding: 10px 16px;
+    background: #f7faff;
     border-radius: 10px;
-    cursor: pointer;
-    transition: 0.3s;
+    transition: background 0.3s, transform 0.3s;
 }
 
 .playlist-item:hover {
-    background: rgba(0,212,255,0.3);
+    background: #e2edff;
+    transform: scale(1.01);
 }
 
 .playlist-item.active {
-    background: rgba(0,212,255,0.5);
-    box-shadow: 0 0 10px #00d4ff;
+    background: #cde1ff;
+    border-left: 5px solid #4a90e2;
 }
 
-/* ====== Animasi ====== */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+.playlist-item .video-name {
+    color: #333;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-/* ====== Responsif ====== */
-@media (max-width: 900px) {
-    .player-container {
+.playlist-item .play-track {
+    background: #4a90e2;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.playlist-item .play-track:hover {
+    background: #1e63b6;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
+@media (max-width: 768px) {
+    header {
         flex-direction: column;
-        align-items: center;
+        text-align: center;
     }
 
-    .video-player-section, .playlist-container {
+    .video-player-full video {
         width: 100%;
-        max-width: 700px;
+        max-width: 100%;
+        border-radius: 0;
     }
 
-    #video-player {
-        max-height: 50vh;
+    .playlist-container {
+        width: 95%;
+        padding: 15px;
     }
 }
