@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAGUS MEDIA SERVER</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/splash.css') }}">
+</head>
+<body>
+    <div class="splash-container">
+        <img src="{{ url_for('static', filename='icon/icon.png') }}" alt="Logo" class="splash-logo">
+        <h1 class="splash-title">Bagus_media_server</h1>
+    </div>
+
+    <script>
+        // Setelah 5 detik, arahkan ke halaman utama
+        setTimeout(() => {
+            window.location.href = "{{ url_for('home') }}";
+        }, 5000);
+    </script>
+</body>
+</html>
