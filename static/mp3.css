@@ -205,3 +205,16 @@ body {
     font-weight: 500;
     transition: color 0.3s ease;
 }
+.status-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 6px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.shuffle-status, .repeat-status {
+    transition: color 0.3s ease;
+    color: #ccc;
+}
