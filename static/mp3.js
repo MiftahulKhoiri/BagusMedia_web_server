@@ -164,3 +164,19 @@ playlistItems.forEach((item, index) => {
 if (tracks.length > 0) {
     loadTrack(0);
 }
+// 🌙 ------------------- DARK MODE -------------------
+const themeToggle = document.getElementById('theme-toggle');
+const currentHour = new Date().getHours();
+
+// Cek jam untuk aktifkan mode malam otomatis
+if (currentHour >= 18 || currentHour < 6) {
+    document.body.classList.add('dark-mode');
+    themeToggle.textContent = "☀️";
+}
+
+// Tombol manual ganti tema
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    themeToggle.textContent = isDark ? "☀️" : "🌙";
+});
