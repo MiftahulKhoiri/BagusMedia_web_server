@@ -197,3 +197,11 @@ body {
     background: #00e1ff;
     border-radius: 5px;
 }
+.repeat-status {
+    text-align: center;
+    font-size: 14px;
+    margin-top: 5px;
+    color: #ccc;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
