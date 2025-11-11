@@ -5,6 +5,7 @@ const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
 const shuffleBtn = document.getElementById('shuffle-btn');
 const repeatBtn = document.getElementById('repeat-btn');
+const shuffleStatus = document.getElementById('shuffle-status');
 const repeatStatus = document.getElementById('repeat-status');
 const progress = document.getElementById('progress');
 const currentTimeEl = document.getElementById('current-time');
@@ -19,7 +20,7 @@ let isShuffle = false;
 let repeatMode = "off"; // off | one | all
 const tracks = Array.from(playlistItems);
 
-// ------------------- FUNGSI DASAR -------------------
+// ------------------- FUNGSI UTAMA -------------------
 function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -63,7 +64,6 @@ function pauseTrack() {
     visualizerBars.forEach(bar => bar.style.animationPlayState = 'paused');
 }
 
-// ------------------- NAVIGASI LAGU -------------------
 function nextTrack() {
     if (isShuffle) {
         currentTrackIndex = Math.floor(Math.random() * tracks.length);
@@ -95,9 +95,11 @@ volumeSlider.addEventListener('input', function() {
 shuffleBtn.addEventListener('click', () => {
     isShuffle = !isShuffle;
     shuffleBtn.style.background = isShuffle ? '#00aaff' : '#00e1ff';
+    shuffleStatus.textContent = `Shuffle: ${isShuffle ? 'On' : 'Off'}`;
+    shuffleStatus.style.color = isShuffle ? '#00aaff' : '#ccc';
 });
 
-// ------------------- FUNGSI REPEAT MODE -------------------
+// Repeat
 repeatBtn.addEventListener('click', () => {
     if (repeatMode === "off") {
         repeatMode = "one";
@@ -120,7 +122,7 @@ repeatBtn.addEventListener('click', () => {
     }
 });
 
-// ------------------- PROGRESS BAR -------------------
+// Progress bar
 audioPlayer.addEventListener('timeupdate', function() {
     const currentTime = audioPlayer.currentTime;
     const duration = audioPlayer.duration;
@@ -138,23 +140,20 @@ document.querySelector('.progress-bar').addEventListener('click', function(e) {
     audioPlayer.currentTime = seekTime;
 });
 
-// ------------------- SAAT LAGU SELESAI -------------------
+// End track
 audioPlayer.addEventListener('ended', function() {
     if (repeatMode === "one") {
-        playTrack(); // ulang lagu yang sama
+        playTrack();
     } else if (repeatMode === "all") {
-        if (currentTrackIndex === tracks.length - 1) {
-            loadTrack(0); // mulai dari awal lagi
-        } else {
-            nextTrack();
-        }
+        currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+        loadTrack(currentTrackIndex);
         playTrack();
     } else {
-        nextTrack(); // mode normal
+        nextTrack();
     }
 });
 
-// ------------------- PLAYLIST -------------------
+// Playlist
 playlistItems.forEach((item, index) => {
     item.querySelector('.play-track').addEventListener('click', function() {
         loadTrack(index);
@@ -162,7 +161,6 @@ playlistItems.forEach((item, index) => {
     });
 });
 
-// ------------------- INISIALISASI -------------------
 if (tracks.length > 0) {
     loadTrack(0);
 }
