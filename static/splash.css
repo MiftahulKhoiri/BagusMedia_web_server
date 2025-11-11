@@ -1,0 +1,45 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.splash-container {
+    text-align: center;
+    animation: zoomIn 1.5s ease-in-out;
+}
+
+.splash-logo {
+    width: 200px;
+    height: auto;
+    animation: float 3s ease-in-out infinite;
+}
+
+.splash-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8em;
+    color: #0a2751;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
