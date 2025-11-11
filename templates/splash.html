@@ -4,7 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BAGUS MEDIA SERVER</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='splash.css') }}">
+    <style>
+        /* Fullscreen layout */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #1e3c72, #2a5298, #00c6ff, #0072ff);
+            background-size: 400% 400%;
+            animation: gradientMove 10s ease infinite;
+            font-family: "Poppins", sans-serif;
+        }
+
+        /* Animasi gradasi */
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .splash-container {
+            text-align: center;
+            color: white;
+        }
+
+        /* Logo animasi */
+        .splash-logo {
+            width: 180px;
+            height: 180px;
+            animation: fadeZoom 2s ease-in-out forwards;
+        }
+
+        @keyframes fadeZoom {
+            0% { opacity: 0; transform: scale(0.7); }
+            60% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Judul dengan efek mengetik */
+        .splash-title {
+            margin-top: 25px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid rgba(255, 255, 255, 0.8);
+            width: 0;
+            animation: typing 3s steps(30, end) 1.2s forwards, blink 0.8s step-end infinite alternate;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 14ch; } /* Sesuaikan dengan panjang teks */
+        }
+
+        @keyframes blink {
+            from { border-color: rgba(255, 255, 255, 0.8); }
+            to { border-color: transparent; }
+        }
+    </style>
 </head>
 <body>
     <div class="splash-container">
@@ -13,7 +75,7 @@
     </div>
 
     <script>
-        // Setelah 5 detik, arahkan ke halaman utama
+        // Pindah ke halaman utama setelah 5 detik
         setTimeout(() => {
             window.location.href = "{{ url_for('home') }}";
         }, 5000);
