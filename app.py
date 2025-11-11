@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory, redirect, url_for
 from flask_sock import Sock
 import os
 import shutil
@@ -7,6 +7,7 @@ import subprocess
 import threading
 import sys
 import time
+from datetime import datetime
 
 app = Flask(__name__)
 sock = Sock(app)
@@ -34,14 +35,21 @@ def get_media_files(folder, extensions):
         return []
     return [f for f in os.listdir(folder) if any(f.lower().endswith(ext) for ext in extensions)]
 
-
 # ==============================
-# 🏠 Halaman Utama
+# 🖼 Splash Screen
 # ==============================
 @app.route('/')
-def home():
-    return render_template('home.html')
+def splash():
+    return render_template('splash.html')
 
+@app.route('/home')
+def home():
+    current_year = datetime.now().year
+    return render_template('home.html', current_year=current_year)
+
+# ==============================
+# 🎵 Halaman Pemutar MP3 dan Video
+# ==============================
 @app.route('/mp3')
 def mp3_player():
     mp3_files = get_media_files(app.config['MP3_FOLDER'], ['.mp3', '.wav', '.ogg'])
@@ -59,7 +67,6 @@ def upload_page():
 @app.route('/update')
 def update_page():
     return render_template('update.html')
-
 
 # ==============================
 # 📤 Upload File
@@ -92,7 +99,6 @@ def upload_file():
 
     return jsonify({'results': results})
 
-
 # ==============================
 # 🔍 Cek Pembaruan GitHub
 # ==============================
@@ -106,7 +112,6 @@ def check_update():
         return jsonify({'update_available': update_available, 'output': status.stdout})
     except Exception as e:
         return jsonify({'update_available': False, 'error': str(e)}), 500
-
 
 # ==============================
 # ⚙️ Proses Update Real-time via WebSocket
@@ -148,7 +153,6 @@ def ws_update(ws):
 
     send("[DONE]")
 
-
 # ==============================
 # 🔁 Restart Server
 # ==============================
@@ -159,7 +163,6 @@ def restart_server():
         os.execl(sys.executable, sys.executable, *sys.argv)
     threading.Thread(target=delayed_restart).start()
     return jsonify({"message": "Server akan direstart..."})
-
 
 # ==============================
 # 🎵 Serve File Media
@@ -172,7 +175,6 @@ def serve_media(folder, filename):
         return send_from_directory(app.config['VIDEO_FOLDER'], filename)
     else:
         return "Folder tidak valid", 404
-
 
 # ==============================
 # 🚀 Jalankan Server
