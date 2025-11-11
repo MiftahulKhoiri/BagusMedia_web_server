@@ -218,3 +218,57 @@ body {
     transition: color 0.3s ease;
     color: #ccc;
 }
+/* 🌙 DARK MODE */
+body.dark-mode {
+    background-color: #0d1117;
+    color: #e6edf3;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+body.dark-mode .music-player,
+body.dark-mode .playlist-container {
+    background-color: #161b22;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+}
+
+body.dark-mode .control-btn {
+    background: #0d1117;
+    color: #00d0ff;
+    border: 1px solid #00d0ff;
+}
+
+body.dark-mode .control-btn:hover {
+    background: #00d0ff;
+    color: #0d1117;
+}
+
+body.dark-mode .progress-bar {
+    background: #333;
+}
+
+body.dark-mode .progress {
+    background: linear-gradient(90deg, #00ffff, #00aaff);
+}
+
+body.dark-mode .playlist-item {
+    border-bottom: 1px solid #333;
+}
+
+body.dark-mode .playlist-item.active {
+    background: rgba(0, 255, 255, 0.1);
+    color: #00ffff;
+}
+
+.theme-toggle {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #00e1ff;
+    transition: transform 0.2s ease;
+    margin-left: 10px;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.2);
+}
