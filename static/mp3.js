@@ -5,6 +5,7 @@ const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
 const shuffleBtn = document.getElementById('shuffle-btn');
 const repeatBtn = document.getElementById('repeat-btn');
+const repeatStatus = document.getElementById('repeat-status');
 const progress = document.getElementById('progress');
 const currentTimeEl = document.getElementById('current-time');
 const durationEl = document.getElementById('duration');
@@ -85,33 +86,41 @@ pauseBtn.addEventListener('click', pauseTrack);
 nextBtn.addEventListener('click', nextTrack);
 prevBtn.addEventListener('click', prevTrack);
 
+// Volume
 volumeSlider.addEventListener('input', function() {
     audioPlayer.volume = this.value / 100;
 });
 
+// Shuffle
 shuffleBtn.addEventListener('click', () => {
     isShuffle = !isShuffle;
     shuffleBtn.style.background = isShuffle ? '#00aaff' : '#00e1ff';
 });
 
-// Ganti mode repeat
+// ------------------- FUNGSI REPEAT MODE -------------------
 repeatBtn.addEventListener('click', () => {
     if (repeatMode === "off") {
         repeatMode = "one";
-        repeatBtn.textContent = "🔂"; // repeat satu lagu
+        repeatBtn.textContent = "🔂";
         repeatBtn.style.background = "#00aaff";
+        repeatStatus.textContent = "Repeat: One";
+        repeatStatus.style.color = "#00aaff";
     } else if (repeatMode === "one") {
         repeatMode = "all";
         repeatBtn.textContent = "🔁";
         repeatBtn.style.background = "#0088ff";
+        repeatStatus.textContent = "Repeat: All";
+        repeatStatus.style.color = "#00d0ff";
     } else {
         repeatMode = "off";
         repeatBtn.textContent = "🔁";
         repeatBtn.style.background = "#00e1ff";
+        repeatStatus.textContent = "Repeat: Off";
+        repeatStatus.style.color = "#ccc";
     }
 });
 
-// ------------------- UPDATE WAKTU & PROGRESS -------------------
+// ------------------- PROGRESS BAR -------------------
 audioPlayer.addEventListener('timeupdate', function() {
     const currentTime = audioPlayer.currentTime;
     const duration = audioPlayer.duration;
@@ -153,7 +162,7 @@ playlistItems.forEach((item, index) => {
     });
 });
 
-// ------------------- AWAL -------------------
+// ------------------- INISIALISASI -------------------
 if (tracks.length > 0) {
     loadTrack(0);
 }
