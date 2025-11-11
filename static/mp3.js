@@ -180,3 +180,17 @@ themeToggle.addEventListener('click', () => {
     const isDark = document.body.classList.contains('dark-mode');
     themeToggle.textContent = isDark ? "☀️" : "🌙";
 });
+// 💡 Efek NEON Glow Aktif Saat Musik Diputar
+const audio = document.getElementById('audio-player');
+
+audio.addEventListener('play', () => {
+    document.body.classList.add('glow-active');
+});
+
+audio.addEventListener('pause', () => {
+    document.body.classList.remove('glow-active');
+});
+
+audio.addEventListener('ended', () => {
+    document.body.classList.remove('glow-active');
+});
