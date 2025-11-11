@@ -19,7 +19,6 @@
 
     <main class="main-content">
         <div class="player-container">
-            <!-- Pemutar Musik -->
             <div class="music-player">
                 <div class="now-playing">
                     <div class="visualizer">
@@ -37,8 +36,11 @@
                     <button id="repeat-btn" class="control-btn">🔁</button>
                 </div>
 
-                <!-- Tambahan indikator repeat -->
-                <div id="repeat-status" class="repeat-status">Repeat: Off</div>
+                <!-- Indikator status -->
+                <div class="status-indicators">
+                    <span id="shuffle-status" class="shuffle-status">Shuffle: Off</span>
+                    <span id="repeat-status" class="repeat-status">Repeat: Off</span>
+                </div>
 
                 <div class="progress-container">
                     <span id="current-time">0:00</span>
