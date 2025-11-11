@@ -1,28 +1,18 @@
-/* ======= Tampilan Umum ======= */
-* {
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #232526, #414345);
+    color: white;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    color: white;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-/* ======= Header ======= */
 .header {
-    background: rgba(0, 0, 0, 0.3);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: #1c1c1c;
     padding: 15px 30px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    backdrop-filter: blur(6px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
 }
 
 .logo-container {
@@ -36,143 +26,56 @@ body {
     height: 50px;
 }
 
-.header h1 {
-    font-size: 1.4em;
+.menu-item {
     color: #fff;
-    letter-spacing: 1px;
-}
-
-.menu a {
     text-decoration: none;
-    color: #fff;
-    font-weight: 600;
-    margin-left: 15px;
-    transition: 0.3s;
+    font-weight: bold;
+    transition: color 0.3s;
 }
 
-.menu a:hover {
-    color: #00d4ff;
+.menu-item:hover {
+    color: #00e1ff;
 }
 
-/* ======= Konten Utama ======= */
 .main-content {
-    flex: 1;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    padding: 40px 20px;
+    padding: 30px;
 }
 
-/* ======= Player Container ======= */
 .player-container {
     display: flex;
     gap: 30px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
     flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
-    max-width: 1100px;
 }
 
-/* ======= Musik Player ======= */
 .music-player {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 25px;
-    flex: 1;
-    min-width: 320px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.4);
-    backdrop-filter: blur(10px);
-    transition: 0.3s ease;
+    flex: 1 1 350px;
+    min-width: 300px;
 }
 
-.music-player:hover {
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
-    transform: translateY(-4px);
-}
-
-/* ======= Judul Lagu ======= */
 .now-playing {
     text-align: center;
-    margin-bottom: 20px;
-}
-
-.now-playing h2 {
-    font-size: 1.2em;
-    animation: fadeIn 0.6s ease;
-}
-
-/* ======= Tombol Kontrol ======= */
-.player-controls {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.control-btn {
-    background: rgba(255, 255, 255, 0.15);
-    border: none;
-    color: white;
-    padding: 12px 18px;
-    font-size: 1.3em;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.control-btn:hover {
-    background: #00d4ff;
-    color: #000;
-    box-shadow: 0 0 15px #00d4ff;
-    transform: scale(1.1);
-}
-
-/* ======= Progress Bar ======= */
-.progress-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.progress-bar {
-    flex: 1;
-    height: 6px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 3px;
-    overflow: hidden;
-    cursor: pointer;
-    position: relative;
-}
-
-.progress {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, #00d4ff, #0077ff);
-    transition: width 0.2s ease;
-}
-
-/* ======= Efek Gelombang ======= */
-@keyframes musicWave {
-    0%, 100% { transform: scaleY(1); }
-    50% { transform: scaleY(1.6); }
 }
 
 .visualizer {
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 3px;
+    gap: 4px;
     height: 30px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .visualizer div {
-    width: 5px;
-    height: 20px;
-    background: #00d4ff;
+    width: 6px;
+    height: 10px;
+    background: #00e1ff;
     border-radius: 3px;
-    animation: musicWave 0.6s infinite ease-in-out;
+    animation: bounce 1s infinite ease-in-out;
 }
 
 .visualizer div:nth-child(2) { animation-delay: 0.1s; }
@@ -180,67 +83,117 @@ body {
 .visualizer div:nth-child(4) { animation-delay: 0.3s; }
 .visualizer div:nth-child(5) { animation-delay: 0.4s; }
 
-/* ======= Volume ======= */
+@keyframes bounce {
+    0%, 100% { transform: scaleY(0.3); opacity: 0.6; }
+    50% { transform: scaleY(1); opacity: 1; }
+}
+
+.player-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.control-btn {
+    font-size: 20px;
+    background: #00e1ff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s;
+}
+
+.control-btn:hover {
+    transform: scale(1.1);
+    background: #00aaff;
+}
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 6px;
+    background: #555;
+    margin: 0 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.progress {
+    width: 0%;
+    height: 100%;
+    background: #00e1ff;
+    transition: width 0.1s linear;
+}
+
 .volume-control {
     display: flex;
     align-items: center;
     gap: 10px;
+    justify-content: center;
 }
 
-.volume-control input {
-    width: 100%;
-    accent-color: #00d4ff;
-}
-
-/* ======= Playlist ======= */
 .playlist-container {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    padding: 20px;
-    flex: 1;
-    min-width: 300px;
-    max-height: 500px;
+    flex: 1 1 250px;
+    max-height: 400px;
     overflow-y: auto;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 10px;
 }
 
 .playlist-container h3 {
     text-align: center;
     margin-bottom: 10px;
-    font-size: 1.1em;
-    color: #aeefff;
 }
 
 .playlist-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(255,255,255,0.1);
-    margin: 6px 0;
-    padding: 10px 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.playlist-item:hover {
-    background: rgba(0,212,255,0.3);
+    background: rgba(0, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: background 0.3s;
 }
 
 .playlist-item.active {
-    background: rgba(0,212,255,0.5);
-    box-shadow: 0 0 10px #00d4ff;
+    background: rgba(0, 255, 255, 0.3);
 }
 
-/* ======= Animasi Fade ======= */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+.playlist-item:hover {
+    background: rgba(0, 255, 255, 0.2);
 }
 
-/* ======= Responsif ======= */
-@media (max-width: 768px) {
-    .player-container {
-        flex-direction: column;
-    }
+.track-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.play-track {
+    background: transparent;
+    border: none;
+    color: #00e1ff;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.playlist::-webkit-scrollbar {
+    width: 6px;
+}
+
+.playlist::-webkit-scrollbar-thumb {
+    background: #00e1ff;
+    border-radius: 5px;
 }
