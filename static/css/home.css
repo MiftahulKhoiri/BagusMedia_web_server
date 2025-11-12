@@ -221,3 +221,13 @@ footer {
         background-color: rgba(255,255,255,0.1);
     }
 }
+
+/* ===== Efek Fade-in Halaman ===== */
+body {
+    opacity: 0;
+    animation: pageFadeIn 1.2s ease forwards;
+}
+
+@keyframes pageFadeIn {
+    to { opacity: 1; }
+}
