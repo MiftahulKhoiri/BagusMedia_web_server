@@ -1,5 +1,5 @@
 /* =========================================================
-   🎧 PEMUTAR MP3 - BAGUS MEDIA SERVER
+   🎧 PEMUTAR MP3 - BAGUS MEDIA SERVER (Versi Bersih)
    ========================================================= */
 
 /* Reset dasar */
@@ -13,30 +13,27 @@
 body {
     background: radial-gradient(circle at center, #000010 0%, #020111 100%);
     color: #fff;
-    overflow: hidden;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 /* ===== Kanvas Neon ===== */
-#neon-bg {
+#neon-particles {
     position: fixed;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
     z-index: -1;
-    background: transparent;
 }
 
 /* ===== Header ===== */
 .header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center;
     background: rgba(20, 20, 40, 0.8);
-    padding: 10px 20px;
-    backdrop-filter: blur(10px);
+    padding: 25px 0 15px;
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
     position: sticky;
     top: 0;
     z-index: 10;
@@ -44,31 +41,51 @@ body {
 
 .logo-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
+    text-align: center;
 }
 
 .logo {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
+    filter: drop-shadow(0 0 8px cyan);
 }
 
-.menu a {
-    text-decoration: none;
+.logo-container h1 {
+    font-size: 1.6rem;
+    margin-top: 8px;
     color: cyan;
-    margin-left: 15px;
-    transition: 0.3s;
-    font-weight: 500;
+    text-shadow: 0 0 10px cyan;
 }
 
-.menu a:hover {
+/* ===== Menu di bawah logo ===== */
+.menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    margin-top: 12px;
+}
+
+.menu-item {
+    color: cyan;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: color 0.3s, text-shadow 0.3s, background 0.3s;
+}
+
+.menu-item:hover {
     color: #ff00ff;
     text-shadow: 0 0 10px #ff00ff;
+    background: rgba(255, 255, 255, 0.05);
 }
 
-/* Tombol tema */
+/* Tombol Mode */
 .theme-toggle {
-    background: transparent;
+    background: none;
     border: none;
     color: cyan;
     font-size: 1.4em;
@@ -83,9 +100,9 @@ body {
 
 /* ===== Konten Utama ===== */
 .main-content {
-    padding: 30px 10px;
     display: flex;
     justify-content: center;
+    padding: 30px 10px;
 }
 
 .player-container {
@@ -272,5 +289,10 @@ body {
 
     .playlist-container {
         max-height: 300px;
+    }
+
+    .menu {
+        flex-direction: row;
+        gap: 15px;
     }
 }
