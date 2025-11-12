@@ -1,0 +1,94 @@
+/* ===== BAGUS MEDIA SERVER SPLASH SCREEN ===== */
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at center, #f2f4f8 0%, #d9dde3 100%);
+    position: relative;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+/* Efek garis bercahaya lembut di background */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        60deg,
+        rgba(0, 200, 255, 0.12),
+        rgba(0, 200, 255, 0.12) 1px,
+        transparent 3px,
+        transparent 60px
+    );
+    animation: moveLines 15s linear infinite;
+}
+
+/* Animasi garis bergerak */
+@keyframes moveLines {
+    from { background-position: 0 0; }
+    to { background-position: 200px 200px; }
+}
+
+/* Kontainer logo & teks */
+.splash-container {
+    text-align: center;
+    z-index: 2;
+    animation: zoomIn 1.5s ease-in-out;
+}
+
+/* Logo utama */
+.splash-logo {
+    width: 200px;
+    height: auto;
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.6));
+}
+
+/* Judul */
+.splash-title {
+    font-size: 1.8em;
+    color: #0a2751;
+    margin-top: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Animasi masuk */
+@keyframes zoomIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* Fade awal */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Efek logo mengapung */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Overlay fade-out */
+.fade-overlay {
+    position: fixed;
+    inset: 0;
+    background: #ffffff;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease;
+    z-index: 5;
+}
+
+.fade-out-active {
+    opacity: 1;
+}
