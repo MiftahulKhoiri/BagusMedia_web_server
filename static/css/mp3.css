@@ -1,50 +1,51 @@
-/* ==========================
-   RESET & BODY
-========================== */
+/* =========================================================
+   🎧 PEMUTAR MP3 - BAGUS MEDIA SERVER
+   ========================================================= */
+
+/* Reset dasar */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
-    background: #0b0b0b;
+    background: radial-gradient(circle at center, #000010 0%, #020111 100%);
     color: #fff;
-    display: flex;
-    flex-direction: column;
+    overflow: hidden;
     min-height: 100vh;
-    overflow-x: hidden;
-    transition: background 0.3s, color 0.3s;
 }
 
-/* ==========================
-   DARK MODE
-========================== */
-body.dark-mode {
-    background: #121212;
-    color: #ffffff;
+/* ===== Kanvas Neon ===== */
+#neon-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: transparent;
 }
 
-/* ==========================
-   HEADER
-========================== */
+/* ===== Header ===== */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 24px;
-    background: rgba(0,0,0,0.6);
+    background: rgba(20, 20, 40, 0.8);
+    padding: 10px 20px;
     backdrop-filter: blur(10px);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 10;
 }
 
 .logo-container {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .logo {
@@ -52,190 +53,224 @@ body.dark-mode {
     height: 40px;
 }
 
-.menu .menu-item, .theme-toggle {
-    margin-left: 16px;
-    cursor: pointer;
-    font-size: 18px;
-    background: none;
-    border: none;
-    color: inherit;
+.menu a {
+    text-decoration: none;
+    color: cyan;
+    margin-left: 15px;
+    transition: 0.3s;
+    font-weight: 500;
 }
 
-/* ==========================
-   PLAYER CONTAINER
-========================== */
-.player-container {
+.menu a:hover {
+    color: #ff00ff;
+    text-shadow: 0 0 10px #ff00ff;
+}
+
+/* Tombol tema */
+.theme-toggle {
+    background: transparent;
+    border: none;
+    color: cyan;
+    font-size: 1.4em;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.theme-toggle:hover {
+    color: #ff00ff;
+    transform: rotate(15deg);
+}
+
+/* ===== Konten Utama ===== */
+.main-content {
+    padding: 30px 10px;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+}
+
+.player-container {
+    display: flex;
     flex-wrap: wrap;
-    padding: 24px;
-    gap: 24px;
+    gap: 30px;
+    max-width: 1200px;
+    width: 100%;
+    justify-content: center;
 }
 
-/* ==========================
-   MUSIC PLAYER
-========================== */
+/* ===== Pemutar Musik ===== */
 .music-player {
-    background: rgba(0,0,0,0.6);
+    background: rgba(30, 30, 50, 0.7);
     padding: 20px;
-    border-radius: 16px;
-    width: 350px;
-    backdrop-filter: blur(10px);
-}
-
-.now-playing {
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+    flex: 1;
+    min-width: 300px;
     text-align: center;
-    margin-bottom: 16px;
 }
 
+.now-playing h2 {
+    font-size: 1.1rem;
+    margin-top: 10px;
+    color: #0ff;
+}
+
+/* Visualizer */
 .visualizer {
     display: flex;
     justify-content: center;
+    align-items: flex-end;
+    height: 40px;
+    margin: 10px 0;
     gap: 4px;
-    margin-bottom: 8px;
 }
 
 .visualizer div {
-    width: 4px;
-    height: 20px;
-    background: #00ffff;
-    animation: bounce 1s infinite;
-    animation-play-state: paused;
+    width: 6px;
+    background: cyan;
+    height: 10px;
+    border-radius: 2px;
+    animation: visualizerOff 1s infinite;
 }
 
-@keyframes bounce {
-    0%, 100% { transform: scaleY(0.4); }
-    50% { transform: scaleY(1); }
+@keyframes visualizerOff {
+    0%, 100% { height: 8px; opacity: 0.4; }
+    50% { height: 12px; opacity: 0.6; }
 }
 
+.visualizer.active div {
+    animation: visualizerOn 0.5s infinite;
+}
+
+@keyframes visualizerOn {
+    0% { height: 10px; opacity: 0.7; }
+    50% { height: 35px; opacity: 1; }
+    100% { height: 10px; opacity: 0.7; }
+}
+
+/* ===== Kontrol Pemutar ===== */
 .player-controls {
     display: flex;
     justify-content: center;
-    gap: 8px;
-    margin-bottom: 8px;
+    gap: 10px;
+    margin-top: 15px;
 }
 
 .control-btn {
-    background: rgba(0,255,255,0.2);
+    background: rgba(255, 255, 255, 0.1);
     border: none;
-    padding: 8px 12px;
-    border-radius: 8px;
+    color: #0ff;
+    font-size: 1.4rem;
+    border-radius: 10px;
+    padding: 10px 15px;
     cursor: pointer;
-    font-size: 18px;
-    transition: background 0.3s;
+    transition: 0.3s;
 }
 
 .control-btn:hover {
-    background: rgba(0,255,255,0.5);
+    background: rgba(255, 255, 255, 0.25);
+    color: #ff00ff;
+    box-shadow: 0 0 10px #ff00ff;
 }
 
-/* ==========================
-   STATUS
-========================== */
+/* ===== Status Shuffle & Repeat ===== */
 .status-indicators {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    margin-bottom: 12px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #aaa;
 }
 
-/* ==========================
-   PROGRESS BAR
-========================== */
+/* ===== Progress Bar ===== */
 .progress-container {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-    margin-bottom: 12px;
+    margin: 10px 0;
 }
 
 .progress-bar {
-    flex: 1;
-    height: 6px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 3px;
-    cursor: pointer;
-    position: relative;
+    width: 60%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 .progress {
     height: 100%;
-    width: 0%;
-    background: #00ffff;
-    border-radius: 3px;
+    width: 0;
+    background: linear-gradient(90deg, cyan, magenta);
+    transition: width 0.2s linear;
 }
 
-/* ==========================
-   VOLUME SLIDER
-========================== */
+/* ===== Volume ===== */
 .volume-control {
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 8px;
+    margin-top: 15px;
 }
 
 #volume-slider {
-    flex: 1;
-    cursor: pointer;
+    width: 120px;
+    accent-color: cyan;
 }
 
-/* ==========================
-   PLAYLIST
-========================== */
+/* ===== Playlist ===== */
 .playlist-container {
-    background: rgba(0,0,0,0.6);
-    padding: 16px;
-    border-radius: 16px;
-    width: 250px;
+    background: rgba(20, 20, 40, 0.7);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 0 25px rgba(255, 0, 255, 0.2);
+    flex: 1;
+    min-width: 300px;
     max-height: 500px;
     overflow-y: auto;
-    backdrop-filter: blur(10px);
+}
+
+.playlist-container h3 {
+    text-align: center;
+    color: #ff00ff;
+    margin-bottom: 10px;
 }
 
 .playlist-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 6px 8px;
-    margin-bottom: 4px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 6px 0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    transition: 0.3s;
 }
 
-.playlist-item:hover, .playlist-item.active {
-    background: rgba(0,255,255,0.3);
+.playlist-item:hover {
+    background: rgba(0, 255, 255, 0.25);
+    transform: scale(1.02);
 }
 
-.play-track {
-    background: none;
+.playlist-item button {
+    background: transparent;
     border: none;
+    color: cyan;
+    font-size: 1.2em;
     cursor: pointer;
-    font-size: 16px;
-    color: #00ffff;
 }
 
-/* ==========================
-   CANVAS NEON
-========================== */
-#neon-particles {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
-}
-
-/* ==========================
-   MEDIA QUERIES
-========================== */
+/* ===== Responsif ===== */
 @media (max-width: 768px) {
     .player-container {
         flex-direction: column;
         align-items: center;
     }
 
-    .music-player, .playlist-container {
-        width: 90%;
+    .progress-bar {
+        width: 70%;
+    }
+
+    .playlist-container {
+        max-height: 300px;
     }
 }
