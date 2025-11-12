@@ -1,8 +1,7 @@
 /* =========================================================
-   🎧 PEMUTAR MP3 - BAGUS MEDIA SERVER (Versi Bersih)
+   🎧 PEMUTAR MP3 - BAGUS MEDIA SERVER (Versi Seragam)
    ========================================================= */
 
-/* Reset dasar */
 * {
     margin: 0;
     padding: 0;
@@ -29,7 +28,8 @@ body {
 /* ===== Header ===== */
 .header {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     background: rgba(20, 20, 40, 0.8);
     padding: 25px 0 15px;
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
@@ -47,14 +47,14 @@ body {
 }
 
 .logo {
-    width: 45px;
-    height: 45px;
+    width: 60px;
+    height: 60px;
     filter: drop-shadow(0 0 8px cyan);
 }
 
 .logo-container h1 {
-    font-size: 1.6rem;
-    margin-top: 8px;
+    font-size: 1.8rem;
+    margin-top: 10px;
     color: cyan;
     text-shadow: 0 0 10px cyan;
 }
@@ -64,8 +64,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 25px;
-    margin-top: 12px;
+    gap: 30px;
+    margin-top: 15px;
 }
 
 .menu-item {
@@ -83,55 +83,41 @@ body {
     background: rgba(255, 255, 255, 0.05);
 }
 
-/* Tombol Mode */
-.theme-toggle {
-    background: none;
-    border: none;
-    color: cyan;
-    font-size: 1.4em;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.theme-toggle:hover {
-    color: #ff00ff;
-    transform: rotate(15deg);
-}
-
 /* ===== Konten Utama ===== */
 .main-content {
     display: flex;
     justify-content: center;
-    padding: 30px 10px;
+    padding: 40px 10px;
 }
 
 .player-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
-    max-width: 1200px;
+    justify-content: space-between;
+    gap: 40px;
     width: 100%;
-    justify-content: center;
+    max-width: 1100px;
+    align-items: stretch;
 }
 
 /* ===== Pemutar Musik ===== */
-.music-player {
+.music-player, .playlist-container {
     background: rgba(30, 30, 50, 0.7);
-    padding: 20px;
     border-radius: 20px;
     box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
     flex: 1;
-    min-width: 300px;
+    min-width: 320px;
+    padding: 25px;
     text-align: center;
 }
 
+/* ===== Pemutar Musik Detail ===== */
 .now-playing h2 {
     font-size: 1.1rem;
     margin-top: 10px;
     color: #0ff;
 }
 
-/* Visualizer */
+/* ===== Visualizer ===== */
 .visualizer {
     display: flex;
     justify-content: center;
@@ -189,67 +175,10 @@ body {
     box-shadow: 0 0 10px #ff00ff;
 }
 
-/* ===== Status Shuffle & Repeat ===== */
-.status-indicators {
-    margin-top: 10px;
-    font-size: 0.9rem;
-    color: #aaa;
-}
-
-/* ===== Progress Bar ===== */
-.progress-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin: 10px 0;
-}
-
-.progress-bar {
-    width: 60%;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.progress {
-    height: 100%;
-    width: 0;
-    background: linear-gradient(90deg, cyan, magenta);
-    transition: width 0.2s linear;
-}
-
-/* ===== Volume ===== */
-.volume-control {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin-top: 15px;
-}
-
-#volume-slider {
-    width: 120px;
-    accent-color: cyan;
-}
-
 /* ===== Playlist ===== */
-.playlist-container {
-    background: rgba(20, 20, 40, 0.7);
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 0 25px rgba(255, 0, 255, 0.2);
-    flex: 1;
-    min-width: 300px;
-    max-height: 500px;
-    overflow-y: auto;
-}
-
 .playlist-container h3 {
-    text-align: center;
     color: #ff00ff;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .playlist-item {
@@ -281,18 +210,6 @@ body {
     .player-container {
         flex-direction: column;
         align-items: center;
-    }
-
-    .progress-bar {
-        width: 70%;
-    }
-
-    .playlist-container {
-        max-height: 300px;
-    }
-
-    .menu {
-        flex-direction: row;
-        gap: 15px;
+        gap: 20px;
     }
 }
