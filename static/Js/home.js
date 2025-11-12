@@ -46,11 +46,11 @@ function drawParticles() {
 }
 drawParticles();
 
-// ===== Efek hover kecil pada dropdown =====
-const dropbtn = document.querySelector(".dropbtn");
-dropbtn.addEventListener("mouseover", () => {
-    dropbtn.style.textShadow = "0 0 8px #ffcc00";
-});
-dropbtn.addEventListener("mouseout", () => {
-    dropbtn.style.textShadow = "none";
+// ===== Tombol Menu Mobile =====
+const menuToggle = document.getElementById("menu-toggle");
+const menu = document.querySelector(".menu");
+
+menuToggle.addEventListener("click", () => {
+    menu.classList.toggle("show");
+    menuToggle.textContent = menu.classList.contains("show") ? "✕" : "☰";
 });
