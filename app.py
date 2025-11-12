@@ -61,11 +61,11 @@ def video_player():
     return render_template('video.html', video_files=video_files)
 
 @app.route('/upload')
-def upload_page():
+def upload():
     return render_template('upload.html')
 
 @app.route('/update')
-def update_page():
+def update():
     return render_template('update.html')
 
 # ==============================
