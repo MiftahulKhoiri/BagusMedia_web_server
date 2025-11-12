@@ -4,48 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Pengguna - BAGUS MEDIA SERVER</title>
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='icon/icon.png') }}">
 </head>
 <body>
-    <!-- Partikel Neon -->
     <canvas id="neon-bg"></canvas>
 
     <header>
         <div class="logo-container">
             <a href="{{ url_for('home') }}" class="logo-link">
-                <img src="{{ url_for('static', filename='icon/icon.png') }}" alt="Logo" class="logo">
-                <h1>BAGUS MEDIA SERVER</h1>
+                <img src="{{ url_for('static', filename='icon/icon.png') }}" class="logo">
+                <h1>Profil Pengguna</h1>
             </a>
         </div>
     </header>
 
-    <main class="profile-container">
+    <main>
         <div class="profile-card">
-            <img id="avatarPreview" src="{{ url_for('static', filename='icon/profile.png') }}" alt="Avatar" class="profile-avatar">
-
-            <input type="file" id="avatarInput" accept="image/*" style="display: none;">
-            <button id="changeAvatarBtn" class="back-btn" style="background:#333;color:#ffcc00;border:1px solid #ffcc00;">Ganti Foto</button>
-
-            <h2 id="profileName">Nama Pengguna</h2>
-            <p id="profileEmail">user@example.com</p>
-
-            <div class="edit-section">
-                <input type="text" id="nameInput" placeholder="Masukkan Nama Baru">
-                <input type="email" id="emailInput" placeholder="Masukkan Email Baru">
-                <button id="saveBtn" class="back-btn">Simpan Perubahan</button>
-            </div>
-
-            <a href="{{ url_for('home') }}" class="back-btn">⬅ Kembali ke Home</a>
+            <img id="profile-photo" src="{{ profile.foto or url_for('static', filename='icon/profile.png') }}" alt="Foto Profil">
+            
+            <input type="file" id="photo-input" accept="image/*">
+            
+            <label>Nama Lengkap:</label>
+            <input type="text" id="nama" value="{{ profile.nama }}" placeholder="Masukkan nama lengkap">
+            
+            <label>Email:</label>
+            <input type="email" id="email" value="{{ profile.email }}" placeholder="Masukkan email">
+            
+            <label>Bio:</label>
+            <textarea id="bio" placeholder="Tuliskan sesuatu tentang dirimu...">{{ profile.bio }}</textarea>
+            
+            <button id="save-profile">Simpan Profil</button>
         </div>
     </main>
 
     <footer>
-        <p>© {{ current_year }} BAGUS MEDIA SERVER — Mode Profil</p>
+        <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
     </footer>
 
-    <script src="{{ url_for('static', filename='Js/home.js') }}"></script>
     <script src="{{ url_for('static', filename='Js/profile.js') }}"></script>
 </body>
 </html>
