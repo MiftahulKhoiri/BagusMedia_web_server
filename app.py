@@ -42,10 +42,6 @@ def get_media_files(folder, extensions):
 def splash():
     return render_template('splash.html')
 
-@app.route('/profile')
-def profile():
-    return render_template('profile.html')
-
 @app.route('/home')
 def home():
     current_year = datetime.now().year
@@ -156,6 +152,11 @@ def ws_update(ws):
         send(f"[ERROR] Proses gagal (kode {process.returncode}).\n")
 
     send("[DONE]")
+
+@app.route('/profile')
+def profile():
+    current_year = datetime.now().year
+    return render_template('profile.html', current_year=current_year)
 
 # ==============================
 # 🔁 Restart Server
