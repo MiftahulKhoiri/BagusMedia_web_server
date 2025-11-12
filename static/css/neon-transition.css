@@ -1,0 +1,41 @@
+/* =========================================================
+   ⚡ NEON TRANSITION PARTICLE EFFECT
+   ========================================================= */
+
+#neon-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    pointer-events: none;
+    background: transparent;
+}
+
+/* Efek cahaya lembut untuk latar belakang */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(0, 255, 255, 0.05), rgba(255, 0, 255, 0.05));
+    z-index: -1;
+    transition: background 1s ease-in-out;
+}
+
+body.light::before {
+    background: radial-gradient(circle at center, rgba(0, 0, 255, 0.1), rgba(255, 255, 255, 0.1));
+}
+
+/* Animasi munculnya halaman */
+@keyframes fadeInNeon {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+body {
+    animation: fadeInNeon 1.2s ease-out;
+}
