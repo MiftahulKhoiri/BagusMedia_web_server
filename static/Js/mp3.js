@@ -243,3 +243,40 @@ function initVisualizer() {
 if (tracks.length > 0) {
     loadTrack(0);
 }
+
+// ==========================
+// 🌌 EFEK PARTIKEL NEON
+// ==========================
+const neonBackground = document.getElementById('neon-background');
+
+function createNeonParticle() {
+    const particle = document.createElement('div');
+    particle.classList.add('neon-particle');
+    const size = Math.random() * 6 + 4; // ukuran 4-10px
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.top = `${Math.random() * 100}%`;
+    particle.style.animationDuration = `${8 + Math.random() * 10}s`;
+
+    // Variasi warna neon
+    const colors = [
+        "rgba(0, 255, 255, 0.9)",
+        "rgba(0, 200, 255, 0.9)",
+        "rgba(0, 150, 255, 0.9)",
+        "rgba(100, 255, 255, 0.8)",
+        "rgba(0, 255, 200, 0.9)"
+    ];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    particle.style.background = `radial-gradient(circle, ${randomColor}, transparent)`;
+
+    neonBackground.appendChild(particle);
+
+    // Hapus partikel setelah selesai animasi
+    setTimeout(() => {
+        particle.remove();
+    }, 15000);
+}
+
+// Buat partikel baru secara berkala
+setInterval(createNeonParticle, 500);
