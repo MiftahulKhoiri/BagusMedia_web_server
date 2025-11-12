@@ -14,13 +14,17 @@ const volumeSlider = document.getElementById('volume-slider');
 const nowPlayingTitle = document.getElementById('now-playing-title');
 const playlistItems = document.querySelectorAll('.playlist-item');
 const visualizerBars = document.querySelectorAll('.visualizer div');
+const themeToggle = document.getElementById('theme-toggle');
 
 let currentTrackIndex = 0;
 let isShuffle = false;
 let repeatMode = "off"; // off | one | all
 const tracks = Array.from(playlistItems);
+let audioContext, analyser, dataArray, source;
 
-// ------------------- FUNGSI UTAMA -------------------
+// ==========================
+// 🎵 FUNGSI DASAR
+// ==========================
 function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -34,59 +38,96 @@ function loadTrack(index) {
     const trackSrc = track.getAttribute('data-src');
     const trackName = track.querySelector('.track-name').textContent;
 
-    audioPlayer.src = trackSrc;
-    nowPlayingTitle.textContent = "🎧 " + trackName;
+    // Fade-out sebelum ganti lagu
+    fadeOutAudio(() => {
+        audioPlayer.src = trackSrc;
+        nowPlayingTitle.textContent = "🎧 " + trackName;
+        progress.style.width = '0%';
+        currentTimeEl.textContent = '0:00';
+        tracks.forEach(item => item.classList.remove('active'));
+        track.classList.add('active');
 
-    progress.style.width = '0%';
-    currentTimeEl.textContent = '0:00';
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            durationEl.textContent = formatTime(audioPlayer.duration);
+        }, { once: true });
 
-    tracks.forEach(item => item.classList.remove('active'));
-    track.classList.add('active');
-
-    audioPlayer.addEventListener('loadedmetadata', () => {
-        durationEl.textContent = formatTime(audioPlayer.duration);
-    }, { once: true });
-
-    pauseTrack(); // tidak autoplay
+        fadeInAudio();
+        playTrack();
+    });
 }
 
+// ==========================
+// ▶️ KONTROL PLAYBACK
+// ==========================
 function playTrack() {
     audioPlayer.play();
     playBtn.style.display = 'none';
     pauseBtn.style.display = 'inline-block';
-    visualizerBars.forEach(bar => bar.style.animationPlayState = 'running');
+    initVisualizer();
+    document.body.classList.add('glow-active');
 }
 
 function pauseTrack() {
     audioPlayer.pause();
     playBtn.style.display = 'inline-block';
     pauseBtn.style.display = 'none';
-    visualizerBars.forEach(bar => bar.style.animationPlayState = 'paused');
+    document.body.classList.remove('glow-active');
 }
 
+// Fade in/out volume untuk transisi halus
+function fadeOutAudio(callback) {
+    const fadeInterval = setInterval(() => {
+        if (audioPlayer.volume > 0.1) {
+            audioPlayer.volume -= 0.1;
+        } else {
+            audioPlayer.volume = 0;
+            clearInterval(fadeInterval);
+            if (callback) callback();
+        }
+    }, 50);
+}
+
+function fadeInAudio() {
+    audioPlayer.volume = 0;
+    const fadeInterval = setInterval(() => {
+        if (audioPlayer.volume < volumeSlider.value / 100) {
+            audioPlayer.volume += 0.1;
+        } else {
+            clearInterval(fadeInterval);
+        }
+    }, 50);
+}
+
+// ==========================
+// ⏩ NAVIGASI LAGU
+// ==========================
 function nextTrack() {
     if (isShuffle) {
-        currentTrackIndex = Math.floor(Math.random() * tracks.length);
+        let nextIndex;
+        do {
+            nextIndex = Math.floor(Math.random() * tracks.length);
+        } while (nextIndex === currentTrackIndex && tracks.length > 1);
+        currentTrackIndex = nextIndex;
     } else {
         currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
     }
     loadTrack(currentTrackIndex);
-    playTrack();
 }
 
 function prevTrack() {
     currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
     loadTrack(currentTrackIndex);
-    playTrack();
 }
 
-// ------------------- EVENT KONTROL -------------------
+// ==========================
+// 🔊 EVENT HANDLER
+// ==========================
 playBtn.addEventListener('click', playTrack);
 pauseBtn.addEventListener('click', pauseTrack);
 nextBtn.addEventListener('click', nextTrack);
 prevBtn.addEventListener('click', prevTrack);
 
-// Volume
+// Volume kontrol
 volumeSlider.addEventListener('input', function() {
     audioPlayer.volume = this.value / 100;
 });
@@ -104,19 +145,16 @@ repeatBtn.addEventListener('click', () => {
     if (repeatMode === "off") {
         repeatMode = "one";
         repeatBtn.textContent = "🔂";
-        repeatBtn.style.background = "#00aaff";
         repeatStatus.textContent = "Repeat: One";
         repeatStatus.style.color = "#00aaff";
     } else if (repeatMode === "one") {
         repeatMode = "all";
         repeatBtn.textContent = "🔁";
-        repeatBtn.style.background = "#0088ff";
         repeatStatus.textContent = "Repeat: All";
         repeatStatus.style.color = "#00d0ff";
     } else {
         repeatMode = "off";
         repeatBtn.textContent = "🔁";
-        repeatBtn.style.background = "#00e1ff";
         repeatStatus.textContent = "Repeat: Off";
         repeatStatus.style.color = "#ccc";
     }
@@ -140,57 +178,68 @@ document.querySelector('.progress-bar').addEventListener('click', function(e) {
     audioPlayer.currentTime = seekTime;
 });
 
-// End track
+// Lagu selesai
 audioPlayer.addEventListener('ended', function() {
     if (repeatMode === "one") {
         playTrack();
     } else if (repeatMode === "all") {
-        currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
-        loadTrack(currentTrackIndex);
-        playTrack();
+        nextTrack();
     } else {
         nextTrack();
     }
 });
 
-// Playlist
+// Playlist klik
 playlistItems.forEach((item, index) => {
     item.querySelector('.play-track').addEventListener('click', function() {
         loadTrack(index);
-        playTrack();
     });
 });
 
-if (tracks.length > 0) {
-    loadTrack(0);
-}
-// 🌙 ------------------- DARK MODE -------------------
-const themeToggle = document.getElementById('theme-toggle');
+// ==========================
+// 🌙 MODE GELAP OTOMATIS
+// ==========================
 const currentHour = new Date().getHours();
-
-// Cek jam untuk aktifkan mode malam otomatis
 if (currentHour >= 18 || currentHour < 6) {
     document.body.classList.add('dark-mode');
     themeToggle.textContent = "☀️";
 }
-
-// Tombol manual ganti tema
 themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
     themeToggle.textContent = isDark ? "☀️" : "🌙";
 });
-// 💡 Efek NEON Glow Aktif Saat Musik Diputar
-const audio = document.getElementById('audio-player');
 
-audio.addEventListener('play', () => {
-    document.body.classList.add('glow-active');
-});
+// ==========================
+// 💡 VISUALIZER AUDIO
+// ==========================
+function initVisualizer() {
+    if (!audioContext) {
+        audioContext = new AudioContext();
+        source = audioContext.createMediaElementSource(audioPlayer);
+        analyser = audioContext.createAnalyser();
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        analyser.fftSize = 64;
+        const bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
 
-audio.addEventListener('pause', () => {
-    document.body.classList.remove('glow-active');
-});
+        function renderFrame() {
+            requestAnimationFrame(renderFrame);
+            analyser.getByteFrequencyData(dataArray);
+            visualizerBars.forEach((bar, i) => {
+                const value = dataArray[i % bufferLength];
+                const height = Math.max(2, value / 4);
+                bar.style.height = `${height}px`;
+            });
+        }
+        renderFrame();
+    }
+}
 
-audio.addEventListener('ended', () => {
-    document.body.classList.remove('glow-active');
-});
+// ==========================
+// ⏯ INIT AWAL
+// ==========================
+if (tracks.length > 0) {
+    loadTrack(0);
+}
