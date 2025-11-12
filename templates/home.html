@@ -30,16 +30,11 @@
         <!-- Tombol Menu Mobile -->
         <button id="menu-toggle" class="menu-toggle">☰</button>
 
-        <!-- ===== Navigasi ===== -->
+        <!-- ===== Navigasi Langsung ===== -->
         <nav class="menu">
-            <div class="dropdown">
-                <button class="dropbtn">Menu ▼</button>
-                <div class="dropdown-content">
-                    <a href="{{ url_for('profile') }}">Profil Pengguna</a>
-                    <a href="{{ url_for('upload') }}">Upload Media</a>
-                    <a href="{{ url_for('update') }}">Update</a>
-                </div>
-            </div>
+            <a href="{{ url_for('profile') }}">Profil Pengguna</a>
+            <a href="{{ url_for('upload') }}">Upload Media</a>
+            <a href="{{ url_for('update') }}">Update</a>
         </nav>
     </header>
 
