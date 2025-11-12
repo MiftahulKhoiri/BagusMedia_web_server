@@ -251,3 +251,80 @@ footer {
         margin: 10px auto;
     }
 }
+
+/* ===== Halaman Profil Pengguna ===== */
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    animation: fadeInProfile 1.2s ease-in-out;
+}
+
+.profile-card {
+    background: rgba(25, 25, 25, 0.9);
+    border-radius: 16px;
+    padding: 30px 40px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    max-width: 400px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 20px #ffcc00;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px #ffcc00;
+    border: 2px solid #ffcc00;
+}
+
+.profile-card h2 {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #ffcc00;
+    text-shadow: 0 0 8px #ffcc00;
+}
+
+.profile-card p {
+    margin: 5px 0;
+    color: #ddd;
+    font-size: 15px;
+}
+
+.back-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 18px;
+    background: #ffcc00;
+    color: #000;
+    font-weight: bold;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.back-btn:hover {
+    background: #ffd633;
+    transform: scale(1.05);
+}
+
+/* Efek animasi fade-in profil */
+@keyframes fadeInProfile {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
