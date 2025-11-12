@@ -1,13 +1,14 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory, redirect, url_for
+from flask import Flask, render_template, request, jsonify, send_from_directory
 from flask_sock import Sock
 import os
 import shutil
-from werkzeug.utils import secure_filename
 import subprocess
 import threading
 import sys
 import time
+import json
 from datetime import datetime
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 sock = Sock(app)
@@ -23,6 +24,9 @@ app.config['ICON_FOLDER'] = os.path.join(BASE_DIR, 'static/icon')
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024  # 1GB
 
 ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mkv', 'mov', 'wmv', 'mp3', 'wav', 'ogg'}
+
+PROFILE_FILE = os.path.join(BASE_DIR, "data", "profile_data.json")
+os.makedirs(os.path.dirname(PROFILE_FILE), exist_ok=True)
 
 # ==============================
 # 🧩 Fungsi utilitas
@@ -60,17 +64,13 @@ def video_player():
     video_files = get_media_files(app.config['VIDEO_FOLDER'], ['.mp4', '.avi', '.mkv', '.mov', '.wmv'])
     return render_template('video.html', video_files=video_files)
 
+# ==============================
+# 📤 Halaman Upload
+# ==============================
 @app.route('/upload')
 def upload():
     return render_template('upload.html')
 
-@app.route('/update')
-def update():
-    return render_template('update.html')
-
-# ==============================
-# 📤 Upload File
-# ==============================
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
     if 'files' not in request.files:
@@ -100,8 +100,41 @@ def upload_file():
     return jsonify({'results': results})
 
 # ==============================
+# 🧑‍💻 Profil Pengguna
+# ==============================
+@app.route('/profile')
+def profile():
+    # Baca data profil dari JSON jika ada
+    if os.path.exists(PROFILE_FILE):
+        with open(PROFILE_FILE, "r", encoding="utf-8") as f:
+            profile_data = json.load(f)
+    else:
+        profile_data = {
+            "nama": "",
+            "email": "",
+            "bio": "",
+            "foto": ""
+        }
+    current_year = datetime.now().year
+    return render_template('profile.html', profile=profile_data, current_year=current_year)
+
+@app.route('/api/save-profile', methods=['POST'])
+def save_profile():
+    data = request.json
+    try:
+        with open(PROFILE_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
+        return jsonify({"status": "success", "message": "Profil berhasil disimpan!"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
+
+# ==============================
 # 🔍 Cek Pembaruan GitHub
 # ==============================
+@app.route('/update')
+def update():
+    return render_template('update.html')
+
 @app.route('/api/check-update', methods=['GET'])
 def check_update():
     repo_path = BASE_DIR
@@ -152,11 +185,6 @@ def ws_update(ws):
         send(f"[ERROR] Proses gagal (kode {process.returncode}).\n")
 
     send("[DONE]")
-
-@app.route('/profile')
-def profile():
-    current_year = datetime.now().year
-    return render_template('profile.html', current_year=current_year)
 
 # ==============================
 # 🔁 Restart Server
