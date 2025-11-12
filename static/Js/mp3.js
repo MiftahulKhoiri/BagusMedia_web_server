@@ -45,6 +45,7 @@ function loadTrack(index) {
 
     progress.style.width = '0%';
     currentTimeEl.textContent = '0:00';
+    durationEl.textContent = '0:00';
 
     tracks.forEach(item => item.classList.remove('active'));
     track.classList.add('active');
@@ -57,7 +58,9 @@ function loadTrack(index) {
 }
 
 function playTrack() {
-    audioPlayer.play();
+    audioPlayer.play().catch(err => {
+        console.warn("Autoplay diblokir browser. Silakan klik tombol play.");
+    });
     playBtn.style.display = 'none';
     pauseBtn.style.display = 'inline-block';
     visualizerBars.forEach(bar => bar.style.animationPlayState = 'running');
@@ -89,7 +92,11 @@ function prevTrack() {
 // ==========================
 // 🎛️ EVENT KONTROL
 // ==========================
-playBtn.addEventListener('click', playTrack);
+playBtn.addEventListener('click', () => {
+    playTrack();
+    initAudioAnalyser(); // Inisialisasi audio analyser saat user klik play
+});
+
 pauseBtn.addEventListener('click', pauseTrack);
 nextBtn.addEventListener('click', nextTrack);
 prevBtn.addEventListener('click', prevTrack);
@@ -149,10 +156,11 @@ audioPlayer.addEventListener('ended', function() {
     }
 });
 
-playlistItems.forEach((item, index) => {
+tracks.forEach((item, index) => {
     item.querySelector('.play-track').addEventListener('click', function() {
         loadTrack(index);
         playTrack();
+        initAudioAnalyser(); // Pastikan visualizer aktif saat klik track
     });
 });
 
@@ -249,10 +257,6 @@ function animateParticles() {
 }
 
 animateParticles();
-
-audioPlayer.addEventListener('play', () => {
-    initAudioAnalyser();
-});
 
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
