@@ -12,16 +12,27 @@
     <link rel="icon" href="{{ url_for('static', filename='icon/icon.png') }}">
 </head>
 <body>
+    <!-- ===== Kanvas Partikel ===== -->
+    <canvas id="neon-bg"></canvas>
+
     <!-- ===== Header ===== -->
     <header>
         <div class="logo-container">
-            <img src="{{ url_for('static', filename='icon/icon.png') }}" alt="Logo" class="logo">
-            <h1>BAGUS MEDIA SERVER</h1>
+            <a href="/" class="logo-link">
+                <img src="{{ url_for('static', filename='icon/icon.png') }}" alt="Logo" class="logo">
+                <h1>BAGUS MEDIA SERVER</h1>
+            </a>
         </div>
 
         <nav class="menu">
-            <a href="/upload" class="menu-item">Upload Media</a>
-            <a href="/update" class="menu-item">Update</a>
+            <div class="dropdown">
+                <button class="dropbtn">Menu ▼</button>
+                <div class="dropdown-content">
+                    <a href="/upload">Upload Media</a>
+                    <a href="/update">Update</a>
+                    <a href="/profile">Profil Pengguna</a>
+                </div>
+            </div>
         </nav>
     </header>
 
@@ -51,17 +62,7 @@
         <p>© {{ current_year }} BAGUS MEDIA SERVER — Dibuat karena kegabutan dengan Python Flask</p>
     </footer>
 
-    <!-- ===== Script Aktifkan Menu ===== -->
-    <script>
-        // Tandai menu aktif berdasarkan URL
-        const currentPath = window.location.pathname;
-        document.querySelectorAll('.menu-item').forEach(link => {
-            if (link.getAttribute('href') === currentPath) {
-                link.classList.add('active');
-            } else {
-                link.classList.remove('active');
-            }
-        });
-    </script>
+    <!-- ===== Script JS ===== -->
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
 </body>
 </html>
