@@ -16,9 +16,9 @@ sock = Sock(app)
 # 🔧 Konfigurasi Folder
 # ==============================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'upload')
-app.config['VIDEO_FOLDER'] = os.path.join(BASE_DIR, 'video')
-app.config['MP3_FOLDER'] = os.path.join(BASE_DIR, 'mp3')
+app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'static/upload')
+app.config['VIDEO_FOLDER'] = os.path.join(BASE_DIR, 'static/video')
+app.config['MP3_FOLDER'] = os.path.join(BASE_DIR, 'static/mp3')
 app.config['ICON_FOLDER'] = os.path.join(BASE_DIR, 'icon')
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024  # 1GB
 
