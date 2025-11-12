@@ -1,365 +1,241 @@
-/* ===============================
-   🎧 STYLE UTAMA PEMUTAR MP3
-   =============================== */
-
-body {
+/* ==========================
+   RESET & BODY
+========================== */
+* {
     margin: 0;
     padding: 0;
-    font-family: "Poppins", sans-serif;
-    background: #f8f8f8;
-    color: #222;
-    transition: background 0.6s ease, color 0.6s ease;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-/* 🌙 MODE GELAP */
+body {
+    background: #0b0b0b;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* ==========================
+   DARK MODE
+========================== */
 body.dark-mode {
-    background: #0a0a0a;
-    color: #e0e0e0;
+    background: #121212;
+    color: #ffffff;
 }
 
-/* 💡 Efek Glow aktif saat musik diputar */
-body.glow-active {
-    box-shadow: inset 0 0 80px rgba(0, 255, 255, 0.25);
-    background: radial-gradient(circle at center, #000a14 0%, #000000 100%);
-    transition: background 1s ease, box-shadow 1s ease;
-}
-
-/* ===============================
-   🔹 HEADER
-   =============================== */
+/* ==========================
+   HEADER
+========================== */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(90deg, #00e1ff, #007aff);
-    color: white;
-    padding: 10px 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    padding: 12px 24px;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .logo-container {
     display: flex;
     align-items: center;
+    gap: 12px;
 }
 
 .logo {
+    width: 40px;
     height: 40px;
-    margin-right: 10px;
 }
 
-.menu {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.menu-item {
-    text-decoration: none;
-    color: white;
-    font-weight: 500;
-    transition: opacity 0.3s;
-}
-
-.menu-item:hover {
-    opacity: 0.8;
-}
-
-.theme-toggle {
-    background: transparent;
-    border: none;
-    font-size: 1.4rem;
+.menu .menu-item, .theme-toggle {
+    margin-left: 16px;
     cursor: pointer;
-    color: white;
-    transition: transform 0.3s ease;
+    font-size: 18px;
+    background: none;
+    border: none;
+    color: inherit;
 }
 
-.theme-toggle:hover {
-    transform: scale(1.2);
-}
-
-/* ===============================
-   🎶 KONTEN UTAMA
-   =============================== */
-.main-content {
+/* ==========================
+   PLAYER CONTAINER
+========================== */
+.player-container {
     display: flex;
     justify-content: center;
     align-items: flex-start;
     flex-wrap: wrap;
-    padding: 20px;
-    gap: 30px;
+    padding: 24px;
+    gap: 24px;
 }
 
-/* ===============================
-   🎛️ PEMUTAR MUSIK
-   =============================== */
+/* ==========================
+   MUSIC PLAYER
+========================== */
 .music-player {
-    background: #fff;
-    border-radius: 20px;
-    padding: 25px;
-    width: 360px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    transition: background 0.5s ease;
+    background: rgba(0,0,0,0.6);
+    padding: 20px;
+    border-radius: 16px;
+    width: 350px;
+    backdrop-filter: blur(10px);
 }
 
-body.dark-mode .music-player {
-    background: #111;
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.1);
-}
-
-/* Judul Lagu */
 .now-playing {
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 16px;
 }
 
-#now-playing-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-top: 10px;
-}
-
-/* ===============================
-   🎚️ VISUALIZER (Bar bergerak)
-   =============================== */
 .visualizer {
     display: flex;
     justify-content: center;
-    align-items: flex-end;
-    height: 40px;
     gap: 4px;
-    margin-top: 10px;
+    margin-bottom: 8px;
 }
 
 .visualizer div {
-    width: 6px;
-    background: linear-gradient(to top, #00e1ff, #00aaff);
-    border-radius: 3px;
-    transition: height 0.1s linear;
+    width: 4px;
+    height: 20px;
+    background: #00ffff;
+    animation: bounce 1s infinite;
+    animation-play-state: paused;
 }
 
-/* ===============================
-   ▶️ TOMBOL KONTROL
-   =============================== */
+@keyframes bounce {
+    0%, 100% { transform: scaleY(0.4); }
+    50% { transform: scaleY(1); }
+}
+
 .player-controls {
     display: flex;
     justify-content: center;
-    gap: 12px;
-    margin: 15px 0;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 
 .control-btn {
-    background: #00e1ff;
-    color: #000;
+    background: rgba(0,255,255,0.2);
     border: none;
-    border-radius: 50%;
-    font-size: 1.2rem;
-    width: 45px;
-    height: 45px;
+    padding: 8px 12px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.2s ease, background 0.3s ease;
+    font-size: 18px;
+    transition: background 0.3s;
 }
 
 .control-btn:hover {
-    transform: scale(1.15);
-    background: #00aaff;
+    background: rgba(0,255,255,0.5);
 }
 
-.play {
-    background: #007aff;
-    color: #fff;
-}
-
-.play:hover {
-    background: #00c3ff;
-}
-
-/* ===============================
-   📊 STATUS SHUFFLE & REPEAT
-   =============================== */
+/* ==========================
+   STATUS
+========================== */
 .status-indicators {
-    text-align: center;
-    font-size: 0.9rem;
-    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 12px;
 }
 
-.shuffle-status,
-.repeat-status {
-    display: block;
-    margin-top: 3px;
-    color: #888;
-    transition: color 0.3s ease;
-}
-
-/* ===============================
-   📈 PROGRESS BAR
-   =============================== */
+/* ==========================
+   PROGRESS BAR
+========================== */
 .progress-container {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-top: 10px;
-    font-size: 0.85rem;
+    margin-bottom: 12px;
 }
 
 .progress-bar {
     flex: 1;
     height: 6px;
-    background: #ccc;
-    border-radius: 5px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
     cursor: pointer;
-    overflow: hidden;
+    position: relative;
 }
 
 .progress {
     height: 100%;
-    width: 0;
-    background: linear-gradient(to right, #00e1ff, #007aff);
-    border-radius: 5px;
-    transition: width 0.25s linear;
+    width: 0%;
+    background: #00ffff;
+    border-radius: 3px;
 }
 
-/* ===============================
-   🔊 VOLUME SLIDER
-   =============================== */
+/* ==========================
+   VOLUME SLIDER
+========================== */
 .volume-control {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 15px;
+    gap: 8px;
 }
 
-.volume-control input[type="range"] {
-    width: 150px;
-    accent-color: #00e1ff;
+#volume-slider {
+    flex: 1;
+    cursor: pointer;
 }
 
-/* ===============================
-   🎵 PLAYLIST
-   =============================== */
+/* ==========================
+   PLAYLIST
+========================== */
 .playlist-container {
-    background: #fff;
-    border-radius: 20px;
-    padding: 20px;
-    width: 320px;
-    height: 450px;
+    background: rgba(0,0,0,0.6);
+    padding: 16px;
+    border-radius: 16px;
+    width: 250px;
+    max-height: 500px;
     overflow-y: auto;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    transition: background 0.5s ease;
-}
-
-body.dark-mode .playlist-container {
-    background: #111;
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
 }
 
 .playlist-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(0, 225, 255, 0.05);
-    border: 1px solid transparent;
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 8px;
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.3s, border-color 0.3s;
+    transition: background 0.3s;
 }
 
-.playlist-item:hover {
-    background: rgba(0, 225, 255, 0.15);
-}
-
-.playlist-item.active {
-    border-color: #00e1ff;
-    background: rgba(0, 225, 255, 0.2);
-}
-
-.track-name {
-    flex: 1;
-    font-size: 0.95rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.playlist-item:hover, .playlist-item.active {
+    background: rgba(0,255,255,0.3);
 }
 
 .play-track {
-    background: #00e1ff;
+    background: none;
     border: none;
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    font-size: 1rem;
     cursor: pointer;
-    transition: transform 0.2s ease, background 0.3s;
+    font-size: 16px;
+    color: #00ffff;
 }
 
-.play-track:hover {
-    transform: scale(1.2);
-    background: #00aaff;
-}
-
-/* ===============================
-   📱 RESPONSIVE
-   =============================== */
-@media (max-width: 768px) {
-    .main-content {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .music-player,
-    .playlist-container {
-        width: 90%;
-    }
-}
-/* ===============================
-   🌌 ANIMASI PARTIKEL NEON
-   =============================== */
-#neon-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: -1; /* di bawah semua elemen */
-    background: radial-gradient(circle at center, #000814 0%, #000000 100%);
-}
-
-.neon-particle {
-    position: absolute;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(0, 255, 255, 0.9), transparent);
-    opacity: 0.6;
-    animation: float 12s linear infinite;
-}
-
-@keyframes float {
-    0% {
-        transform: translateY(0px) translateX(0px) scale(1);
-        opacity: 0.6;
-    }
-    50% {
-        transform: translateY(-50px) translateX(30px) scale(1.2);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(0px) translateX(0px) scale(1);
-        opacity: 0.6;
-    }
-}
-
-body.dark-mode #neon-background {
-    background: radial-gradient(circle at center, #000010 0%, #000000 100%);
-}
-
+/* ==========================
+   CANVAS NEON
+========================== */
 #neon-particles {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
     z-index: -1;
-    background: radial-gradient(ellipse at bottom, #001 0%, #000 100%);
+}
+
+/* ==========================
+   MEDIA QUERIES
+========================== */
+@media (max-width: 768px) {
+    .player-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .music-player, .playlist-container {
+        width: 90%;
+    }
 }
