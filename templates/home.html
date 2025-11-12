@@ -34,7 +34,7 @@
                 <div class="dropdown-content">
                     <a href="{{ url_for('upload') }}">Upload Media</a>
                     <a href="{{ url_for('update') }}">Update</a>
-                    <a href="{{ url_for('profile') }}">Profil Pengguna</a>
+                    <!-- Hilangkan 'profile' sementara, karena endpoint-nya belum dibuat -->
                 </div>
             </div>
         </nav>
@@ -43,7 +43,7 @@
     <!-- ===== Konten Utama ===== -->
     <main class="main-content">
         <div class="media-options">
-            <a href="{{ url_for('mp3') }}" class="media-option">
+            <a href="{{ url_for('mp3_player') }}" class="media-option">
                 <div class="option-icon">
                     <img src="{{ url_for('static', filename='icon/Mp3.png') }}" alt="MP3 Player">
                 </div>
@@ -51,7 +51,7 @@
                 <p>Nikmati pengalaman mendengarkan musik dengan antarmuka sederhana dan elegan.</p>
             </a>
 
-            <a href="{{ url_for('video') }}" class="media-option">
+            <a href="{{ url_for('video_player') }}" class="media-option">
                 <div class="option-icon">
                     <img src="{{ url_for('static', filename='icon/Video.png') }}" alt="Video Player">
                 </div>
