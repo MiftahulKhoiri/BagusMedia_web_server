@@ -7,26 +7,21 @@
 
     <!-- ===== CSS Utama ===== -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mp3.css') }}">
-
-    <!-- ===== Neon Transition ===== -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/neon-transition.css') }}">
 
-    <!-- ===== Ikon Browser ===== -->
+    <!-- Ikon -->
     <link rel="icon" href="{{ url_for('static', filename='icon/icon.png') }}">
 </head>
 <body>
     <!-- ===== Kanvas Partikel Neon ===== -->
-    <canvas id="neon-bg"></canvas>
+    <canvas id="neon-particles"></canvas>
 
     <!-- ===== Header ===== -->
     <header class="header">
         <div class="logo-container">
-            <a href="{{ url_for('home') }}" class="logo-link">
-                <img src="{{ url_for('static', filename='icon/Mp3.png') }}" alt="Logo MP3" class="logo">
-                <h1>Media MP3</h1>
-            </a>
+            <img src="{{ url_for('static', filename='icon/Mp3.png') }}" alt="Logo MP3" class="logo">
+            <h1>Media MP3</h1>
         </div>
-
         <nav class="menu">
             <a href="{{ url_for('home') }}" class="menu-item">🏠 Home</a>
             <button id="theme-toggle" class="theme-toggle" title="Ganti Mode">🌙</button>
@@ -36,8 +31,7 @@
     <!-- ===== Konten Utama ===== -->
     <main class="main-content">
         <div class="player-container">
-            
-            <!-- 🎵 Pemutar Musik -->
+            <!-- Pemutar Musik -->
             <div class="music-player">
                 <div class="now-playing">
                     <div class="visualizer">
@@ -46,7 +40,7 @@
                     <h2 id="now-playing-title">🎵 Pilih lagu untuk diputar</h2>
                 </div>
 
-                <!-- 🎚 Kontrol Pemutar -->
+                <!-- Kontrol Player -->
                 <div class="player-controls">
                     <button id="prev-btn" class="control-btn">⏮</button>
                     <button id="play-btn" class="control-btn play">▶</button>
@@ -56,13 +50,13 @@
                     <button id="repeat-btn" class="control-btn">🔁</button>
                 </div>
 
-                <!-- 🔁 Status Shuffle & Repeat -->
+                <!-- Status Shuffle & Repeat -->
                 <div class="status-indicators">
                     <span id="shuffle-status" class="shuffle-status">Shuffle: Off</span>
                     <span id="repeat-status" class="repeat-status">Repeat: Off</span>
                 </div>
 
-                <!-- 📊 Progress Bar -->
+                <!-- Progress Bar -->
                 <div class="progress-container">
                     <span id="current-time">0:00</span>
                     <div class="progress-bar">
@@ -71,14 +65,14 @@
                     <span id="duration">0:00</span>
                 </div>
 
-                <!-- 🔊 Kontrol Volume -->
+                <!-- Kontrol Volume -->
                 <div class="volume-control">
                     <span>🔊</span>
                     <input type="range" id="volume-slider" min="0" max="100" value="50">
                 </div>
             </div>
 
-            <!-- 📜 Playlist -->
+            <!-- Playlist -->
             <div class="playlist-container">
                 <h3>Daftar Lagu</h3>
                 <div class="playlist" id="playlist">
@@ -90,14 +84,18 @@
                     {% endfor %}
                 </div>
             </div>
-
         </div>
     </main>
+
+    <!-- ===== Footer ===== -->
+    <footer>
+        <p>© {{ current_year }} BAGUS MEDIA SERVER — Dibuat karena kegabutan dengan Python Flask</p>
+    </footer>
 
     <!-- ===== Elemen Audio ===== -->
     <audio id="audio-player"></audio>
 
-    <!-- ===== Script JS ===== -->
+    <!-- ===== Script ===== -->
     <script src="{{ url_for('static', filename='Js/neon-transition.js') }}"></script>
     <script src="{{ url_for('static', filename='Js/mp3.js') }}"></script>
 </body>
