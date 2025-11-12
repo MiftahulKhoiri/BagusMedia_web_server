@@ -21,11 +21,13 @@
         <div class="logo-container">
             <img src="{{ url_for('static', filename='icon/Mp3.png') }}" alt="Logo MP3" class="logo">
             <h1>Media MP3</h1>
+
+            <!-- Menu di bawah logo -->
+            <nav class="menu">
+                <a href="{{ url_for('home') }}" class="menu-item">🏠 Home</a>
+                <button id="theme-toggle" class="theme-toggle" title="Ganti Mode">🌙</button>
+            </nav>
         </div>
-        <nav class="menu">
-            <a href="{{ url_for('home') }}" class="menu-item">🏠 Home</a>
-            <button id="theme-toggle" class="theme-toggle" title="Ganti Mode">🌙</button>
-        </nav>
     </header>
 
     <!-- ===== Konten Utama ===== -->
