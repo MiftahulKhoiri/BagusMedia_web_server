@@ -1,10 +1,12 @@
-// ===== Partikel Neon Reaktif =====
+// ==========================
+// 🌌 Partikel Neon Reaktif
+// ==========================
 const canvas = document.getElementById("neon-bg");
 const ctx = canvas.getContext("2d");
 
 let particles = [];
 const colors = ["#ffcc00", "#00ffff", "#ff00ff", "#ffffff"];
-let globalAlpha = 0; // untuk efek fade-in partikel
+let globalAlpha = 0;
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -42,7 +44,6 @@ function drawParticles() {
         p.x += p.dx;
         p.y += p.dy;
 
-        // Pantulan dari tepi layar
         if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
         if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
     }
@@ -51,17 +52,18 @@ function drawParticles() {
 }
 drawParticles();
 
-// ===== Efek Fade-in Setelah Splash =====
 window.addEventListener("load", () => {
     let opacity = 0;
     const fadeIn = setInterval(() => {
         opacity += 0.02;
         globalAlpha = opacity;
         if (opacity >= 1) clearInterval(fadeIn);
-    }, 40); // durasi sekitar 2 detik
+    }, 40);
 });
 
-// ===== Tombol Menu Mobile =====
+// ==========================
+// 📱 Tombol Menu Mobile
+// ==========================
 const menuToggle = document.getElementById("menu-toggle");
 const menu = document.querySelector(".menu");
 
@@ -72,8 +74,28 @@ if (menuToggle) {
     });
 }
 
-// ===== Efek Hover Neon pada Tombol Dropdown =====
+// ==========================
+// 🔽 Dropdown Menu Klik (Desktop + Mobile)
+// ==========================
 const dropbtn = document.querySelector(".dropbtn");
+const dropdownContent = document.querySelector(".dropdown-content");
+
+// Pastikan dropdown bisa diklik, bukan cuma hover
+if (dropbtn && dropdownContent) {
+    dropbtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdownContent.classList.toggle("show-dropdown");
+    });
+
+    // Tutup dropdown jika klik di luar area
+    window.addEventListener("click", (e) => {
+        if (!dropdownContent.contains(e.target) && e.target !== dropbtn) {
+            dropdownContent.classList.remove("show-dropdown");
+        }
+    });
+}
+
+// Tambahkan efek hover neon
 if (dropbtn) {
     dropbtn.addEventListener("mouseover", () => {
         dropbtn.style.textShadow = "0 0 8px #ffcc00";
@@ -82,21 +104,3 @@ if (dropbtn) {
         dropbtn.style.textShadow = "none";
     });
 }
-
-// ===== Dropdown Klik =====
-const dropdown = document.querySelector(".dropdown");
-const dropBtn = document.querySelector(".dropbtn");
-
-if (dropBtn && dropdown) {
-    dropBtn.addEventListener("click", (e) => {
-        e.stopPropagation(); // cegah event menutup langsung
-        dropdown.classList.toggle("active");
-    });
-}
-
-// Tutup dropdown saat klik di luar area
-document.addEventListener("click", (e) => {
-    if (!dropdown.contains(e.target)) {
-        dropdown.classList.remove("active");
-    }
-});
