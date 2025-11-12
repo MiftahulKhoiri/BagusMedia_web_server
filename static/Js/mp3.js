@@ -1,3 +1,7 @@
+// ==========================
+// 🎧 PEMUTAR MP3 DENGAN PARTIKEL NEON REAKTIF
+// ==========================
+
 const audioPlayer = document.getElementById('audio-player');
 const playBtn = document.getElementById('play-btn');
 const pauseBtn = document.getElementById('pause-btn');
@@ -14,16 +18,14 @@ const volumeSlider = document.getElementById('volume-slider');
 const nowPlayingTitle = document.getElementById('now-playing-title');
 const playlistItems = document.querySelectorAll('.playlist-item');
 const visualizerBars = document.querySelectorAll('.visualizer div');
-const themeToggle = document.getElementById('theme-toggle');
 
 let currentTrackIndex = 0;
 let isShuffle = false;
-let repeatMode = "off"; // off | one | all
+let repeatMode = "off";
 const tracks = Array.from(playlistItems);
-let audioContext, analyser, dataArray, source;
 
 // ==========================
-// 🎵 FUNGSI DASAR
+// 🔊 FUNGSI PEMUTARAN DASAR
 // ==========================
 function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
@@ -38,129 +40,86 @@ function loadTrack(index) {
     const trackSrc = track.getAttribute('data-src');
     const trackName = track.querySelector('.track-name').textContent;
 
-    // Fade-out sebelum ganti lagu
-    fadeOutAudio(() => {
-        audioPlayer.src = trackSrc;
-        nowPlayingTitle.textContent = "🎧 " + trackName;
-        progress.style.width = '0%';
-        currentTimeEl.textContent = '0:00';
-        tracks.forEach(item => item.classList.remove('active'));
-        track.classList.add('active');
+    audioPlayer.src = trackSrc;
+    nowPlayingTitle.textContent = "🎧 " + trackName;
 
-        audioPlayer.addEventListener('loadedmetadata', () => {
-            durationEl.textContent = formatTime(audioPlayer.duration);
-        }, { once: true });
+    progress.style.width = '0%';
+    currentTimeEl.textContent = '0:00';
 
-        fadeInAudio();
-        playTrack();
-    });
+    tracks.forEach(item => item.classList.remove('active'));
+    track.classList.add('active');
+
+    audioPlayer.addEventListener('loadedmetadata', () => {
+        durationEl.textContent = formatTime(audioPlayer.duration);
+    }, { once: true });
+
+    pauseTrack();
 }
 
-// ==========================
-// ▶️ KONTROL PLAYBACK
-// ==========================
 function playTrack() {
     audioPlayer.play();
     playBtn.style.display = 'none';
     pauseBtn.style.display = 'inline-block';
-    initVisualizer();
-    document.body.classList.add('glow-active');
+    visualizerBars.forEach(bar => bar.style.animationPlayState = 'running');
 }
 
 function pauseTrack() {
     audioPlayer.pause();
     playBtn.style.display = 'inline-block';
     pauseBtn.style.display = 'none';
-    document.body.classList.remove('glow-active');
+    visualizerBars.forEach(bar => bar.style.animationPlayState = 'paused');
 }
 
-// Fade in/out volume untuk transisi halus
-function fadeOutAudio(callback) {
-    const fadeInterval = setInterval(() => {
-        if (audioPlayer.volume > 0.1) {
-            audioPlayer.volume -= 0.1;
-        } else {
-            audioPlayer.volume = 0;
-            clearInterval(fadeInterval);
-            if (callback) callback();
-        }
-    }, 50);
-}
-
-function fadeInAudio() {
-    audioPlayer.volume = 0;
-    const fadeInterval = setInterval(() => {
-        if (audioPlayer.volume < volumeSlider.value / 100) {
-            audioPlayer.volume += 0.1;
-        } else {
-            clearInterval(fadeInterval);
-        }
-    }, 50);
-}
-
-// ==========================
-// ⏩ NAVIGASI LAGU
-// ==========================
 function nextTrack() {
     if (isShuffle) {
-        let nextIndex;
-        do {
-            nextIndex = Math.floor(Math.random() * tracks.length);
-        } while (nextIndex === currentTrackIndex && tracks.length > 1);
-        currentTrackIndex = nextIndex;
+        currentTrackIndex = Math.floor(Math.random() * tracks.length);
     } else {
         currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
     }
     loadTrack(currentTrackIndex);
+    playTrack();
 }
 
 function prevTrack() {
     currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
     loadTrack(currentTrackIndex);
+    playTrack();
 }
 
 // ==========================
-// 🔊 EVENT HANDLER
+// 🎛️ EVENT KONTROL
 // ==========================
 playBtn.addEventListener('click', playTrack);
 pauseBtn.addEventListener('click', pauseTrack);
 nextBtn.addEventListener('click', nextTrack);
 prevBtn.addEventListener('click', prevTrack);
 
-// Volume kontrol
 volumeSlider.addEventListener('input', function() {
     audioPlayer.volume = this.value / 100;
 });
 
-// Shuffle
 shuffleBtn.addEventListener('click', () => {
     isShuffle = !isShuffle;
-    shuffleBtn.style.background = isShuffle ? '#00aaff' : '#00e1ff';
     shuffleStatus.textContent = `Shuffle: ${isShuffle ? 'On' : 'Off'}`;
-    shuffleStatus.style.color = isShuffle ? '#00aaff' : '#ccc';
+    shuffleStatus.style.color = isShuffle ? '#00ffff' : '#ccc';
 });
 
-// Repeat
 repeatBtn.addEventListener('click', () => {
     if (repeatMode === "off") {
         repeatMode = "one";
-        repeatBtn.textContent = "🔂";
         repeatStatus.textContent = "Repeat: One";
-        repeatStatus.style.color = "#00aaff";
+        repeatStatus.style.color = "#00ffff";
     } else if (repeatMode === "one") {
         repeatMode = "all";
-        repeatBtn.textContent = "🔁";
         repeatStatus.textContent = "Repeat: All";
-        repeatStatus.style.color = "#00d0ff";
+        repeatStatus.style.color = "#00ffff";
     } else {
         repeatMode = "off";
-        repeatBtn.textContent = "🔁";
         repeatStatus.textContent = "Repeat: Off";
         repeatStatus.style.color = "#ccc";
     }
 });
 
-// Progress bar
 audioPlayer.addEventListener('timeupdate', function() {
     const currentTime = audioPlayer.currentTime;
     const duration = audioPlayer.duration;
@@ -178,32 +137,38 @@ document.querySelector('.progress-bar').addEventListener('click', function(e) {
     audioPlayer.currentTime = seekTime;
 });
 
-// Lagu selesai
 audioPlayer.addEventListener('ended', function() {
     if (repeatMode === "one") {
         playTrack();
     } else if (repeatMode === "all") {
-        nextTrack();
+        currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+        loadTrack(currentTrackIndex);
+        playTrack();
     } else {
         nextTrack();
     }
 });
 
-// Playlist klik
 playlistItems.forEach((item, index) => {
     item.querySelector('.play-track').addEventListener('click', function() {
         loadTrack(index);
+        playTrack();
     });
 });
 
+if (tracks.length > 0) loadTrack(0);
+
 // ==========================
-// 🌙 MODE GELAP OTOMATIS
+// 🌙 MODE MALAM OTOMATIS
 // ==========================
+const themeToggle = document.getElementById('theme-toggle');
 const currentHour = new Date().getHours();
+
 if (currentHour >= 18 || currentHour < 6) {
     document.body.classList.add('dark-mode');
     themeToggle.textContent = "☀️";
 }
+
 themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
@@ -211,72 +176,85 @@ themeToggle.addEventListener('click', () => {
 });
 
 // ==========================
-// 💡 VISUALIZER AUDIO
+// 🌈 PARTIKEL NEON REAKTIF
 // ==========================
-function initVisualizer() {
-    if (!audioContext) {
-        audioContext = new AudioContext();
-        source = audioContext.createMediaElementSource(audioPlayer);
-        analyser = audioContext.createAnalyser();
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
-        analyser.fftSize = 64;
-        const bufferLength = analyser.frequencyBinCount;
-        dataArray = new Uint8Array(bufferLength);
+const canvas = document.getElementById('neon-particles');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-        function renderFrame() {
-            requestAnimationFrame(renderFrame);
-            analyser.getByteFrequencyData(dataArray);
-            visualizerBars.forEach((bar, i) => {
-                const value = dataArray[i % bufferLength];
-                const height = Math.max(2, value / 4);
-                bar.style.height = `${height}px`;
-            });
-        }
-        renderFrame();
+let particles = [];
+const numParticles = 120;
+
+class Particle {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.speedY = (Math.random() - 0.5) * 0.3;
+        this.color = "rgba(0,255,255,0.3)";
+    }
+
+    update(energy) {
+        this.x += this.speedX * (1 + energy / 150);
+        this.y += this.speedY * (1 + energy / 150);
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
     }
 }
 
-// ==========================
-// ⏯ INIT AWAL
-// ==========================
-if (tracks.length > 0) {
-    loadTrack(0);
+for (let i = 0; i < numParticles; i++) {
+    particles.push(new Particle());
 }
 
-// ==========================
-// 🌌 EFEK PARTIKEL NEON
-// ==========================
-const neonBackground = document.getElementById('neon-background');
+let audioCtx, analyser, dataArray;
 
-function createNeonParticle() {
-    const particle = document.createElement('div');
-    particle.classList.add('neon-particle');
-    const size = Math.random() * 6 + 4; // ukuran 4-10px
-    particle.style.width = `${size}px`;
-    particle.style.height = `${size}px`;
-    particle.style.left = `${Math.random() * 100}%`;
-    particle.style.top = `${Math.random() * 100}%`;
-    particle.style.animationDuration = `${8 + Math.random() * 10}s`;
-
-    // Variasi warna neon
-    const colors = [
-        "rgba(0, 255, 255, 0.9)",
-        "rgba(0, 200, 255, 0.9)",
-        "rgba(0, 150, 255, 0.9)",
-        "rgba(100, 255, 255, 0.8)",
-        "rgba(0, 255, 200, 0.9)"
-    ];
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    particle.style.background = `radial-gradient(circle, ${randomColor}, transparent)`;
-
-    neonBackground.appendChild(particle);
-
-    // Hapus partikel setelah selesai animasi
-    setTimeout(() => {
-        particle.remove();
-    }, 15000);
+function initAudioAnalyser() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioCtx.createMediaElementSource(audioPlayer);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        const bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+    }
 }
 
-// Buat partikel baru secara berkala
-setInterval(createNeonParticle, 500);
+function animateParticles() {
+    requestAnimationFrame(animateParticles);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let energy = 0;
+    if (analyser) {
+        analyser.getByteFrequencyData(dataArray);
+        energy = dataArray.slice(0, 40).reduce((a, b) => a + b, 0) / 40;
+    }
+
+    const hue = 180 + energy / 5;
+    particles.forEach(p => {
+        p.color = `hsla(${hue}, 100%, 60%, ${0.2 + energy / 300})`;
+        p.update(energy);
+        p.draw();
+    });
+}
+
+animateParticles();
+
+audioPlayer.addEventListener('play', () => {
+    initAudioAnalyser();
+});
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
