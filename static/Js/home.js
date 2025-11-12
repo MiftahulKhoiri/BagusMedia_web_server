@@ -4,6 +4,7 @@ const ctx = canvas.getContext("2d");
 
 let particles = [];
 const colors = ["#ffcc00", "#00ffff", "#ff00ff", "#ffffff"];
+let globalAlpha = 0; // untuk efek fade-in
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -26,8 +27,11 @@ function createParticles(count) {
 }
 createParticles(120);
 
+// ===== Animasi Partikel =====
 function drawParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = globalAlpha;
+
     for (let p of particles) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
@@ -42,15 +46,39 @@ function drawParticles() {
         if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
         if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
     }
+
     requestAnimationFrame(drawParticles);
 }
 drawParticles();
+
+// ===== Fade-in Partikel Setelah Splash =====
+window.addEventListener("load", () => {
+    let opacity = 0;
+    const fadeIn = setInterval(() => {
+        opacity += 0.02;
+        globalAlpha = opacity;
+        if (opacity >= 1) clearInterval(fadeIn);
+    }, 40); // durasi sekitar 2 detik
+});
 
 // ===== Tombol Menu Mobile =====
 const menuToggle = document.getElementById("menu-toggle");
 const menu = document.querySelector(".menu");
 
-menuToggle.addEventListener("click", () => {
-    menu.classList.toggle("show");
-    menuToggle.textContent = menu.classList.contains("show") ? "✕" : "☰";
-});
+if (menuToggle) {
+    menuToggle.addEventListener("click", () => {
+        menu.classList.toggle("show");
+        menuToggle.textContent = menu.classList.contains("show") ? "✕" : "☰";
+    });
+}
+
+// ===== Efek Hover Neon pada Tombol Dropdown =====
+const dropbtn = document.querySelector(".dropbtn");
+if (dropbtn) {
+    dropbtn.addEventListener("mouseover", () => {
+        dropbtn.style.textShadow = "0 0 8px #ffcc00";
+    });
+    dropbtn.addEventListener("mouseout", () => {
+        dropbtn.style.textShadow = "none";
+    });
+}
