@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Pengguna - BAGUS MEDIA SERVER</title>
+
+    <!-- Link CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+
+    <!-- Ikon -->
+    <link rel="icon" href="{{ url_for('static', filename='icon/icon.png') }}">
+</head>
+<body>
+    <!-- Latar Partikel Neon -->
+    <canvas id="neon-bg"></canvas>
+
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <a href="{{ url_for('home') }}" class="logo-link">
+                <img src="{{ url_for('static', filename='icon/icon.png') }}" alt="Logo" class="logo">
+                <h1>Profil Pengguna</h1>
+            </a>
+        </div>
+
+        <!-- Tombol Menu Mobile -->
+        <button id="menu-toggle" class="menu-toggle">☰</button>
+
+        <!-- Menu -->
+        <nav class="menu">
+            <div class="dropdown">
+                <button class="dropbtn">Menu ▼</button>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('home') }}">Home</a>
+                    <a href="{{ url_for('upload') }}">Upload</a>
+                    <a href="{{ url_for('update') }}">Update</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Konten Utama -->
+    <main class="main-content">
+        <div class="profile-container">
+            <div class="profile-card">
+                <img src="{{ url_for('static', filename='icon/profile.png') }}" alt="User" class="profile-avatar">
+                <h2>Nama Pengguna</h2>
+                <p>Email: pengguna@contoh.com</p>
+                <p>Status: Aktif</p>
+                <p>Bergabung sejak: {{ current_year }}</p>
+
+                <a href="{{ url_for('home') }}" class="back-btn">← Kembali ke Home</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>© {{ current_year }} BAGUS MEDIA SERVER — Semua hak cipta dilindungi</p>
+    </footer>
+
+    <!-- Script JS -->
+    <script src="{{ url_for('static', filename='Js/home.js') }}"></script>
+</body>
+</html>
