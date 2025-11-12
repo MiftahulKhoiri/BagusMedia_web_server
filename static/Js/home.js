@@ -4,7 +4,7 @@ const ctx = canvas.getContext("2d");
 
 let particles = [];
 const colors = ["#ffcc00", "#00ffff", "#ff00ff", "#ffffff"];
-let globalAlpha = 0; // untuk efek fade-in
+let globalAlpha = 0; // untuk efek fade-in partikel
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -27,7 +27,6 @@ function createParticles(count) {
 }
 createParticles(120);
 
-// ===== Animasi Partikel =====
 function drawParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.globalAlpha = globalAlpha;
@@ -43,6 +42,7 @@ function drawParticles() {
         p.x += p.dx;
         p.y += p.dy;
 
+        // Pantulan dari tepi layar
         if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
         if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
     }
@@ -51,7 +51,7 @@ function drawParticles() {
 }
 drawParticles();
 
-// ===== Fade-in Partikel Setelah Splash =====
+// ===== Efek Fade-in Setelah Splash =====
 window.addEventListener("load", () => {
     let opacity = 0;
     const fadeIn = setInterval(() => {
