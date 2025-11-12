@@ -328,3 +328,28 @@ footer {
         transform: translateY(0);
     }
 }
+
+/* ===== Input dan Tombol di Profil ===== */
+.edit-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.edit-section input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background: rgba(30,30,30,0.8);
+    color: white;
+    text-align: center;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.edit-section input:focus {
+    border-color: #ffcc00;
+    box-shadow: 0 0 8px #ffcc00;
+}
