@@ -82,3 +82,21 @@ if (dropbtn) {
         dropbtn.style.textShadow = "none";
     });
 }
+
+// ===== Dropdown Klik =====
+const dropdown = document.querySelector(".dropdown");
+const dropBtn = document.querySelector(".dropbtn");
+
+if (dropBtn && dropdown) {
+    dropBtn.addEventListener("click", (e) => {
+        e.stopPropagation(); // cegah event menutup langsung
+        dropdown.classList.toggle("active");
+    });
+}
+
+// Tutup dropdown saat klik di luar area
+document.addEventListener("click", (e) => {
+    if (!dropdown.contains(e.target)) {
+        dropdown.classList.remove("active");
+    }
+});
