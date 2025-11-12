@@ -353,3 +353,18 @@ footer {
     border-color: #ffcc00;
     box-shadow: 0 0 8px #ffcc00;
 }
+
+/* ===== FIX: Dropdown klik bisa digunakan ===== */
+header, nav.menu, .dropdown, .dropdown-content {
+    position: relative;
+    z-index: 9999;
+}
+
+.dropdown-content {
+    pointer-events: auto;
+}
+
+.dropdown-content a {
+    position: relative;
+    z-index: 10000;
+}
