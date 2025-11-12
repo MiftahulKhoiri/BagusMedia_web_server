@@ -368,3 +368,14 @@ header, nav.menu, .dropdown, .dropdown-content {
     position: relative;
     z-index: 10000;
 }
+
+/* ===== FIX: Dropdown klik berfungsi ===== */
+.dropdown-content {
+    display: none;
+}
+
+.dropdown.active .dropdown-content {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
