@@ -1,4 +1,25 @@
-/* ✨ BACKGROUND CYBER NEON GREEN ✨ */
+/* 🔥 BACKGROUND CYBER NEON GALAXY */
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #000;
+    color: white;
+}
+
+/* CANVAS NEON BACKGROUND */
+#neon-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* 🎯 CENTER CONTAINER */
 .center-box {
     position: fixed;
     top: 50%;
@@ -9,70 +30,52 @@
     justify-content: center;
     z-index: 5;
 }
-body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: Arial, Helvetica, sans-serif;
-    color: white;
-    background: radial-gradient(circle at 30% 30%, #0a0a0a, #000);
+
+/* 🟢 LOGIN CARD */
+.login-card {
+    width: 90%;
+    max-width: 340px;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    background: rgba(0, 30, 0, 0.5);
+    border: 1px solid rgba(0,255,120,0.3);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 20px rgba(0,255,120,0.3);
+    position: relative;
     overflow: hidden;
 }
 
-/* ✨ LAPISAN NEON GLOW YANG BERGERAK */
-body::before,
-body::after {
+/* NEON BORDER BERGERAK */
+.login-card::before {
     content: "";
     position: absolute;
-    width: 400px;
-    height: 400px;
-    background: rgba(0, 255, 100, 0.15);
-    filter: blur(120px);
-    animation: float 8s infinite alternate ease-in-out;
-}
-
-body::before {
-    top: -80px;
-    left: -80px;
-}
-
-body::after {
-    bottom: -80px;
-    right: -80px;
-    animation-delay: 2s;
-}
-
-/* ✨ Animasi neon */
-@keyframes float {
-    0% { transform: translate(0, 0); opacity: 0.5; }
-    100% { transform: translate(40px, 40px); opacity: 1; }
-}
-
-/* ✨ CARD LOGIN NEON */
-.login-card {
-    width: 90%;
-    max-width: 400px;
-    background: rgba(20, 40, 20, 0.8);
-    padding: 30px;
+    inset: -3px;
     border-radius: 15px;
-    box-shadow: 0 0 25px rgba(0, 255, 80, 0.4);
-    border: 1px solid rgba(0, 255, 80, 0.25);
-    backdrop-filter: blur(12px);
-    text-align: center;
-    position: relative;
-    z-index: 2;
+    background: conic-gradient(
+        rgba(0,255,100,0.4),
+        rgba(0,200,255,0.4),
+        rgba(180,0,255,0.4),
+        rgba(0,255,100,0.4)
+    );
+    filter: blur(18px);
+    z-index: -1;
+    animation: neonRotate 6s linear infinite;
 }
 
-h2 {
-    margin-bottom: 25px;
-    font-size: 26px;
-    text-shadow: 0 0 8px rgba(0, 255, 120, 0.5);
+@keyframes neonRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-/* ✨ Input */
+/* JUDUL */
+.login-card h2 {
+    margin-bottom: 18px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* INPUT */
 .input-group {
     margin-bottom: 15px;
     position: relative;
@@ -80,139 +83,53 @@ h2 {
 
 input {
     width: 100%;
-    padding: 14px 12px;
-    background: #0a0f0a;
-    border: 1px solid #1c3;
+    padding: 12px;
     border-radius: 8px;
-    color: #baffd0;
-    font-size: 16px;
-    box-shadow: inset 0 0 10px rgba(0, 255, 80, 0.2);
+    border: none;
+    background: rgba(0,0,0,0.7);
+    color: #ccffdd;
+    font-size: 14px;
+    border: 1px solid rgba(0,255,120,0.3);
 }
 
 input:focus {
     outline: 2px solid #00ff80;
 }
 
-/* ✨ SHOW / HIDE PASSWORD */
-.password-group .toggle-password {
+/* SHOW / HIDE PASSWORD */
+.toggle-password {
     position: absolute;
     right: 12px;
-    top: 14px;
+    top: 12px;
     cursor: pointer;
-    font-size: 18px;
     opacity: 0.7;
-    color: #00ff80;
-}
-
-.password-group .toggle-password:hover {
-    opacity: 1;
-}
-
-/* ✨ Tombol Login */
-button {
-    width: 100%;
-    padding: 14px;
-    background: #00ff80;
-    border: none;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #003315;
-    cursor: pointer;
-    margin-top: 10px;
-    box-shadow: 0 0 15px rgba(0, 255, 80, 0.5);
-    transition: 0.3s;
-}
-
-button:hover {
-    background: #00cc66;
-    transform: scale(1.03);
-}
-
-a {
-    color: #00ff99;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-.link {
-    margin-top: 15px;
-}
-
-/* Memastikan canvas neon selalu di belakang */
-#neon-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-}
-
-/* Memastikan login-card selalu di tengah */
-.login-card {
-    position: relative;
-    z-index: 10;           /* berada di atas canvas */
-    margin: auto;
-}
-
-/* Fix khusus untuk tampilan HP */
-@media (max-width: 600px) {
-    .login-card {
-        width: 90%;
-        max-width: 350px;
-    }
-}
-
-/* ✨ Border neon hidup mengelilingi login card */
-.login-card::before {
-    content: "";
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    border-radius: 15px;
-    background: linear-gradient(120deg,
-        rgba(0,255,120,0.2),
-        rgba(0,255,80,0.8),
-        rgba(0,255,140,0.2)
-    );
-    z-index: -1;
-    filter: blur(15px);
-    animation: neonMove 6s linear infinite;
-}
-
-/* ✨ Animasi neon berjalan mengelilingi card */
-@keyframes neonMove {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* 🟢 PERKECIL CARD LOGIN AGAR PAS DI HP */
-.login-card {
-    max-width: 340px;
-    padding: 20px;
-    border-radius: 12px;
-}
-
-/* Perkecil input */
-.login-card input {
-    padding: 10px 12px;
-    font-size: 14px;
-}
-
-/* Perkecil tombol */
-.login-card button {
-    padding: 12px;
     font-size: 16px;
 }
 
-/* Perkecil judul */
-.login-card h2 {
-    font-size: 22px;
-    margin-bottom: 15px;
+/* BUTTON */
+button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background: #00ff80;
+    color: #002a12;
+    border: none;
+    font-weight: bold;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: scale(1.04);
+    background: #00dd66;
+}
+
+/* LINK */
+.link {
+    margin-top: 10px;
+}
+
+.link a {
+    color: #00ffaa;
 }
