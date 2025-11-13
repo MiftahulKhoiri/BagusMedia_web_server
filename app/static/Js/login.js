@@ -1,12 +1,9 @@
-// ==============================
-// 🌟 ANIMASI NEON BERGERAK
-// ==============================
-
-// Ambil canvas
+// =======================================
+// 🌌 ANIMASI GALAKSI NEON
+// =======================================
 const canvas = document.getElementById("neon-bg");
 const ctx = canvas.getContext("2d");
 
-// Sesuaikan ukuran canvas
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -14,16 +11,16 @@ function resizeCanvas() {
 resizeCanvas();
 window.onresize = resizeCanvas;
 
-// Animasi titik neon
+// PARTIKEL NEON
 let particles = [];
 
-for (let i = 0; i < 90; i++) {
+for (let i = 0; i < 80; i++) {
     particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         size: Math.random() * 3 + 1,
-        speedX: Math.random() * 1 - 0.5,
-        speedY: Math.random() * 1 - 0.5
+        speedX: Math.random() * 1.4 - 0.7,  // lebih cepat
+        speedY: Math.random() * 1.4 - 0.7
     });
 }
 
@@ -31,11 +28,19 @@ function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     particles.forEach(p => {
+        const neonColors = [
+            { fill:"rgba(0,255,100,0.35)", glow:"#00ff80" },  // hijau
+            { fill:"rgba(0,200,255,0.35)", glow:"#00eaff" }, // biru
+            { fill:"rgba(180,0,255,0.35)", glow:"#d400ff" }  // ungu
+        ];
+
+        const c = neonColors[Math.floor(Math.random() * neonColors.length)];
+
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(0,255,100,0.25)";
-        ctx.shadowColor = "#00ff80";
-        ctx.shadowBlur = 30;
+        ctx.fillStyle = c.fill;
+        ctx.shadowColor = c.glow;
+        ctx.shadowBlur = 20;
         ctx.fill();
 
         p.x += p.speedX;
@@ -49,15 +54,12 @@ function animate() {
 
     requestAnimationFrame(animate);
 }
-
 animate();
 
-
-// ==============================
+// =======================================
 // 🔒 SHOW / HIDE PASSWORD
-// ==============================
-
+// =======================================
 function togglePassword() {
-    const pwd = document.getElementById("password");
+    let pwd = document.getElementById("password");
     pwd.type = pwd.type === "password" ? "text" : "password";
 }
