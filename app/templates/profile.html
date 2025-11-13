@@ -5,43 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Pengguna - BAGUS MEDIA SERVER</title>
 
+    <!-- Memanggil CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+
+    <!-- Ikon browser -->
     <link rel="icon" href="{{ url_for('static', filename='icon/profil/laki-laki.png') }}">
 </head>
 <body>
+
+    <!-- ✨ BACKGROUND NEON ANIMATED -->
     <canvas id="neon-bg"></canvas>
 
+    <!-- ✨ HEADER DENGAN TOMBOL LOGOUT -->
     <header>
-        <div class="logo-container">
-            <a href="{{ url_for('home') }}" class="logo-link">
-                <img src="{{ url_for('static', filename='icon/icon.png') }}" class="logo">
-                <h1>Profil Pengguna</h1>
-            </a>
+        <div class="header-content">
+
+            <!-- Kembali ke halaman Home -->
+            <a href="/home" class="back-btn">⬅ Home</a>
+
+            <!-- Judul Profil -->
+            <h1>Profil Pengguna</h1>
+
+            <!-- Tombol Logout -->
+            <a href="/logout" class="logout-btn">Logout</a>
+
         </div>
     </header>
 
+    <!-- ✨ KARTU PROFIL -->
     <main>
         <div class="profile-card">
-            <img id="profile-photo" src="{{ profile.foto or url_for('static', filename='icon/profile.png') }}" alt="Foto Profil">
+
+            <!-- Foto Profil -->
+            <img id="profile-photo" 
+                 src="{{ profile.foto or url_for('static', filename='icon/profile.png') }}" 
+                 alt="Foto Profil">
+
+            <!-- Input File untuk upload foto -->
             <input type="file" id="photo-input" accept="image/*">
 
+            <!-- Input Nama -->
             <label>Nama Lengkap:</label>
-            <input type="text" id="nama" value="{{ profile.nama }}" placeholder="Masukkan nama lengkap" readonly>
+            <input type="text" id="nama" value="{{ profile.nama }}" readonly>
 
+            <!-- Input Email -->
             <label>Email:</label>
-            <input type="email" id="email" value="{{ profile.email }}" placeholder="Masukkan email" readonly>
+            <input type="email" id="email" value="{{ profile.email }}" readonly>
 
+            <!-- Input Bio -->
             <label>Bio:</label>
-            <textarea id="bio" placeholder="Tuliskan sesuatu tentang dirimu..." readonly>{{ profile.bio }}</textarea>
+            <textarea id="bio" readonly>{{ profile.bio }}</textarea>
 
+            <!-- Tombol Edit / Simpan -->
             <button id="edit-btn">Edit Profil</button>
         </div>
     </main>
 
+    <!-- ✨ FOOTER -->
     <footer>
         <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
     </footer>
 
-    <script src="{{ url_for('static', filename='Js/profile.js') }}"></script>
+    <!-- Memanggil file JavaScript -->
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+
 </body>
 </html>
