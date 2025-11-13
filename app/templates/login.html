@@ -2,39 +2,39 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk - BAGUS MEDIA SERVER</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 </head>
-<body>
+
 <body>
 
-    <!-- Background neon bergerak -->
+    <!-- Background neon -->
     <canvas id="neon-bg"></canvas>
 
-<div class="container-login">
-    <div class="login-card">
- </div>
-</div>
-    <h2>Masuk</h2>
+    <!-- CENTER CONTAINER -->
+    <div class="center-box">
+        <div class="login-card">
+            <h2>Masuk</h2>
 
-    <form method="POST" action="/login">
-        <div class="input-group">
-            <input type="text" name="username" placeholder="Username" required>
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Username">
+            </div>
+
+            <div class="input-group password-group">
+                <input type="password" id="password" placeholder="Password">
+                <span class="toggle-password" onclick="togglePassword()">👁️</span>
+            </div>
+
+            <button onclick="submitLogin()">Masuk</button>
+
+            <p class="link">Belum punya akun?  
+                <a href="/register">Daftar</a>
+            </p>
         </div>
+    </div>
 
-        <div class="input-group password-group">
-            <input type="password" id="password" name="password" placeholder="Password" required>
-            <span class="toggle-password" onclick="togglePassword()">👁️</span>
-        </div>
-
-        <button type="submit">Masuk</button>
-    </form>
-
-    <p class="link">
-        Belum punya akun? <a href="/register">Daftar</a>
-    </p>
-</div>
-
-<script src="{{ url_for('static', filename='Js/login.js') }}"></script>
+    <script src="{{ url_for('static', filename='Js/login.js') }}"></script>
 </body>
 </html>
