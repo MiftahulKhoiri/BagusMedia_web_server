@@ -22,8 +22,8 @@ for (let i = 0; i < 90; i++) {
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         size: Math.random() * 3 + 1,
-        speedX: Math.random() * 0.6 - 0.3,
-        speedY: Math.random() * 0.6 - 0.3
+        speedX: Math.random() * 1 - 0.5,
+        speedY: Math.random() * 1 - 0.5
     });
 }
 
