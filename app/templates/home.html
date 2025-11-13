@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAGUS MEDIA SERVER</title>
+
+    <!-- Link CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+
+    <!-- Ikon tab browser -->
+    <link rel="icon" href="{{ url_for('static', filename='icon/icon.png') }}">
+
+    <!-- Neon Transition CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/neon-transition.css') }}">
+</head>
+<body>
+    <!-- ===== Kanvas Partikel ===== -->
+    <canvas id="neon-bg"></canvas>
+
+    <!-- ===== Header ===== -->
+    <header>
+        <div class="logo-container">
+            <a href="{{ url_for('home') }}" class="logo-link">
+                <img src="{{ url_for('static', filename='icon/icon.png') }}" alt="Logo" class="logo">
+                <h1>BAGUS MEDIA SERVER</h1>
+            </a>
+
+            <!-- ===== Navigasi Langsung di bawah Logo ===== -->
+            <nav class="menu">
+                <a href="{{ url_for('profile') }}">Profil</a>
+                <a href="{{ url_for('upload') }}">Upload</a>
+                <a href="{{ url_for('update') }}">Update</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===== Konten Utama ===== -->
+    <main class="main-content">
+        <div class="media-options">
+            <a href="{{ url_for('mp3_player') }}" class="media-option">
+                <div class="option-icon">
+                    <img src="{{ url_for('static', filename='icon/Mp3.png') }}" alt="MP3 Player">
+                </div>
+                <h2>Pemutar Musik</h2>
+                <p>Nikmati pengalaman mendengarkan musik dengan antarmuka sederhana dan elegan.</p>
+            </a>
+
+            <a href="{{ url_for('video_player') }}" class="media-option">
+                <div class="option-icon">
+                    <img src="{{ url_for('static', filename='icon/Video.png') }}" alt="Video Player">
+                </div>
+                <h2>Pemutar Video</h2>
+                <p>Tonton video favorit Anda dengan tampilan modern dan performa ringan.</p>
+            </a>
+        </div>
+    </main>
+
+    <!-- ===== Footer ===== -->
+    <footer>
+        <p>© {{ current_year }} BAGUS MEDIA SERVER — Dibuat karena kegabutan dengan Python Flask</p>
+    </footer>
+
+    <!-- ===== Script JS ===== -->
+    <script src="{{ url_for('static', filename='Js/neon-home.js') }}"></script>
+    <script src="{{ url_for('static', filename='Js/home.js') }}"></script>
+</body>
+</html>

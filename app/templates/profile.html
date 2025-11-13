@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Pengguna - BAGUS MEDIA SERVER</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='icon/profil/laki-laki.png') }}">
+</head>
+<body>
+    <canvas id="neon-bg"></canvas>
+
+    <header>
+        <div class="logo-container">
+            <a href="{{ url_for('home') }}" class="logo-link">
+                <img src="{{ url_for('static', filename='icon/icon.png') }}" class="logo">
+                <h1>Profil Pengguna</h1>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <div class="profile-card">
+            <img id="profile-photo" src="{{ profile.foto or url_for('static', filename='icon/profile.png') }}" alt="Foto Profil">
+            <input type="file" id="photo-input" accept="image/*">
+
+            <label>Nama Lengkap:</label>
+            <input type="text" id="nama" value="{{ profile.nama }}" placeholder="Masukkan nama lengkap" readonly>
+
+            <label>Email:</label>
+            <input type="email" id="email" value="{{ profile.email }}" placeholder="Masukkan email" readonly>
+
+            <label>Bio:</label>
+            <textarea id="bio" placeholder="Tuliskan sesuatu tentang dirimu..." readonly>{{ profile.bio }}</textarea>
+
+            <button id="edit-btn">Edit Profil</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='Js/profile.js') }}"></script>
+</body>
+</html>

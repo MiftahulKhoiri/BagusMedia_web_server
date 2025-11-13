@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Media - BAGUS MEDIA SERVER</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}">
+    <!-- Neon Transition -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/neon-transition.css') }}">
+    <script src="{{ url_for('static', filename='Js/neon-transition.js') }}"></script>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='icon/icon.png') }}" alt="Logo" class="logo">
+            <h1>Upload Media</h1>
+        </div>
+        <nav class="menu">
+                        <a href="/" class="menu-item">🏠 Home</a>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="upload-container">
+            <div class="upload-area" id="upload-area">
+                <div class="upload-icon">📁</div>
+                <h2>Seret file ke sini atau klik untuk memilih</h2>
+                <p>Unggah file video atau audio (MP4, AVI, MKV, MOV, WMV, MP3, WAV, OGG)</p>
+                <input type="file" id="file-input" multiple accept=".mp4,.avi,.mkv,.mov,.wmv,.mp3,.wav,.ogg">
+            </div>
+
+            <div class="upload-progress-container">
+                <h3>Progress Upload</h3>
+                <div id="upload-progress-list"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const progressList = document.getElementById('upload-progress-list');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', e => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+        uploadArea.addEventListener('drop', e => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            handleFiles(e.dataTransfer.files);
+        });
+        fileInput.addEventListener('change', e => handleFiles(e.target.files));
+
+        // Fungsi utama untuk handle file
+        function handleFiles(files) {
+            if (files.length === 0) return;
+
+            const fileArray = Array.from(files);
+            progressList.innerHTML = ''; // reset daftar upload
+
+            // Buat progress bar untuk setiap file
+            fileArray.forEach(file => {
+                const progressItem = createProgressItem(file.name);
+                progressList.appendChild(progressItem);
+            });
+
+            // Upload satu per satu
+            uploadSequentially(fileArray);
+        }
+
+        // Buat elemen progress item
+        function createProgressItem(filename) {
+            const progressItem = document.createElement('div');
+            progressItem.className = 'progress-item';
+            progressItem.innerHTML = `
+                <div class="progress-info">
+                    <span class="filename">${filename}</span>
+                    <span class="status">Menunggu...</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            `;
+            return progressItem;
+        }
+
+        // Upload berurutan
+        async function uploadSequentially(files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const progressItem = progressList.children[i];
+                const status = progressItem.querySelector('.status');
+                const fill = progressItem.querySelector('.progress-fill');
+
+                status.textContent = 'Mengupload...';
+                await uploadSingleFile(file, fill, status);
+            }
+
+            fileInput.value = '';
+        }
+
+        // Upload satu file saja
+        function uploadSingleFile(file, fill, status) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                const formData = new FormData();
+                formData.append('files', file);
+
+                xhr.upload.addEventListener('progress', e => {
+                    if (e.lengthComputable) {
+                        const percent = (e.loaded / e.total) * 100;
+                        fill.style.width = percent + '%';
+                        status.textContent = `Mengupload... ${percent.toFixed(1)}%`;
+                    }
+                });
+
+                xhr.addEventListener('load', () => {
+                    if (xhr.status === 200) {
+                        const res = JSON.parse(xhr.responseText);
+                        const result = res.results ? res.results[0] : { status: 'success' };
+                        if (result.status === 'success') {
+                            fill.classList.add('success');
+                            status.textContent = 'Berhasil!';
+                            status.classList.add('success');
+                        } else {
+                            fill.classList.add('error');
+                            status.textContent = result.message || 'Gagal upload.';
+                            status.classList.add('error');
+                        }
+                        resolve();
+                    } else {
+                        fill.classList.add('error');
+                        status.textContent = 'Gagal upload (Server Error)';
+                        status.classList.add('error');
+                        resolve();
+                    }
+                });
+
+                xhr.addEventListener('error', () => {
+                    fill.classList.add('error');
+                    status.textContent = 'Kesalahan jaringan.';
+                    status.classList.add('error');
+                    resolve();
+                });
+
+                xhr.open('POST', '/api/upload');
+                xhr.send(formData);
+            });
+        }
+    </script>
+    <script src="{{ url_for('static', filename='Js/upload.js') }}"></script>
+</body>
+</html> 
