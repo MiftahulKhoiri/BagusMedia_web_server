@@ -17,7 +17,7 @@ window.onresize = resizeCanvas;
 // Animasi titik neon
 let particles = [];
 
-for (let i = 0; i < 40; i++) {
+for (let i = 0; i < 90; i++) {
     particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
@@ -35,7 +35,7 @@ function animate() {
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(0,255,100,0.25)";
         ctx.shadowColor = "#00ff80";
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 30;
         ctx.fill();
 
         p.x += p.speedX;
