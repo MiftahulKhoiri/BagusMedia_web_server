@@ -42,7 +42,7 @@ function animate() {
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = c.fill;
         ctx.shadowColor = c.glow;
-        ctx.shadowBlur = 20;
+        ctx.shadowBlur = 15;
         ctx.fill();
 
         // Gerakkan partikel
