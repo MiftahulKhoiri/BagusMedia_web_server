@@ -191,3 +191,28 @@ a:hover {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* 🟢 PERKECIL CARD LOGIN AGAR PAS DI HP */
+.login-card {
+    max-width: 340px;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+/* Perkecil input */
+.login-card input {
+    padding: 10px 12px;
+    font-size: 14px;
+}
+
+/* Perkecil tombol */
+.login-card button {
+    padding: 12px;
+    font-size: 16px;
+}
+
+/* Perkecil judul */
+.login-card h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+}
