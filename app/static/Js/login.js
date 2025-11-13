@@ -1,2 +1,4 @@
-// Cek apakah ada pesan error dari server
-console.log("Login page loaded");
+function togglePassword() {
+    const pwd = document.getElementById("password");
+    pwd.type = pwd.type === "password" ? "text" : "password";
+}
