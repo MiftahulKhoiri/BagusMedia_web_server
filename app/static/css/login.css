@@ -156,3 +156,28 @@ a:hover {
         max-width: 350px;
     }
 }
+
+/* ✨ Border neon hidup mengelilingi login card */
+.login-card::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 15px;
+    background: linear-gradient(120deg,
+        rgba(0,255,120,0.2),
+        rgba(0,255,80,0.8),
+        rgba(0,255,140,0.2)
+    );
+    z-index: -1;
+    filter: blur(15px);
+    animation: neonMove 6s linear infinite;
+}
+
+/* ✨ Animasi neon berjalan mengelilingi card */
+@keyframes neonMove {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
