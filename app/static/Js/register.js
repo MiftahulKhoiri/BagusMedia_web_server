@@ -27,15 +27,12 @@ function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     particles.forEach(p => {
-
-        // Pilihan warna neon campuran
         const neonColors = [
-            { fill:"rgba(0,255,100,0.35)", glow:"#00ff80" },  // hijau
-            { fill:"rgba(0,200,255,0.35)", glow:"#00eaff" },  // biru neon
-            { fill:"rgba(180,0,255,0.35)", glow:"#d400ff" }   // ungu neon
+            { fill:"rgba(0,255,100,0.35)", glow:"#00ff80" },
+            { fill:"rgba(0,200,255,0.35)", glow:"#00eaff" },
+            { fill:"rgba(180,0,255,0.35)", glow:"#d400ff" }
         ];
 
-        // Ambil warna random
         const c = neonColors[Math.floor(Math.random() * neonColors.length)];
 
         ctx.beginPath();
@@ -45,11 +42,9 @@ function animate() {
         ctx.shadowBlur = 20;
         ctx.fill();
 
-        // Gerakkan partikel
         p.x += p.speedX;
         p.y += p.speedY;
 
-        // Loop ulang bila keluar layar
         if (p.x < 0) p.x = canvas.width;
         if (p.x > canvas.width) p.x = 0;
         if (p.y < 0) p.y = canvas.height;
@@ -64,42 +59,45 @@ animate();
 // =====================================================
 // 🔒 SHOW / HIDE PASSWORD
 // =====================================================
-function togglePassword() {
-    let pwd = document.getElementById("password");
+function togglePassword(id) {
+    let pwd = document.getElementById(id);
     pwd.type = pwd.type === "password" ? "text" : "password";
 }
 
 
 // =====================================================
-// 🔐 PROSES LOGIN KE SERVER
+// 🔓 PROSES REGISTER KE SERVER
 // =====================================================
-function submitLogin() {
+function submitRegister() {
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value.trim();
+    const confirm = document.getElementById("confirm_password").value.trim();
 
-    if (username === "" || password === "") {
-        alert("Username dan password harus diisi!");
+    if (!username || !password || !confirm) {
+        alert("Semua field harus diisi!");
         return;
     }
 
-    fetch("/login", {
+    if (password !== confirm) {
+        alert("Password tidak sama!");
+        return;
+    }
+
+    fetch("/register", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
     })
     .then(res => res.text())
     .then(result => {
-        // Jika login gagal
-        if (result.includes("Username atau password salah")) {
-            alert("❗ Username atau Password salah!");
-        } 
-        else {
-            // Jika login sukses → masuk ke HOME
-            window.location.href = "/home";
+        if (result.includes("Username sudah dipakai")) {
+            alert("❗ Username sudah digunakan!");
+        } else {
+            window.location.href = "/login";
         }
     })
     .catch(err => {
-        console.error("Login error:", err);
-        alert("Terjadi kesalahan saat mencoba login!");
+        console.error("Register error:", err);
+        alert("Terjadi kesalahan saat mencoba register!");
     });
 }
