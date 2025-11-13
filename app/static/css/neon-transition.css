@@ -1,0 +1,27 @@
+/* ======================================================
+   🌌 Efek Partikel Neon - Neon Background
+   ====================================================== */
+#neon-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #0a0a0f, #000);
+    z-index: -2; /* Supaya di belakang semua elemen */
+    overflow: hidden;
+}
+
+/* Efek tambahan untuk cahaya halus */
+body {
+    background: #000;
+    color: #fff;
+    overflow-x: hidden;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+}
+
+header, main, footer {
+    position: relative;
+    z-index: 1;
+}

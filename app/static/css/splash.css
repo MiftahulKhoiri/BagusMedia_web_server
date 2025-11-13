@@ -1,0 +1,76 @@
+/* ===== LATAR BELAKANG FUTURISTIK ===== */
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, #101010 0%, #060606 100%);
+    background-image: radial-gradient(circle at 30% 30%, rgba(0,255,255,0.15), transparent 60%),
+                      radial-gradient(circle at 70% 70%, rgba(255,0,255,0.15), transparent 60%);
+    animation: bgGlow 8s infinite alternate ease-in-out;
+}
+
+@keyframes bgGlow {
+    0% {
+        background-color: #0a0a0a;
+    }
+    100% {
+        background-color: #111111;
+    }
+}
+
+/* ===== LOGO ===== */
+.splash-logo {
+    width: 180px;
+    height: auto;
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.6))
+            drop-shadow(0 0 40px #00ffff)
+            drop-shadow(0 0 60px #ff00ff);
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* ===== TEKS ===== */
+.splash-title {
+    margin-top: 25px;
+    font-size: 26px;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 0 0 10px #ffcc00, 0 0 25px #ff00ff;
+    animation: fadeIn 2.5s ease-in-out;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* ===== KONTAINER ===== */
+.splash-container {
+    text-align: center;
+    z-index: 2;
+}
+
+/* ===== FADE-OUT OVERLAY ===== */
+.fade-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease;
+    z-index: 5;
+}
+
+.fade-out-active {
+    opacity: 1;
+}
