@@ -131,3 +131,28 @@ a:hover {
 .link {
     margin-top: 15px;
 }
+
+/* Memastikan canvas neon selalu di belakang */
+#neon-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+/* Memastikan login-card selalu di tengah */
+.login-card {
+    position: relative;
+    z-index: 10;           /* berada di atas canvas */
+    margin: auto;
+}
+
+/* Fix khusus untuk tampilan HP */
+@media (max-width: 600px) {
+    .login-card {
+        width: 90%;
+        max-width: 350px;
+    }
+}
