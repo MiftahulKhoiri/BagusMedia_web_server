@@ -38,29 +38,37 @@ body {
     padding: 20px;
     border-radius: 15px;
     text-align: center;
-    background: rgba(0, 30, 0, 0.5);
-    border: 1px solid rgba(0,255,120,0.3);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 0 20px rgba(0,255,120,0.3);
+
+    /* UPDATE — warna diperjelas dan lebih glowing */
+    background: rgba(0, 40, 0, 0.55);
+    border: 1px solid rgba(0, 255, 160, 0.55);
+    backdrop-filter: blur(14px);
+    box-shadow: 
+        0 0 25px rgba(0,255,140,0.4),
+        0 0 45px rgba(0,200,255,0.2);
+
     position: relative;
     overflow: hidden;
 }
 
-/* NEON BORDER BERGERAK */
+/* UPDATE — NEON BORDER BERGERAK JAUH LEBIH TERANG */
 .login-card::before {
     content: "";
     position: absolute;
     inset: -3px;
     border-radius: 15px;
+
     background: conic-gradient(
-        rgba(0,255,100,0.4),
-        rgba(0,200,255,0.4),
-        rgba(180,0,255,0.4),
-        rgba(0,255,100,0.4)
+        rgba(0,255,120,0.8),
+        rgba(0,200,255,0.8),
+        rgba(200,0,255,0.8),
+        rgba(255,255,0,0.8),
+        rgba(0,255,120,0.8)
     );
-    filter: blur(18px);
+
+    filter: blur(26px);
     z-index: -1;
-    animation: neonRotate 6s linear infinite;
+    animation: neonRotate 3.7s linear infinite; /* dipercepat */
 }
 
 @keyframes neonRotate {
@@ -73,6 +81,7 @@ body {
     margin-bottom: 18px;
     font-size: 22px;
     font-weight: bold;
+    text-shadow: 0 0 15px #00ff80;
 }
 
 /* INPUT */
@@ -86,14 +95,18 @@ input {
     padding: 12px;
     border-radius: 8px;
     border: none;
-    background: rgba(0,0,0,0.7);
+
+    background: rgba(0, 0, 0, 0.78);
     color: #ccffdd;
     font-size: 14px;
-    border: 1px solid rgba(0,255,120,0.3);
+
+    border: 1px solid rgba(0,255,150,0.4);
+    box-shadow: 0 0 18px rgba(0,255,140,0.2);
 }
 
 input:focus {
     outline: 2px solid #00ff80;
+    box-shadow: 0 0 25px #00ff99;
 }
 
 /* SHOW / HIDE PASSWORD */
@@ -102,8 +115,14 @@ input:focus {
     right: 12px;
     top: 12px;
     cursor: pointer;
-    opacity: 0.7;
+    opacity: 0.8;
     font-size: 16px;
+    transition: 0.2s;
+}
+
+.toggle-password:hover {
+    opacity: 1;
+    transform: scale(1.2);
 }
 
 /* BUTTON */
@@ -111,18 +130,27 @@ button {
     width: 100%;
     padding: 12px;
     font-size: 16px;
-    background: #00ff80;
+
+    background: linear-gradient(90deg, #00ff80, #00eaff, #d400ff);
+    background-size: 300%;
+
     color: #002a12;
     border: none;
     font-weight: bold;
     border-radius: 7px;
     cursor: pointer;
-    transition: 0.2s;
+
+    animation: btnGlow 5s linear infinite;
+}
+
+@keyframes btnGlow {
+    0% { background-position: 0%; }
+    100% { background-position: 300%; }
 }
 
 button:hover {
-    transform: scale(1.04);
-    background: #00dd66;
+    transform: scale(1.05);
+    box-shadow: 0 0 25px #00ffcc;
 }
 
 /* LINK */
@@ -132,4 +160,5 @@ button:hover {
 
 .link a {
     color: #00ffaa;
+    text-shadow: 0 0 8px #00ffcc;
 }
