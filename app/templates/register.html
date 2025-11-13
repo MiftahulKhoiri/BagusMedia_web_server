@@ -8,20 +8,30 @@
 </head>
 <body>
 
-<div class="container">
-    <h2>Daftar</h2>
+    <!-- Tambah canvas neon (WAJIB AGAR TIDAK ERROR) -->
+    <canvas id="neon-bg"></canvas>
 
-    <input type="text" id="username" placeholder="Username">
+    <div class="container">
+        <h2>Daftar</h2>
 
-    <input type="password" id="password" placeholder="Password">
+        <input type="text" id="username" placeholder="Username">
 
-    <input type="password" id="confirm_password" placeholder="Konfirmasi Password">
+        <div class="pw-box">
+            <input type="password" id="password" placeholder="Password">
+            <span class="toggle-pass" onclick="togglePassword('password')">👁️</span>
+        </div>
 
-    <button id="daftarBtn">Daftar</button>
+        <div class="pw-box">
+            <input type="password" id="confirm_password" placeholder="Konfirmasi Password">
+            <span class="toggle-pass" onclick="togglePassword('confirm_password')">👁️</span>
+        </div>
 
-    <p class="login-link">Sudah punya akun? <a href="/login">Masuk</a></p>
-</div>
+        <button id="daftarBtn" onclick="submitRegister()">Daftar</button>
 
-<script src="{{ url_for('static', filename='Js/login.js') }}"></script>
+        <p class="login-link">Sudah punya akun? <a href="/login">Masuk</a></p>
+    </div>
+
+    <!-- HARUS register.js -->
+    <script src="{{ url_for('static', filename='Js/register.js') }}"></script>
 </body>
 </html>
