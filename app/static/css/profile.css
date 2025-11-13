@@ -1,50 +1,66 @@
-/* ===============================
-   🌌 PROFIL PENGGUNA - NEON BIRU
-   =============================== */
+/* ==========================================================
+   🌟 TAMPAKAN NEON HIJAU FUTURISTIK — RESPONSIF HP & PC
+   ========================================================== */
+
+/* Background hitam dengan neon hijau animasi */
 body {
     margin: 0;
-    background: radial-gradient(circle at top, #010418, #000);
+    background: radial-gradient(circle at top, #001400, #000);
     font-family: 'Poppins', sans-serif;
-    color: #fff;
-    overflow: hidden;
+    color: #c8ffd9;
+    overflow-x: hidden;
 }
 
-/* Header */
+/* -------------------------------------------
+   HEADER DENGAN TOMBOL HOME & LOGOUT
+-------------------------------------------- */
 header {
-    text-align: center;
-    padding: 25px 0;
-}
-.logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-}
-.logo {
-    width: 50px;
-    height: 50px;
-}
-.logo-link {
-    text-decoration: none;
-    color: #00c8ff;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.logo-link:hover h1 {
-    text-shadow: 0 0 15px #00c8ff;
+    padding: 15px;
+    background: rgba(0, 20, 0, 0.6);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid #0f3;
+    box-shadow: 0 0 20px rgba(0, 255, 120, 0.3);
 }
 
-/* Kartu profil */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.back-btn, .logout-btn {
+    color: #00ff99;
+    text-decoration: none;
+    padding: 8px 14px;
+    border: 1px solid #00ff80;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.back-btn:hover, .logout-btn:hover {
+    background: #00ff80;
+    color: #001a0a;
+    box-shadow: 0 0 10px #00ff80;
+}
+
+h1 {
+    font-size: 1.6rem;
+    text-shadow: 0 0 10px #00ff80;
+}
+
+/* -------------------------------------------
+   KARTU PROFIL UTAMA
+-------------------------------------------- */
 .profile-card {
     width: 350px;
-    margin: 70px auto;
-    padding: 30px;
-    background: rgba(10, 15, 35, 0.8);
+    margin: 50px auto;
+    padding: 25px;
+    background: rgba(0, 30, 0, 0.8);
     border-radius: 20px;
-    box-shadow: 0 0 25px #00c8ff;
+    box-shadow: 0 0 30px rgba(0, 255, 120, 0.4);
+    backdrop-filter: blur(12px);
     text-align: center;
-    backdrop-filter: blur(10px);
 }
 
 /* Foto Profil */
@@ -52,57 +68,58 @@ header {
     width: 130px;
     height: 130px;
     border-radius: 50%;
-    border: 3px solid #00c8ff;
-    box-shadow: 0 0 20px #00c8ff;
+    border: 3px solid #00ff80;
+    box-shadow: 0 0 20px #00ff80;
     cursor: pointer;
     transition: 0.3s;
 }
+
 #profile-photo:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 40px #00c8ff;
+    transform: scale(1.08);
+    box-shadow: 0 0 40px #00ff80;
 }
 
 #photo-input {
     display: none;
 }
 
-/* Input dan Textarea */
+/* Input */
 input, textarea {
     width: 100%;
-    margin-top: 10px;
-    padding: 10px;
-    border: none;
+    margin-top: 12px;
+    padding: 12px;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #00d0ff;
+    border: 1px solid #044;
+    background: rgba(0, 255, 120, 0.05);
+    color: #baffd0;
     outline: none;
-    transition: 0.3s;
-}
-input:focus, textarea:focus {
-    box-shadow: 0 0 15px #00c8ff;
 }
 
-/* Tombol */
+input:focus, textarea:focus {
+    box-shadow: 0 0 15px #00ff80;
+}
+
+/* Tombol Edit / Simpan */
 button {
-    margin-top: 15px;
-    padding: 10px 20px;
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: linear-gradient(90deg, #00ff99, #00cc77);
+    color: #002a11;
+    font-weight: bold;
     border: none;
     border-radius: 12px;
-    background: linear-gradient(90deg, #00f6ff, #007bff);
-    color: white;
     cursor: pointer;
-    font-size: 1rem;
     transition: 0.3s;
 }
+
 button:hover {
-    box-shadow: 0 0 20px #00f6ff;
     transform: scale(1.05);
+    box-shadow: 0 0 15px #00ff80;
 }
 
 /* Footer */
 footer {
     text-align: center;
-    margin-top: 50px;
-    color: #00bfff;
-    font-size: 0.9rem;
+    margin-top: 40px;
+    color: #00ff99;
 }
