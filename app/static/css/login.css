@@ -1,4 +1,14 @@
 /* ✨ BACKGROUND CYBER NEON GREEN ✨ */
+.center-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 5;
+}
 body {
     margin: 0;
     padding: 0;
@@ -139,7 +149,7 @@ a:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -2;
+    z-index: -1;
 }
 
 /* Memastikan login-card selalu di tengah */
