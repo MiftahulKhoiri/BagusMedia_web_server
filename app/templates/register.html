@@ -2,38 +2,61 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/neon-transition.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <title>Register</title>
+
+    <!-- Neon Background -->
+    <link rel="stylesheet" href="/static/css/neon.css">
+    <script src="/static/js/neon.js" defer></script>
+
+    <style>
+        .box {
+            width: 320px;
+            padding: 25px;
+            background: rgba(0,0,0,0.6);
+            border: 2px solid #f0f;
+            border-radius: 12px;
+            margin: 120px auto;
+            box-shadow: 0 0 20px #f0f;
+            color: #fff;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            background: #111;
+            border: 1px solid #f0f;
+            color: #f0f;
+            border-radius: 6px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #f0f;
+            border: none;
+            border-radius: 6px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Tambah canvas neon (WAJIB AGAR TIDAK ERROR) -->
-    <canvas id="neon-bg"></canvas>
+<div class="box">
+    <h2>Register</h2>
 
-    <div class="container">
-        <h2>Daftar</h2>
+    <form action="/register" method="POST">
+        <input type="text" name="username" placeholder="Buat Username">
+        <input type="password" name="password" placeholder="Buat Password">
+        <button type="submit">Daftar</button>
+    </form>
 
-        <input type="text" id="username" placeholder="Username">
+    <p style="margin-top:10px;">
+        Sudah punya akun? <a href="/login" style="color:#f0f;">Login</a>
+    </p>
+</div>
 
-        <div class="pw-box">
-            <input type="password" id="password" placeholder="Password">
-            <span class="toggle-pass" onclick="togglePassword('password')">👁️</span>
-        </div>
-
-        <div class="pw-box">
-            <input type="password" id="confirm_password" placeholder="Konfirmasi Password">
-            <span class="toggle-pass" onclick="togglePassword('confirm_password')">👁️</span>
-        </div>
-
-        <button id="daftarBtn" onclick="submitRegister()">Daftar</button>
-
-        <p class="login-link">Sudah punya akun? <a href="/login">Masuk</a></p>
-    </div>
-
-    <!-- HARUS register.js -->
-    <script src="{{ url_for('static', filename='Js/neon-home.js') }}"></script>
-    <script src="{{ url_for('static', filename='Js/register.js') }}"></script>
 </body>
 </html>
