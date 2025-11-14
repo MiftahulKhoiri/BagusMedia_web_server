@@ -1,11 +1,11 @@
-// Membuat canvas full-screen untuk efek aurora neon
+// Membuat canvas untuk efek neon
 const canvas = document.createElement("canvas");
 canvas.id = "neonCanvas";
 document.body.appendChild(canvas);
 
 const ctx = canvas.getContext("2d");
 
-// Resize canvas sesuai ukuran layar
+// Resize canvas agar full layar
 function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -13,82 +13,83 @@ function resize() {
 resize();
 window.addEventListener("resize", resize);
 
-// Warna aurora neon (akan terus berubah)
-let auroraColors = [
+// Daftar warna neon cerah
+const neonColors = [
     "#ff00ff", "#ff33cc", "#ff0099",
     "#00ffff", "#33ccff", "#0099ff",
-    "#39FF14", "#55ff33", "#00ff99",
-    "#ff8800", "#ff4444", "#ff0066"
+    "#39FF14", "#66ff66", "#00ff99",
+    "#ffaa00", "#ff4444", "#ff0066"
 ];
 
-// Fungsi menghasilkan warna neon random
+// Pilih warna neon acak yang halus
 function randomColor() {
-    return auroraColors[Math.floor(Math.random() * auroraColors.length)];
+    return neonColors[Math.floor(Math.random() * neonColors.length)];
 }
 
-// Objek gelombang aurora
-class AuroraWave {
-    constructor() {
-        this.y = Math.random() * canvas.height;
-        this.speed = Math.random() * 0.4 + 0.2;
-        this.color = randomColor();
-        this.alpha = Math.random() * 0.35 + 0.25;
-        this.amplitude = Math.random() * 120 + 50; // tinggi gelombang
-        this.wavelength = Math.random() * 0.005 + 0.001; // panjang gelombang
-        this.offset = Math.random() * 1000;
-        this.colorDelay = Math.random() * 200 + 80;
-    }
+// Membuat titik-titik neon
+const particles = [];
 
-    update(t) {
-        // Warna berubah otomatis
-        this.colorDelay--;
-        if (this.colorDelay <= 0) {
-            this.color = randomColor();
-            this.colorDelay = Math.random() * 200 + 80;
-        }
+for (let i = 0; i < 80; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
 
-        // Gerak gelombang perlahan turun
-        this.y += this.speed;
-        if (this.y > canvas.height + 100) {
-            this.y = -100;
-        }
+        // TITIK LEBIH BESAR di sini
+        size: Math.random() * 4 + 2, // ukuran 2px - 6px
 
-        // Gambar gelombang neon
-        ctx.beginPath();
-        ctx.moveTo(0, this.y);
+        color: randomColor(),
+        alpha: Math.random(),
 
-        for (let x = 0; x <= canvas.width; x++) {
-            let waveY = this.y + Math.sin(x * this.wavelength + this.offset + t * 0.002) * this.amplitude;
-            ctx.lineTo(x, waveY);
-        }
+        // gerakan lembut
+        speedX: (Math.random() - 0.5) * 0.6,
+        speedY: (Math.random() - 0.5) * 0.6,
 
-        ctx.strokeStyle = this.color;
-        ctx.globalAlpha = this.alpha;
-        ctx.lineWidth = 3 + Math.sin(t * 0.002) * 1.2;
-        ctx.shadowBlur = 30;
-        ctx.shadowColor = this.color;
-        ctx.stroke();
+        // kedip lembut
+        blinkSpeed: Math.random() * 0.02 + 0.005,
 
-        // Offset untuk animasi gelombang bergerak
-        this.offset += 0.01;
-    }
-}
-
-// Membuat beberapa gelombang aurora neon
-let waves = [];
-for (let i = 0; i < 6; i++) {
-    waves.push(new AuroraWave());
+        // warna berganti otomatis
+        colorTimer: Math.random() * 200 + 100
+    });
 }
 
 // Animasi utama
-function animate(t) {
+function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    waves.forEach(wave => {
-        wave.update(t);
+    particles.forEach(p => {
+
+        // Ubah warna otomatis
+        p.colorTimer--;
+        if (p.colorTimer <= 0) {
+            p.color = randomColor();
+            p.colorTimer = Math.random() * 200 + 100;
+        }
+
+        // Gerakan lembut acak
+        p.x += p.speedX;
+        p.y += p.speedY;
+
+        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+
+        // Kedipan halus
+        p.alpha += p.blinkSpeed;
+        if (p.alpha <= 0.3 || p.alpha >= 1) {
+            p.blinkSpeed *= -1;
+        }
+
+        // Gambar titik neon besar
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 25;   // glow sedikit ditambah biar sesuai ukuran
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
     });
 
     requestAnimationFrame(animate);
 }
 
-animate(0);
+animate();
