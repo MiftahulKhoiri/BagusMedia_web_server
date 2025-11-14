@@ -1,0 +1,167 @@
+/* 🔥 BACKGROUND CYBER NEON GALAXY */
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #000;
+    color: white;
+}
+
+/* CANVAS NEON BACKGROUND */
+#neon-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* 🎯 CENTER CONTAINER */
+.center-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    padding: 0 16px;
+    display: flex;
+    justify-content: center;
+    z-index: 5;
+}
+
+/* 🟢 LOGIN CARD */
+.login-card {
+    width: 100%;
+    max-width: 260px;         /* ukuran ideal mobile */
+    padding: 16px;            /* padding dikurangi */
+    border-radius: 15px;
+    text-align: center;
+    box-sizing: border-box;   /* wajib agar padding tidak menambah lebar */
+
+    background: rgba(0, 40, 0, 0.55);
+    border: 1px solid rgba(0, 255, 160, 0.55);
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 0 18px rgba(0,255,140,0.35),
+        0 0 28px rgba(0,200,255,0.18);
+
+    position: relative;
+    overflow: hidden;
+}
+
+/* ✨ BORDER NEON GLOW */
+.login-card::before {
+    content: "";
+    position: absolute;
+    inset: -1px;                  /* dari -3px → diperbaiki */
+    border-radius: 12px;
+
+    background: conic-gradient(
+        rgba(0,255,120,0.7),
+        rgba(0,200,255,0.7),
+        rgba(200,0,255,0.7),
+        rgba(255,255,0,0.7),
+        rgba(0,255,120,0.7)
+    );
+
+    filter: blur(18px);           /* glow lebih kecil */
+    z-index: -1;
+    animation: neonRotate 3.7s linear infinite;
+}
+
+@keyframes neonRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* JUDUL */
+.login-card h2 {
+    margin-bottom: 15px;
+    font-size: 26px;
+    font-weight: bold;
+    text-shadow: 0 0 12px #00ff80;
+}
+
+/* INPUT */
+.input-group {
+    margin-bottom: 12px;
+    position: relative;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    box-sizing: border-box;        /* penting */
+
+    background: rgba(0, 0, 0, 0.78);
+    color: #ccffdd;
+    font-size: 14px;
+
+    border: 1px solid rgba(0,255,150,0.4);
+    box-shadow: 0 0 18px rgba(0,255,140,0.2);
+}
+
+input:focus {
+    outline: 2px solid #00ff80;
+    box-shadow: 0 0 25px #00ff99;
+}
+
+/* SHOW / HIDE PASSWORD */
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    cursor: pointer;
+    opacity: 0.8;
+    font-size: 16px;
+    transition: 0.2s;
+}
+
+.toggle-password:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+/* BUTTON */
+button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+
+    background: linear-gradient(90deg, #00ff80, #00eaff, #d400ff);
+    background-size: 300%;
+
+    color: #002a12;
+    border: none;
+    font-weight: bold;
+    border-radius: 7px;
+    cursor: pointer;
+
+    animation: btnGlow 5s linear infinite;
+}
+
+@keyframes btnGlow {
+    0% { background-position: 0%; }
+    100% { background-position: 300%; }
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px #00ffcc;
+}
+
+/* LINK */
+.link {
+    margin-top: 10px;
+}
+
+.link a {
+    color: #00ffaa;
+    text-shadow: 0 0 8px #00ffcc;
+}
