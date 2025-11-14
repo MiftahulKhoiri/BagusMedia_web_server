@@ -17,6 +17,13 @@ body {
     z-index: -1; /* Tetap di belakang semua elemen halaman */
 }
 
+/* Aman untuk semua halaman */
+html, body {
+    overflow-y: auto !important; /* scroll ke bawah boleh */
+    overflow-x: hidden;          /* cegah scroll samping */
+}
+
+/* Canvas neon tidak menghalangi scroll atau klik */
 #neonCanvas {
     pointer-events: none;
 }
