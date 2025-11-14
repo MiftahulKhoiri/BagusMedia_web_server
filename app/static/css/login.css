@@ -23,7 +23,7 @@ body {
 .center-box {
     position: fixed;
     top: 50%;
-    left: 50%;
+    left: 45%;
     transform: translate(-50%, -50%);
     width: 100%;
     display: flex;
@@ -56,7 +56,7 @@ body {
     content: "";
     position: absolute;
     inset: -3px;
-    border-radius: 15px;
+    border-radius: 12px;
 
     background: conic-gradient(
         rgba(0,255,120,0.8),
@@ -78,15 +78,15 @@ body {
 
 /* JUDUL */
 .login-card h2 {
-    margin-bottom: 18px;
+    margin-bottom: 15px;
     font-size: 22px;
     font-weight: bold;
-    text-shadow: 0 0 15px #00ff80;
+    text-shadow: 0 0 12px #00ff80;
 }
 
 /* INPUT */
 .input-group {
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     position: relative;
 }
 
