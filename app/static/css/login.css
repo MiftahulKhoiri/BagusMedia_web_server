@@ -23,9 +23,10 @@ body {
 .center-box {
     position: fixed;
     top: 50%;
-    left: 45%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    width: 100%;
+    width: auto;
+    padding: 0 16px;
     display: flex;
     justify-content: center;
     z-index: 5;
@@ -33,11 +34,12 @@ body {
 
 /* 🟢 LOGIN CARD */
 .login-card {
-    width: 60%;
-    max-width: 260px;
+    width: 100%;
+    max-width: 300px;
     padding: 20px;
     border-radius: 15px;
     text-align: center;
+    box-sizing: border-box;
 
     /* UPDATE — warna diperjelas dan lebih glowing */
     background: rgba(0, 40, 0, 0.55);
