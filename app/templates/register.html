@@ -2,58 +2,29 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Register</title>
 
-    <!-- Neon Background -->
+    <!-- Neon -->
     <link rel="stylesheet" href="/static/css/neon.css">
-    <script src="/static/Js/neon.js" defer></script>
+    <script src="/static/js/neon.js" defer></script>
 
-    <style>
-        .box {
-            width: 320px;
-            padding: 25px;
-            background: rgba(0,0,0,0.6);
-            border: 2px solid #f0f;
-            border-radius: 12px;
-            margin: 120px auto;
-            box-shadow: 0 0 20px #f0f;
-            color: #fff;
-            text-align: center;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            background: #111;
-            border: 1px solid #f0f;
-            color: #f0f;
-            border-radius: 6px;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #f0f;
-            border: none;
-            border-radius: 6px;
-            color: #000;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-    </style>
+    <!-- Style Form -->
+    <link rel="stylesheet" href="/static/css/form.css">
 </head>
 <body>
 
-<div class="box">
-    <h2>Register</h2>
+<div class="form-box" style="border-color:#f0f; box-shadow:0 0 25px #f0f;">
+    <h2 style="color:#f0f;">Register</h2>
 
     <form action="/register" method="POST">
         <input type="text" name="username" placeholder="Buat Username">
         <input type="password" name="password" placeholder="Buat Password">
-        <button type="submit">Daftar</button>
+        <button type="submit" style="background:#f0f;">Daftar</button>
     </form>
 
-    <p style="margin-top:10px;">
+    <p style="margin-top:10px; color:#f0f;">
         Sudah punya akun? <a href="/login" style="color:#f0f;">Login</a>
     </p>
 </div>
