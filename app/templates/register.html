@@ -10,24 +10,40 @@
     <link rel="stylesheet" href="/static/css/neon.css">
     <script src="/static/js/neon.js" defer></script>
 
-    <!-- Style form -->
+    <!-- CSS form responsif -->
     <link rel="stylesheet" href="/static/css/form.css">
 </head>
 <body>
 
-<!-- Kotak utama form register -->
-<div class="form-box" style="border-color:#f0f; box-shadow:0 0 25px #f0f;">
-    <h2 style="color:#f0f;">Register</h2>
+<!-- ==========================
+     Kotak Form Register (tema pink)
+     ========================== -->
+<div class="form-box form-pink">
+    <h2>Register</h2>
 
-    <!-- Form daftar ke server -->
+    <!-- Form register ke server -->
     <form action="/register" method="POST">
-        <input type="text" name="username" placeholder="Buat Username"> <!-- Input username -->
-        <input type="password" name="password" placeholder="Buat Password"> <!-- Input password -->
-        <button type="submit" style="background:#f0f;">Daftar</button> <!-- Tombol daftar -->
+
+        <!-- Input username -->
+        <input 
+            type="text" 
+            name="username" 
+            placeholder="Buat Username">
+
+        <!-- Input password -->
+        <input 
+            type="password" 
+            name="password" 
+            placeholder="Buat Password">
+
+        <!-- Tombol daftar -->
+        <button type="submit">Daftar</button>
     </form>
 
-    <p style="margin-top:10px; color:#f0f;">
-        Sudah punya akun? <a href="/login" style="color:#f0f;">Login</a>
+    <!-- Link balik ke login -->
+    <p>
+        Sudah punya akun? 
+        <a href="/login">Login disini</a>
     </p>
 </div>
 
