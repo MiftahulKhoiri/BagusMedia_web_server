@@ -33,8 +33,8 @@ body {
 
 /* 🟢 LOGIN CARD */
 .login-card {
-    width: 75%;
-    max-width: 280px;
+    width: 60%;
+    max-width: 260px;
     padding: 20px;
     border-radius: 15px;
     text-align: center;
@@ -79,7 +79,7 @@ body {
 /* JUDUL */
 .login-card h2 {
     margin-bottom: 15px;
-    font-size: 22px;
+    font-size: 30px;
     font-weight: bold;
     text-shadow: 0 0 12px #00ff80;
 }
