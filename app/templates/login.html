@@ -2,40 +2,61 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masuk - BAGUS MEDIA SERVER</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/neon-transition.css') }}">
+    <title>Login</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <!-- Neon Background -->
+    <link rel="stylesheet" href="/static/css/neon.css">
+    <script src="/static/js/neon.js" defer></script>
+
+    <style>
+        .box {
+            width: 320px;
+            padding: 25px;
+            background: rgba(0,0,0,0.6);
+            border: 2px solid #0ff;
+            border-radius: 12px;
+            margin: 120px auto;
+            box-shadow: 0 0 20px #0ff;
+            color: #fff;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            background: #111;
+            border: 1px solid #0ff;
+            color: #0ff;
+            border-radius: 6px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #0ff;
+            border: none;
+            border-radius: 6px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
 </head>
-
 <body>
 
-    <!-- Background neon -->
-    <canvas id="neon-bg"></canvas>
+<div class="box">
+    <h2>Login</h2>
 
-    <!-- CENTER CONTAINER -->
-    <div class="center-box">
-        <div class="login-card">
-            <h2>Masuk</h2>
+    <form action="/login" method="POST">
+        <input type="text" name="username" placeholder="Username">
+        <input type="password" name="password" placeholder="Password">
+        <button type="submit">Masuk</button>
+    </form>
 
-            <div class="input-group">
-                <input type="text" id="username" placeholder="Username">
-            </div>
+    <p style="margin-top:10px;">
+        Belum punya akun? <a href="/register" style="color:#0ff;">Register</a>
+    </p>
+</div>
 
-            <div class="input-group password-group">
-                <input type="password" id="password" placeholder="Password">
-                <span class="toggle-password" onclick="togglePassword()">👁️</span>
-            </div>
-
-            <button onclick="submitLogin()">Masuk</button>
-
-            <p class="link">Belum punya akun?  
-                <a href="/register">Daftar</a>
-            </p>
-        </div>
-    </div>
-    <script src="{{ url_for('static', filename='Js/neon-home.js') }}"></script>
-    <script src="{{ url_for('static', filename='Js/login.js') }}"></script>
 </body>
 </html>
