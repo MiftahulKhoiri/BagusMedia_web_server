@@ -250,15 +250,26 @@ header {
 }
 
 /* =========================================
-   🧩 FOOTER
+   🧩 FOOTER — tema hijau stabilo neon
    ========================================= */
 footer {
-    text-align: center;
-    padding: 15px;
-    background-color: rgba(15, 15, 15, 0.8);
-    font-size: 13px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;                     /* teks berada di tengah */
+    padding: 15px;                           /* jarak dalam footer */
+    background-color: rgba(0, 0, 0, 0.65);    /* latar tetap gelap transparan */
+    font-size: 13px;                         /* ukuran teks */
+    
+    /* Warna huruf hijau stabilo */
+    color: #39FF14;
+
+    /* Garis tipis neon hijau */
+    border-top: 1px solid rgba(57, 255, 20, 0.7);
+
+    /* Efek blur latar belakang */
     backdrop-filter: blur(10px);
+
     position: relative;
     z-index: 10;
+
+    /* Glow neon hijau halus */
+    text-shadow: 0 0 8px #39FF14;
 }
