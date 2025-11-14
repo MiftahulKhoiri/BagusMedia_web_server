@@ -16,3 +16,7 @@ body {
     height: 100%;
     z-index: -1; /* Tetap di belakang semua elemen halaman */
 }
+
+#neonCanvas {
+    pointer-events: none;
+}
