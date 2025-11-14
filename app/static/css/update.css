@@ -248,3 +248,17 @@ header {
         width: 100%;
     }
 }
+
+/* =========================================
+   🧩 FOOTER
+   ========================================= */
+footer {
+    text-align: center;
+    padding: 15px;
+    background-color: rgba(15, 15, 15, 0.8);
+    font-size: 13px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 10;
+}
