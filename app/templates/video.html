@@ -4,23 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pemutar Video - BAGUS MEDIA SERVER</title>
+
+    <!-- CSS Video Player -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/video.css') }}">
-    <!-- Neon Transition -->
+
+    <!-- Background Neon -->
     <link rel="stylesheet" href="/static/css/neon.css">
 </head>
 <body>
-    <!-- === HEADER === -->
+
+    <!-- ======================================
+         HEADER (Logo dijadikan tombol Home)
+         ====================================== -->
     <header>
-        <div class="logo-container">
-            <img src="{{ url_for('static', filename='icon/Video.png') }}" alt="Logo Video" class="logo">
-            <h1>Pemutar Video</h1>
-        </div>
-        <nav class="menu">
+        <a href="/" class="logo-container" style="text-decoration:none;">
+            <!-- Logo -->
+            <img src="{{ url_for('static', filename='icon/Video.png') }}" 
+                 alt="Logo Video" class="logo">
+
+            <!-- Judul halaman -->
+            <h1 style="color:white;">Pemutar Video</h1>
+        </a>
+
+        <!-- Menu dihapus sesuai permintaan -->
+        <!-- <nav class="menu">
             <a href="/" class="menu-item">🏠Home</a>
-        </nav>
+        </nav> -->
     </header>
 
-    <!-- === VIDEO PLAYER FIXED AT TOP === -->
+    <!-- ======================================
+         VIDEO PLAYER FIXED DI BAGIAN ATAS
+         ====================================== -->
     <section class="video-player-full">
         <div class="video-container">
             <video id="video-player" controls preload="metadata">
@@ -29,14 +43,20 @@
         </div>
     </section>
 
-    <!-- === MAIN CONTENT === -->
+    <!-- ======================================
+         KONTEN UTAMA (Panel Kontrol + Playlist)
+         ====================================== -->
     <main class="main-content">
+
+        <!-- Panel kontrol video -->
         <div class="player-panel">
+
+            <!-- Judul video yang diputar -->
             <div class="video-info">
                 <h2 id="now-playing-title">Pilih video untuk diputar</h2>
             </div>
 
-            <!-- Kontrol Video -->
+            <!-- Tombol Kontrol -->
             <div class="video-controls">
                 <button id="video-prev-btn" class="control-btn">⏮</button>
                 <button id="video-play-btn" class="control-btn play">▶</button>
@@ -50,34 +70,48 @@
             <!-- Progress Bar -->
             <div class="video-progress-container">
                 <span id="video-current-time">0:00</span>
+
                 <div class="progress-bar">
                     <div class="progress" id="video-progress"></div>
                 </div>
+
                 <span id="video-duration">0:00</span>
             </div>
 
-            <!-- Volume -->
+            <!-- Kontrol Volume -->
             <div class="video-volume-control">
                 <span>🔊</span>
                 <input type="range" id="video-volume-slider" min="0" max="100" value="50">
             </div>
+
         </div>
 
-        <!-- === DAFTAR VIDEO === -->
+        <!-- ======================================
+             PLAYLIST VIDEO
+             ====================================== -->
         <div class="playlist-container">
             <h3>Daftar Video</h3>
+
             <div class="playlist" id="playlist">
                 {% for file in video_files %}
-                <div class="playlist-item" data-src="{{ url_for('serve_media', folder='video', filename=file) }}">
+                <div class="playlist-item" 
+                     data-src="{{ url_for('serve_media', folder='video', filename=file) }}">
+                    
                     <span class="video-name">{{ file }}</span>
                     <button class="play-track">▶</button>
                 </div>
                 {% endfor %}
             </div>
+
         </div>
+
     </main>
 
+    <!-- ======================================
+         SCRIPT
+         ====================================== -->
     <script src="{{ url_for('static', filename='Js/video.js') }}"></script>
     <script src="/static/Js/neon.js" defer></script>
+
 </body>
 </html>
