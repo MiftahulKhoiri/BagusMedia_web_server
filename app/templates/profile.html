@@ -16,17 +16,23 @@
 <body>
 
     <!-- ✨ BACKGROUND NEON ANIMATED -->
-    <canvas id="neon-bg"></canvas>
 
-    <!-- ✨ HEADER DENGAN TOMBOL LOGOUT -->
+    <!-- ✨ HEADER -->
     <header>
         <div class="header-content">
 
-            <!-- Kembali ke halaman Home -->
-            <a href="/home" class="back-btn">⬅ Home</a>
+            <!-- 
+                Tombol Home dihapus:
+                <a href="/home" class="back-btn">⬅ Home</a>
+            -->
 
-            <!-- Judul Profil -->
-            <h1>Profil Pengguna</h1>
+            <!-- 
+                Judul dijadikan tombol Home
+                agar konsisten seperti MP3 & Video
+            -->
+            <a href="/home" style="text-decoration:none;">
+                <h1 style="color:white;">Profil Pengguna</h1>
+            </a>
 
             <!-- Tombol Logout -->
             <a href="/logout" class="logout-btn">Logout</a>
