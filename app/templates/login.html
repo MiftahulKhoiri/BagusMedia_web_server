@@ -2,49 +2,20 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Login</title>
 
     <!-- Neon Background -->
     <link rel="stylesheet" href="/static/css/neon.css">
     <script src="/static/Js/neon.js" defer></script>
 
-    <style>
-        .box {
-            width: 320px;
-            padding: 25px;
-            background: rgba(0,0,0,0.6);
-            border: 2px solid #0ff;
-            border-radius: 12px;
-            margin: 120px auto;
-            box-shadow: 0 0 20px #0ff;
-            color: #fff;
-            text-align: center;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            background: #111;
-            border: 1px solid #0ff;
-            color: #0ff;
-            border-radius: 6px;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #0ff;
-            border: none;
-            border-radius: 6px;
-            color: #000;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-    </style>
+    <!-- Style Form -->
+    <link rel="stylesheet" href="/static/css/form.css">
 </head>
 <body>
 
-<div class="box">
+<div class="form-box">
     <h2>Login</h2>
 
     <form action="/login" method="POST">
@@ -53,7 +24,7 @@
         <button type="submit">Masuk</button>
     </form>
 
-    <p style="margin-top:10px;">
+    <p style="margin-top:10px; color:#0ff;">
         Belum punya akun? <a href="/register" style="color:#0ff;">Register</a>
     </p>
 </div>
