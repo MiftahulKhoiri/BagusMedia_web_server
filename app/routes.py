@@ -14,10 +14,15 @@ from flask import (
 )
 from werkzeug.utils import secure_filename
 
+# Format ekstensi file yang diizinkan untuk upload
 ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mkv', 'mov', 'wmv', 'mp3', 'wav', 'ogg'}
 
-# helper functions
+# ============================
+#         HELPER FUNCTIONS
+# ============================
+
 def hash_password(password, salt=None):
+    # Membuat password hash + salt untuk keamanan
     if salt is None:
         salt = os.urandom(16)
     if isinstance(salt, str):
@@ -25,25 +30,35 @@ def hash_password(password, salt=None):
     hashed = hashlib.sha256(salt + password.encode()).hexdigest()
     return salt.hex() + "$" + hashed
 
+
 def verify_password(stored_password, password_input):
+    # Mengecek apakah password user cocok dengan hash di database
     salt_hex, hashed = stored_password.split("$")
     return stored_password == hash_password(password_input, salt_hex)
 
+
 def allowed_file(filename):
+    # Mengecek apakah file punya ekstensi yang diizinkan
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
 def get_media_files(folder, extensions):
+    # Mengambil semua file media dalam folder tertentu
     if not os.path.exists(folder):
         return []
     return [f for f in os.listdir(folder) if any(f.lower().endswith(ext) for ext in extensions)]
 
+
+# ============================
+#         ROUTES
+# ============================
+
 def init_app(app, sock):
     BASE_DIR = app.config.get('PROJECT_ROOT', os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-    # ============== ROUTES ==============
-
     @app.route("/register", methods=["GET", "POST"])
     def register():
+        # Registrasi user baru + menyimpan data ke SQLite
         if request.method == "POST":
             username = request.form["username"].strip()
             password = request.form["password"]
@@ -57,8 +72,10 @@ def init_app(app, sock):
             try:
                 conn = sqlite3.connect(app.config['DATABASE'])
                 cursor = conn.cursor()
-                cursor.execute("INSERT INTO users (username, password, created_at, updated_at) VALUES (?, ?, ?, ?)",
-                               (username, hashed, now, now))
+                cursor.execute(
+                    "INSERT INTO users (username, password, created_at, updated_at) VALUES (?, ?, ?, ?)",
+                    (username, hashed, now, now)
+                )
                 conn.commit()
                 conn.close()
                 return redirect("/login")
@@ -69,6 +86,7 @@ def init_app(app, sock):
 
     @app.route("/login", methods=["GET", "POST"])
     def login():
+        # Login user → cek password → simpan session
         if request.method == "POST":
             username = request.form["username"].strip()
             password = request.form["password"]
@@ -90,15 +108,18 @@ def init_app(app, sock):
 
     @app.route("/logout")
     def logout():
+        # Menghapus session user dan keluar
         session.clear()
         return redirect("/login")
 
     @app.route('/')
     def splash():
+        # Halaman pertama (splash screen)
         return render_template('splash.html')
 
     @app.route('/home')
     def home():
+        # Halaman utama setelah login
         if "user_id" not in session:
             return redirect("/login")
         current_year = datetime.now().year
@@ -106,6 +127,7 @@ def init_app(app, sock):
 
     @app.route('/mp3')
     def mp3_player():
+        # Menampilkan daftar lagu MP3
         if "user_id" not in session:
             return redirect("/login")
         mp3_files = get_media_files(app.config['MP3_FOLDER'], ['.mp3', '.wav', '.ogg'])
@@ -113,6 +135,7 @@ def init_app(app, sock):
 
     @app.route('/video')
     def video_player():
+        # Menampilkan daftar video
         if "user_id" not in session:
             return redirect("/login")
         video_files = get_media_files(app.config['VIDEO_FOLDER'], ['.mp4', '.avi', '.mkv', '.mov', '.wmv'])
@@ -120,12 +143,14 @@ def init_app(app, sock):
 
     @app.route('/upload')
     def upload():
+        # Halaman upload media
         if "user_id" not in session:
             return redirect("/login")
         return render_template('upload.html')
 
     @app.route('/api/upload', methods=['POST'])
     def upload_file():
+        # Proses upload file + memindahkannya ke folder mp3/video
         if "user_id" not in session:
             return jsonify({"error": "Harus login!"}), 403
 
@@ -157,6 +182,7 @@ def init_app(app, sock):
 
     @app.route('/profile')
     def profile():
+        # Menampilkan profil user (disimpan dalam file JSON sederhana)
         if "user_id" not in session:
             return redirect("/login")
 
@@ -172,6 +198,7 @@ def init_app(app, sock):
 
     @app.route('/api/save-profile', methods=['POST'])
     def save_profile():
+        # Menyimpan data profil user ke file JSON
         if "user_id" not in session:
             return jsonify({"status": "error", "message": "Harus login!"}), 403
 
@@ -184,10 +211,12 @@ def init_app(app, sock):
 
     @app.route('/update')
     def update():
+        # Halaman untuk mengecek update Git
         return render_template('update.html')
 
     @app.route('/api/check-update', methods=['GET'])
     def check_update():
+        # Cek apakah repository perlu di-update
         repo_path = app.config.get('PROJECT_ROOT')
         try:
             subprocess.run(["git", "fetch"], cwd=repo_path)
@@ -199,6 +228,7 @@ def init_app(app, sock):
 
     @sock.route('/ws/update')
     def ws_update(ws):
+        # WebSocket untuk menampilkan progress update Git secara realtime
         def send(msg):
             try:
                 ws.send(msg)
@@ -224,6 +254,7 @@ def init_app(app, sock):
 
     @app.route('/api/restart', methods=['POST'])
     def restart_server():
+        # Restart aplikasi Flask setelah update
         def delayed():
             time.sleep(1)
             os.execl(sys.executable, sys.executable, *sys.argv)
@@ -233,6 +264,7 @@ def init_app(app, sock):
 
     @app.route('/media/<folder>/<filename>')
     def serve_media(folder, filename):
+        # Menyajikan file mp3/video via URL
         if folder == 'mp3':
             return send_from_directory(app.config['MP3_FOLDER'], filename)
         if folder == 'video':
