@@ -1,0 +1,50 @@
+/* Container box untuk login / register */
+.form-box {
+    width: 90%;                 /* otomatis menyesuaikan layar HP */
+    max-width: 400px;           /* batas maksimal supaya tidak terlalu besar */
+    padding: 25px;
+    margin: 100px auto;
+    background: rgba(0,0,0,0.65);
+    border-radius: 12px;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 0 25px rgba(0,255,255,0.5);
+    border: 2px solid rgba(0,255,255,0.7);
+}
+
+/* Judul */
+.form-box h2 {
+    margin-bottom: 15px;
+    color: #0ff;
+}
+
+/* Input responsif */
+.form-box input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    background: #111;
+    color: #0ff;
+    border: 1px solid #0ff;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+/* Tombol responsif */
+.form-box button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: #0ff;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.form-box button:hover {
+    background: #0cc;
+    box-shadow: 0 0 15px #0ff;
+}
