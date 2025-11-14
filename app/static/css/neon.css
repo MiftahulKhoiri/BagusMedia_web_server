@@ -1,0 +1,18 @@
+/* Background hitam dan canvas efek neon */
+body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+/* Canvas efek neon */
+#neonCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* agar tetap di belakang semua konten */
+}
