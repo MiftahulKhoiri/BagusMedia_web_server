@@ -7,14 +7,15 @@
 
     <!-- ===== CSS Utama ===== -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mp3.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/neon-transition.css') }}">
+    <link rel="stylesheet" href="/static/css/neon.css">
+    <script src="/static/Js/neon.js" defer></script>
 
     <!-- Ikon -->
     <link rel="icon" href="{{ url_for('static', filename='icon/icon.png') }}">
 </head>
 <body>
     <!-- ===== Kanvas Partikel Neon ===== -->
-    <canvas id="neon-bg"></canvas>
+    <canvas id="neon"></canvas>
 
     <!-- ===== Header ===== -->
     <header class="header">
@@ -93,7 +94,6 @@
     <audio id="audio-player"></audio>
 
     <!-- ===== Script ===== -->
-    <script src="{{ url_for('static', filename='Js/neon-home.js') }}"></script>
     <script src="{{ url_for('static', filename='Js/mp3.js') }}"></script>
 </body>
 </html>
