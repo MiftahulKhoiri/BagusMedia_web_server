@@ -35,42 +35,42 @@ body {
 /* 🟢 LOGIN CARD */
 .login-card {
     width: 100%;
-    max-width: 300px;
-    padding: 20px;
+    max-width: 260px;         /* ukuran ideal mobile */
+    padding: 16px;            /* padding dikurangi */
     border-radius: 15px;
     text-align: center;
-    box-sizing: border-box;
+    box-sizing: border-box;   /* wajib agar padding tidak menambah lebar */
 
-    /* UPDATE — warna diperjelas dan lebih glowing */
     background: rgba(0, 40, 0, 0.55);
     border: 1px solid rgba(0, 255, 160, 0.55);
-    backdrop-filter: blur(14px);
-    box-shadow: 
-        0 0 25px rgba(0,255,140,0.4),
-        0 0 45px rgba(0,200,255,0.2);
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 0 18px rgba(0,255,140,0.35),
+        0 0 28px rgba(0,200,255,0.18);
 
     position: relative;
     overflow: hidden;
 }
 
-/* UPDATE — NEON BORDER BERGERAK JAUH LEBIH TERANG */
+/* ✨ BORDER NEON GLOW */
 .login-card::before {
     content: "";
     position: absolute;
-    inset: -3px;
+    inset: -1px;                  /* dari -3px → diperbaiki */
     border-radius: 12px;
 
     background: conic-gradient(
-        rgba(0,255,120,0.8),
-        rgba(0,200,255,0.8),
-        rgba(200,0,255,0.8),
-        rgba(255,255,0,0.8),
-        rgba(0,255,120,0.8)
+        rgba(0,255,120,0.7),
+        rgba(0,200,255,0.7),
+        rgba(200,0,255,0.7),
+        rgba(255,255,0,0.7),
+        rgba(0,255,120,0.7)
     );
 
-    filter: blur(26px);
+    filter: blur(18px);           /* glow lebih kecil */
     z-index: -1;
-    animation: neonRotate 3.7s linear infinite; /* dipercepat */
+    animation: neonRotate 3.7s linear infinite;
 }
 
 @keyframes neonRotate {
@@ -81,7 +81,7 @@ body {
 /* JUDUL */
 .login-card h2 {
     margin-bottom: 15px;
-    font-size: 30px;
+    font-size: 26px;
     font-weight: bold;
     text-shadow: 0 0 12px #00ff80;
 }
@@ -97,6 +97,7 @@ input {
     padding: 12px;
     border-radius: 8px;
     border: none;
+    box-sizing: border-box;        /* penting */
 
     background: rgba(0, 0, 0, 0.78);
     color: #ccffdd;
