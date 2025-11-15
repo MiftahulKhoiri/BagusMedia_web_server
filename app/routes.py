@@ -40,7 +40,7 @@ def verify_password(stored_password, password_input):
 
 
 def allowed_file(filename):
-    """Cek ekstensi file valid"""
+    """Cek ekstensi file valid (media)"""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
@@ -58,9 +58,7 @@ def init_app(app, sock):
 
     PROFILE_FILE = app.config['PROFILE_FILE']
 
-    # ============================================
-    # REGISTER
-    # ============================================
+    # ===== REGISTER =====
     @app.route("/register", methods=["GET", "POST"])
     def register():
         if request.method == "POST":
@@ -88,9 +86,7 @@ def init_app(app, sock):
 
         return render_template("register.html")
 
-    # ============================================
-    # LOGIN
-    # ============================================
+    # ===== LOGIN =====
     @app.route("/login", methods=["GET", "POST"])
     def login():
         if request.method == "POST":
@@ -112,24 +108,18 @@ def init_app(app, sock):
 
         return render_template("login.html")
 
-    # ============================================
-    # LOGOUT
-    # ============================================
+    # ===== LOGOUT =====
     @app.route("/logout")
     def logout():
         session.clear()
         return redirect("/login")
 
-    # ============================================
-    # SPLASH
-    # ============================================
+    # ===== SPLASH =====
     @app.route("/")
     def splash():
         return render_template("splash.html")
 
-    # ============================================
-    # HOME
-    # ============================================
+    # ===== HOME =====
     @app.route("/home")
     def home():
         if "user_id" not in session:
@@ -137,38 +127,30 @@ def init_app(app, sock):
         current_year = datetime.now().year
         return render_template("home.html", current_year=current_year, username=session["username"])
 
-    # ============================================
-    # MP3 PLAYER
-    # ============================================
+    # ===== MP3 =====
     @app.route("/mp3")
     def mp3_player():
         if "user_id" not in session:
             return redirect("/login")
         mp3_files = get_media_files(app.config['MP3_FOLDER'], ['.mp3', '.wav', '.ogg'])
-        return render_template("mp3.html", mp3_files=mp3_files)
+        return render_template('mp3.html', mp3_files=mp3_files)
 
-    # ============================================
-    # VIDEO PLAYER
-    # ============================================
+    # ===== VIDEO =====
     @app.route("/video")
     def video_player():
         if "user_id" not in session:
             return redirect("/login")
         video_files = get_media_files(app.config['VIDEO_FOLDER'], ['.mp4', '.avi', '.mkv', '.mov', '.wmv'])
-        return render_template("video.html", video_files=video_files)
+        return render_template('video.html', video_files=video_files)
 
-    # ============================================
-    # UPLOAD
-    # ============================================
+    # ===== UPLOAD PAGE =====
     @app.route("/upload")
     def upload():
         if "user_id" not in session:
             return redirect("/login")
         return render_template("upload.html")
 
-    # ============================================
-    # API UPLOAD MEDIA
-    # ============================================
+    # ===== API UPLOAD MEDIA =====
     @app.route("/api/upload", methods=["POST"])
     def upload_file():
         if "user_id" not in session:
@@ -200,9 +182,7 @@ def init_app(app, sock):
 
         return jsonify({"results": results})
 
-    # ============================================
-    # PROFIL
-    # ============================================
+    # ===== PROFILE PAGE =====
     @app.route("/profile")
     def profile():
         if "user_id" not in session:
@@ -212,41 +192,49 @@ def init_app(app, sock):
             with open(PROFILE_FILE, "r", encoding="utf-8") as f:
                 profile_data = json.load(f)
         else:
-            profile_data = {"nama": "", "email": "", "jk": "", "umur": "", "bio": "", "foto": ""}
+            profile_data = {"nama": "", "email": "", "jk": "", "umur": "", "bio": "", "foto": "", "cover": ""}
 
         current_year = datetime.now().year
         return render_template("profile.html", profile=profile_data, current_year=current_year)
 
-    # ============================================
-    # EDIT PROFIL
-    # ============================================
+    # ===== EDIT PROFILE PAGE =====
     @app.route("/edit-profile")
     def edit_profile():
         if os.path.exists(PROFILE_FILE):
             with open(PROFILE_FILE, "r", encoding="utf-8") as f:
                 profile_data = json.load(f)
         else:
-            profile_data = {"nama": "", "email": "", "jk": "", "umur": "", "bio": "", "foto": ""}
+            profile_data = {"nama": "", "email": "", "jk": "", "umur": "", "bio": "", "foto": "", "cover": ""}
 
         return render_template("edit-profile.html", profile=profile_data)
 
-    # ============================================
-    # SIMPAN PROFIL
-    # ============================================
+    # ===== SAVE PROFILE DATA =====
     @app.route("/api/save-profile", methods=["POST"])
     def save_profile():
         if "user_id" not in session:
             return jsonify({"status": "error", "message": "Harus login!"}), 403
 
         data = request.json
+        # baca file dulu untuk mempertahankan foto/cover jika tidak dikirim
+        if os.path.exists(PROFILE_FILE):
+            with open(PROFILE_FILE, "r", encoding="utf-8") as f:
+                profile_data = json.load(f)
+        else:
+            profile_data = {}
+
+        # update fields (jaga foto/cover jika tidak ada)
+        profile_data["nama"] = data.get("nama", profile_data.get("nama", ""))
+        profile_data["email"] = data.get("email", profile_data.get("email", ""))
+        profile_data["jk"] = data.get("jk", profile_data.get("jk", ""))
+        profile_data["umur"] = data.get("umur", profile_data.get("umur", ""))
+        profile_data["bio"] = data.get("bio", profile_data.get("bio", ""))
+
         with open(PROFILE_FILE, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=4)
+            json.dump(profile_data, f, indent=4)
 
         return jsonify({"status": "success"})
 
-    # ============================================
-    # UPLOAD FOTO PROFIL (DENGAN HAPUS FOTO LAMA)
-    # ============================================
+    # ===== UPLOAD PHOTO (profile or cover) =====
     @app.route("/api/upload-photo", methods=["POST"])
     def upload_photo():
         if "user_id" not in session:
@@ -255,10 +243,16 @@ def init_app(app, sock):
         if "photo" not in request.files:
             return jsonify({"status": "error", "message": "Foto tidak ditemukan"}), 400
 
+        # jenis: "profile" atau "cover" (default profile)
+        photo_type = request.form.get("type", request.args.get("type", "profile"))
+        if photo_type not in ("profile", "cover"):
+            photo_type = "profile"
+
         file = request.files["photo"]
         if file.filename == "":
             return jsonify({"status": "error", "message": "Nama file kosong"}), 400
 
+        # folder: app/static/profile
         foto_folder = os.path.join(app.root_path, "static", "profile")
         os.makedirs(foto_folder, exist_ok=True)
 
@@ -266,31 +260,35 @@ def init_app(app, sock):
         filepath = os.path.join(foto_folder, filename)
         file.save(filepath)
 
+        # load existing profile data
         if os.path.exists(PROFILE_FILE):
             with open(PROFILE_FILE, "r", encoding="utf-8") as f:
                 profile_data = json.load(f)
         else:
             profile_data = {}
 
-        old_foto = profile_data.get("foto", "")
+        # tentukan key & default name
+        key = "foto" if photo_type == "profile" else "cover"
+        default_name = "profile.png" if key == "foto" else "cover.png"
 
-        if old_foto and old_foto != "profile.png":
-            old_path = os.path.join(foto_folder, old_foto)
+        # hapus lama jika bukan default
+        old_name = profile_data.get(key, "")
+        if old_name and old_name != default_name:
+            old_path = os.path.join(foto_folder, old_name)
             if os.path.exists(old_path):
                 try:
                     os.remove(old_path)
                 except:
                     pass
 
-        profile_data["foto"] = filename
+        # simpan nama file baru
+        profile_data[key] = filename
         with open(PROFILE_FILE, "w", encoding="utf-8") as f:
             json.dump(profile_data, f, indent=4)
 
-        return jsonify({"status": "success", "foto": filename})
+        return jsonify({"status": "success", "foto": filename, "type": key})
 
-    # ============================================
-    # GIT UPDATE
-    # ============================================
+    # ===== UPDATE CHECK GIT =====
     @app.route("/update")
     def update():
         return render_template("update.html")
@@ -306,9 +304,7 @@ def init_app(app, sock):
         except Exception as e:
             return jsonify({"update_available": False, "error": str(e)})
 
-    # ============================================
-    # UPDATE REALTIME
-    # ============================================
+    # ===== WEBSOCKET UPDATE =====
     @sock.route("/ws/update")
     def ws_update(ws):
 
@@ -335,9 +331,7 @@ def init_app(app, sock):
 
         send("[DONE]")
 
-    # ============================================
-    # RESTART SERVER
-    # ============================================
+    # ===== RESTART =====
     @app.route("/api/restart", methods=["POST"])
     def restart_server():
 
@@ -348,9 +342,7 @@ def init_app(app, sock):
         threading.Thread(target=delayed).start()
         return jsonify({"message": "Restart..."})
 
-    # ============================================
-    # MEDIA FILE SERVE
-    # ============================================
+    # ===== SERVE MEDIA =====
     @app.route("/media/<folder>/<filename>")
     def serve_media(folder, filename):
         if folder == "mp3":
