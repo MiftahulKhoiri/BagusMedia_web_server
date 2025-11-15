@@ -58,9 +58,13 @@ def get_media_files(folder, extensions):
 # ============================
 
 def init_app(app, sock):
+    """
+    Daftarkan semua route ke aplikasi Flask.
+    Panggil init_app(app, sock) dari create_app kamu.
+    """
 
-    BASE_DIR = app.config.get('PROJECT_ROOT', os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-    PROFILE_FILE = app.config.get('PROFILE_FILE')
+    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    PROFILE_FILE = app.config.get('PROFILE_FILE', os.path.join(BASE_DIR, "data", "profile_data.json"))
 
     # ============================
     # REGISTER USER
@@ -69,8 +73,8 @@ def init_app(app, sock):
     def register():
         # Proses daftar user baru
         if request.method == "POST":
-            username = request.form["username"].strip()
-            password = request.form["password"]
+            username = request.form.get("username", "").strip()
+            password = request.form.get("password", "")
 
             if username == "" or password == "":
                 return "Harus diisi!"
@@ -100,8 +104,8 @@ def init_app(app, sock):
     def login():
         # Proses login user
         if request.method == "POST":
-            username = request.form["username"].strip()
-            password = request.form["password"]
+            username = request.form.get("username", "").strip()
+            password = request.form.get("password", "")
 
             conn = sqlite3.connect(app.config['DATABASE'])
             cursor = conn.cursor()
@@ -260,37 +264,35 @@ def init_app(app, sock):
     # API UPLOAD FOTO PROFIL
     # ============================
     @app.route('/api/upload-photo', methods=['POST'])
-def upload_photo():
-    if 'photo' not in request.files:
-        return jsonify({"status": "error", "message": "Foto tidak ditemukan"}), 400
+    def upload_photo():
+        # Terima file foto, simpan ke static/profile, update JSON (simpan NAMA file saja)
+        if 'photo' not in request.files:
+            return jsonify({"status": "error", "message": "Foto tidak ditemukan"}), 400
 
-    file = request.files['photo']
-    if file.filename == "":
-        return jsonify({"status": "error", "message": "Nama file kosong"}), 400
+        file = request.files['photo']
+        if file.filename == "":
+            return jsonify({"status": "error", "message": "Nama file kosong"}), 400
 
-    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    foto_folder = os.path.join(BASE_DIR, "static/profile")
-    os.makedirs(foto_folder, exist_ok=True)
+        foto_folder = os.path.join(BASE_DIR, "static", "profile")
+        os.makedirs(foto_folder, exist_ok=True)
 
-    filename = secure_filename(file.filename)
-    filepath = os.path.join(foto_folder, filename)
-    file.save(filepath)
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(foto_folder, filename)
+        file.save(filepath)
 
-    # Update JSON → simpan hanya nama file
-    profile_file = app.config.get('PROFILE_FILE')
+        # Update JSON → simpan hanya nama file
+        if os.path.exists(PROFILE_FILE):
+            with open(PROFILE_FILE, "r", encoding="utf-8") as f:
+                profile_data = json.load(f)
+        else:
+            profile_data = {}
 
-    if os.path.exists(profile_file):
-        with open(profile_file, "r", encoding="utf-8") as f:
-            profile_data = json.load(f)
-    else:
-        profile_data = {}
+        profile_data["foto"] = filename
 
-    profile_data["foto"] = filename
+        with open(PROFILE_FILE, "w", encoding="utf-8") as f:
+            json.dump(profile_data, f, indent=4)
 
-    with open(profile_file, "w", encoding="utf-8") as f:
-        json.dump(profile_data, f, indent=4)
-
-    return jsonify({"status": "success", "foto": filename})
+        return jsonify({"status": "success", "foto": filename})
 
     # ============================
     # UPDATE CEK GIT
