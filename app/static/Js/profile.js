@@ -1,74 +1,91 @@
-// =====================================================
-// ✨ PROFIL LOGIC — DIBUAT MUDAH DIPAHAMI
-// =====================================================
+// ============================================
+//  Efek Neon untuk Tombol & Foto Profil
+//  ===========================================
 
-// Ambil elemen dari HTML
-const profilePhoto = document.getElementById('profile-photo');
-const photoInput = document.getElementById('photo-input');
+// Tombol edit & logout glowing saat disentuh
+const editBtn = document.querySelector(".btn-edit");
+const logoutBtn = document.querySelector(".btn-logout");
 
-const editBtn = document.getElementById('edit-btn');
-const nama = document.getElementById('nama');
-const email = document.getElementById('email');
-const bio = document.getElementById('bio');
+function addNeonHover(button, color) {
+    button.addEventListener("mouseenter", () => {
+        button.style.boxShadow = `0 0 15px ${color}`;
+        button.style.transform = "scale(1.05)";
+    });
 
-// Mode edit (false = tidak edit, true = sedang edit)
-let editMode = false;
+    button.addEventListener("mouseleave", () => {
+        button.style.boxShadow = "none";
+        button.style.transform = "scale(1.0)";
+    });
+}
 
-// -----------------------------------------------------
-// 👉 Klik foto profil = buka menu pilih gambar (jika mode edit)
-// -----------------------------------------------------
-profilePhoto.addEventListener('click', () => {
-    if (editMode) photoInput.click();
-});
+// warna cyan untuk Edit
+if (editBtn) addNeonHover(editBtn, "cyan");
+// warna merah neon untuk Logout
+if (logoutBtn) addNeonHover(logoutBtn, "red");
 
-// -----------------------------------------------------
-// 👉 Preview foto otomatis
-// -----------------------------------------------------
-photoInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
 
-    // Jika user memilih file, tampilkan preview
-    if (file) {
-        profilePhoto.src = URL.createObjectURL(file);
-    }
-});
+// ============================================
+//  Efek Animasi Foto Profil
+// ============================================
 
-// -----------------------------------------------------
-// 👉 Tombol EDIT ↔ SIMPAN
-// -----------------------------------------------------
-editBtn.addEventListener('click', () => {
+const photo = document.getElementById("profile-photo");
 
-    // Toggle mode edit
-    editMode = !editMode;
+if (photo) {
+    photo.style.transition = "0.3s";
 
-    // Aktifkan / nonaktifkan input
-    [nama, email, bio].forEach(el => el.readOnly = !editMode);
+    photo.addEventListener("mouseenter", () => {
+        photo.style.transform = "scale(1.03)";
+        photo.style.boxShadow = "0 0 20px cyan";
+    });
 
-    // Ubah teks tombol
-    editBtn.textContent = editMode ? 'Simpan Profil' : 'Edit Profil';
+    photo.addEventListener("mouseleave", () => {
+        photo.style.transform = "scale(1.0)";
+        photo.style.boxShadow = "none";
+    });
+}
 
-    // Jika user mengklik "Simpan Profil"
-    if (!editMode) {
 
-        // Ambil data terbaru
-        const data = {
-            nama: nama.value,
-            email: email.value,
-            bio: bio.value
-        };
+// ============================================
+//  Efek Glow pada Kolom Informasi
+// ============================================
 
-        // Kirim ke server dengan fetch
-        fetch("/api/save-profile", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(data)
-        })
-        .then(res => res.json())
-        .then(response => {
-            alert("Profil berhasil disimpan!");
-        })
-        .catch(err => {
-            alert("Gagal menyimpan profil!");
-        });
-    }
-});
+const infoBox = document.querySelector(".info-box");
+
+if (infoBox) {
+    infoBox.addEventListener("mouseenter", () => {
+        infoBox.style.boxShadow = "0 0 15px rgba(0,255,255,0.4)";
+        infoBox.style.borderColor = "cyan";
+    });
+
+    infoBox.addEventListener("mouseleave", () => {
+        infoBox.style.boxShadow = "none";
+        infoBox.style.borderColor = "rgba(0,255,255,0.25)";
+    });
+}
+
+
+// ============================================
+//  Efek animasi nama pengguna
+// ============================================
+
+const nameTag = document.querySelector(".profile-name h2");
+
+if (nameTag) {
+    nameTag.style.transition = "0.4s";
+
+    nameTag.addEventListener("mouseenter", () => {
+        nameTag.style.letterSpacing = "2px";
+        nameTag.style.textShadow = "0 0 12px cyan";
+    });
+
+    nameTag.addEventListener("mouseleave", () => {
+        nameTag.style.letterSpacing = "0px";
+        nameTag.style.textShadow = "0 0 6px cyan";
+    });
+}
+
+
+// ============================================
+//  Console Log (debug ringan)
+// ============================================
+console.log("Profile.js loaded — Neon UI Active");
