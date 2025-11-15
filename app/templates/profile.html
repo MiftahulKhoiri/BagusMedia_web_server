@@ -5,76 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Pengguna - BAGUS MEDIA SERVER</title>
 
-    <!-- Memanggil CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <!-- CSS Neon + CSS Profile -->
     <link rel="stylesheet" href="/static/css/neon.css">
+    <link rel="stylesheet" href="/static/css/profile.css">
 
-    <!-- Ikon browser -->
+    <!-- Ikon -->
     <link rel="icon" href="{{ url_for('static', filename='icon/profil/laki-laki.png') }}">
 </head>
 <body>
 
-    <!-- ✨ BACKGROUND NEON ANIMATED -->
+    <!-- Background Neon -->
+    <canvas id="neonCanvas"></canvas>
 
-    <!-- ✨ HEADER -->
-    <header>
-        <div class="header-content">
+    <!-- ============================
+         HEADER
+    =============================== -->
+    <header class="header">
 
-            <!-- 
-                Tombol Home dihapus:
-                <a href="/home" class="back-btn">⬅ Home</a>
-            -->
+        <!-- Logo menjadi tombol Home -->
+        <a href="/home" class="logo-area">
+            <img src="{{ url_for('static', filename='icon/profil/laki-laki.png') }}" class="logo">
+            <span class="logo-text">Profil</span>
+        </a>
 
-            <!-- 
-                Judul dijadikan tombol Home
-                agar konsisten seperti MP3 & Video
-            -->
-            <a href="/home" style="text-decoration:none;">
-                <h1 style="color:white;">Profil Pengguna</h1>
-            </a>
-
-            <!-- Tombol Logout -->
-            <a href="/logout" class="logout-btn">Logout</a>
-
+        <!-- Tombol Edit & Logout -->
+        <div class="header-buttons">
+            <a href="/edit-profile" class="btn-edit">Edit Profil</a>
+            <a href="/logout" class="btn-logout">Logout</a>
         </div>
     </header>
 
-    <!-- ✨ KARTU PROFIL -->
-    <main>
-        <div class="profile-card">
+    <!-- ============================
+         BADAN PROFIL
+    =============================== -->
+    <main class="profile-body">
 
-            <!-- Foto Profil -->
+        <!-- Baris foto + nama -->
+        <div class="top-section">
             <img id="profile-photo" 
                  src="{{ profile.foto or url_for('static', filename='icon/profile.png') }}" 
                  alt="Foto Profil">
 
-            <!-- Input File untuk upload foto -->
-            <input type="file" id="photo-input" accept="image/*">
-
-            <!-- Input Nama -->
-            <label>Nama Lengkap:</label>
-            <input type="text" id="nama" value="{{ profile.nama }}" readonly>
-
-            <!-- Input Email -->
-            <label>Email:</label>
-            <input type="email" id="email" value="{{ profile.email }}" readonly>
-
-            <!-- Input Bio -->
-            <label>Bio:</label>
-            <textarea id="bio" readonly>{{ profile.bio }}</textarea>
-
-            <!-- Tombol Edit / Simpan -->
-            <button id="edit-btn">Edit Profil</button>
+            <div class="profile-name">
+                <h2>{{ profile.nama }}</h2>
+            </div>
         </div>
+
+        <!-- Kolom Informasi -->
+        <div class="info-box">
+
+            <label>Email:</label>
+            <p>{{ profile.email }}</p>
+
+            <label>Jenis Kelamin:</label>
+            <p>{{ profile.jk or "-" }}</p>
+
+            <label>Umur:</label>
+            <p>{{ profile.umur or "-" }}</p>
+
+            <label>Bio / Keterangan:</label>
+            <p class="bio">{{ profile.bio }}</p>
+
+        </div>
+
     </main>
 
-    <!-- ✨ FOOTER -->
+    <!-- ============================
+         FOOTER
+    =============================== -->
     <footer>
         <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
     </footer>
 
-    <!-- Memanggil file JavaScript -->
-    <script src="{{ url_for('static', filename='Js/profile.js') }}"></script>
+    <!-- Script Neon -->
     <script src="/static/Js/neon.js" defer></script>
 
 </body>
