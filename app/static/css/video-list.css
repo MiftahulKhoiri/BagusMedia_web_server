@@ -1,0 +1,111 @@
+:root {
+    --neon: #00ffcc;
+    --neon2: #39ff14;
+}
+
+body {
+    margin: 0;
+    background: #050505;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+/* ============================
+   HEADER
+============================ */
+.header {
+    text-align: center;
+    padding: 16px;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+}
+
+.title {
+    margin: 0;
+    font-size: 26px;
+    color: var(--neon);
+    text-shadow: 0 0 8px var(--neon);
+}
+
+/* Tombol kiri-kanan */
+.btn-home, .btn-open {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 6px 12px;
+    background: var(--neon);
+    color: black;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.btn-home { left: 10px; }
+.btn-open { right: 10px; }
+
+/* ============================
+   VIDEO GRID
+============================ */
+.album-container {
+    padding: 15px;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);   /* 2 kolom di HP */
+    gap: 15px;
+}
+
+.video-item {
+    background: rgba(255,255,255,0.06);
+    padding: 10px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: 0.2s;
+}
+
+.video-item:hover {
+    background: rgba(0,255,200,0.15);
+}
+
+/* Thumbnail box */
+.thumb-box {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.thumb {
+    width: 70px;
+    filter: drop-shadow(0 0 4px var(--neon));
+}
+
+.video-name {
+    text-align: center;
+    font-size: 13px;
+    word-break: break-all;
+    margin-top: 5px;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 16px;
+    color: var(--neon2);
+    margin-top: 20px;
+}
+
+/* Empty message */
+.empty {
+    text-align: center;
+    color: #bbb;
+    font-size: 14px;
+    padding: 20px;
+}
