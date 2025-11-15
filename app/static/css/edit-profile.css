@@ -14,24 +14,59 @@ body{
 }
 
 /* ==========================
-   HEADER
+   HEADER BARU
 ========================== */
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:14px 20px;
-  background:rgba(0,0,0,0.55);
-  backdrop-filter:blur(6px);
+.header {
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-.btn-back, .btn-logout{
-  background:var(--neon);
-  padding:8px 14px;
-  border-radius:8px;
-  font-weight:bold;
-  color:black;
-  text-decoration:none;
+/* Judul utama besar */
+.edit-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--neon);
+    text-shadow: 0 0 8px var(--neon);
+}
+
+/* Tombol Kiri-Kanan */
+.header-buttons {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;   /* Logout kiri — Kembali kanan */
+    padding: 0 20px;
+}
+
+/* Tombol Logout (kiri) */
+.btn-logout {
+    background: red;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 16px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Tombol Kembali (kanan) */
+.btn-back {
+    background: var(--neon);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 16px;
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.btn-back:hover,
+.btn-logout:hover {
+    filter: brightness(1.2);
 }
 
 /* ==========================
