@@ -24,9 +24,7 @@
     <h1 class="edit-title">Edit Profil</h1>
 
     <a href="/profile" class="btn-back">⬅ Kembali</a>
-
     <a href="/logout" class="btn-logout">Logout</a>
-
 </header>
 
 <!-- ===============================
@@ -37,12 +35,11 @@
          src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
          alt="Foto Cover">
 
-    <!-- Input tersembunyi -->
     <input id="cover-input" type="file" accept="image/*" style="display:none;">
 </div>
 
 <!-- ===============================
-     FOTO PROFIL OVERLAP
+     FOTO PROFIL (OVERLAP)
 =============================== -->
 <div class="profile-photo-area">
     <img id="profile-photo"
@@ -76,7 +73,13 @@
     <label>Bio / Keterangan:</label>
     <textarea id="bio">{{ profile.bio }}</textarea>
 
+    <!-- Tombol Simpan Profil -->
     <button id="save-btn" class="save-btn">Simpan Perubahan</button>
+
+    <!-- ===============================
+         TOMBOL GANTI PASSWORD (BARU)
+    ================================ -->
+    <a href="/change-password" class="change-pass-btn">Ganti Password</a>
 
 </main>
 
