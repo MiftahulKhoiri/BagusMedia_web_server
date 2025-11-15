@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Video - BAGUS MEDIA SERVER</title>
+
+    <link rel="stylesheet" href="/static/css/neon.css">
+    <link rel="stylesheet" href="/static/css/video-list.css">
+    <link rel="icon" href="{{ url_for('static', filename='icon/Video.png') }}">
+</head>
+<body>
+
+<canvas id="neonCanvas"></canvas>
+
+<header class="header">
+    <a href="/home" class="btn-home">🏠 Home</a>
+    <h1 class="title">Album Video</h1>
+    <a href="/video" class="btn-open">🎬 Pemutar</a>
+</header>
+
+<main class="album-container">
+
+    {% if video_files|length == 0 %}
+        <p class="empty">Belum ada video yang diupload.</p>
+    {% else %}
+        <div class="video-grid">
+            {% for file in video_files %}
+            <a class="video-item" href="/video?play={{ file }}">
+                <div class="thumb-box">
+                    <img src="/static/icon/Video.png" class="thumb">
+                </div>
+                <span class="video-name">{{ file }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+</main>
+
+<footer class="footer">
+    © BAGUS MEDIA SERVER
+</footer>
+
+<script src="/static/Js/neon.js" defer></script>
+
+</body>
+</html>
