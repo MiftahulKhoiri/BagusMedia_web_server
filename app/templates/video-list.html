@@ -5,43 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Album Video - BAGUS MEDIA SERVER</title>
 
+    <!-- CSS -->
     <link rel="stylesheet" href="/static/css/neon.css">
     <link rel="stylesheet" href="/static/css/video-list.css">
+
+    <!-- Ikon -->
     <link rel="icon" href="{{ url_for('static', filename='icon/Video.png') }}">
 </head>
 <body>
 
+<!-- Background Neon -->
 <canvas id="neonCanvas"></canvas>
 
+<!-- ============================
+      HEADER
+============================ -->
 <header class="header">
     <a href="/home" class="btn-home">🏠 Home</a>
     <h1 class="title">Album Video</h1>
     <a href="/video" class="btn-open">🎬 Pemutar</a>
 </header>
 
+<!-- ============================
+      KONTEN LIST VIDEO
+============================ -->
 <main class="album-container">
 
     {% if video_files|length == 0 %}
         <p class="empty">Belum ada video yang diupload.</p>
     {% else %}
+
         <div class="video-grid">
             {% for file in video_files %}
+
             <a class="video-item" href="/video?play={{ file }}">
+
+                <!-- Thumbnail otomatis -->
                 <div class="thumb-box">
-                    <img src="/static/icon/Video.png" class="thumb">
+                    <video class="thumb-video" preload="metadata" muted>
+                        <source src="{{ url_for('serve_media', folder='video', filename=file) }}">
+                    </video>
                 </div>
+
+                <!-- Nama video -->
                 <span class="video-name">{{ file }}</span>
+
             </a>
+
             {% endfor %}
         </div>
-    {% endif %}
 
+    {% endif %}
 </main>
 
+<!-- ============================
+      FOOTER
+============================ -->
 <footer class="footer">
     © BAGUS MEDIA SERVER
 </footer>
 
+<!-- Script -->
 <script src="/static/Js/neon.js" defer></script>
 
 </body>
