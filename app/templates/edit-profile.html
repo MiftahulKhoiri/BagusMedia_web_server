@@ -1,80 +1,86 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profil - BAGUS MEDIA SERVER</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Edit Profil - BAGUS MEDIA SERVER</title>
 
-    <link rel="stylesheet" href="/static/css/neon.css">
-    <link rel="stylesheet" href="/static/css/edit-profile.css">
+  <link rel="stylesheet" href="/static/css/neon.css">
+  <link rel="stylesheet" href="/static/css/edit-profile.css">
 
-    <link rel="icon" href="{{ url_for('static', filename='icon/profil/laki-laki.png') }}">
+  <link rel="icon" href="{{ url_for('static', filename='icon/profil/laki-laki.png') }}">
 </head>
 <body>
 
 <canvas id="neonCanvas"></canvas>
 
-<!-- ============================
-     HEADER
-=============================== -->
 <header class="header">
-    <a href="/profile" class="btn-back">⬅ Kembali</a>
-    <h1>Edit Profil</h1>
-    <a href="/logout" class="btn-logout">Logout</a>
+  <a href="/profile" class="btn-back">⬅ Kembali</a>
+  <h1>Edit Profil</h1>
+  <a href="/logout" class="btn-logout">Logout</a>
 </header>
 
-<!-- ============================
-     COVER FOTO
-=============================== -->
-<div class="cover-section">
-    <img id="cover-photo"
-        src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
-        alt="Foto Cover">
-
-    <input type="file" id="cover-input" accept="image/*" style="display:none;">
+<!-- cover -->
+<div class="cover-area">
+  <img id="cover-photo"
+       src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
+       alt="Foto Cover">
+  <input id="cover-input" type="file" accept="image/*" />
 </div>
 
-<!-- ============================
-     FOTO PROFIL
-=============================== -->
-<div class="profile-photo-section">
-    <img id="profile-photo"
-        src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
-        alt="Foto Profil">
-
-    <input type="file" id="photo-input" accept="image/*" style="display:none;">
+<!-- profile photo -->
+<div class="profile-photo-area">
+  <img id="profile-photo"
+       src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
+       alt="Foto Profil">
+  <input id="photo-input" type="file" accept="image/*" />
 </div>
 
-<!-- ============================
-     FORM DATA PROFIL
-=============================== -->
-<main class="form-box">
+<!-- form -->
+<main class="edit-box">
+  <div class="form-grid">
+    <div class="left-card">
+      <label for="nama">Nama Lengkap:</label>
+      <input id="nama" type="text" value="{{ profile.nama }}">
 
-    <label>Nama Lengkap:</label>
-    <input type="text" id="nama" value="{{ profile.nama }}">
+      <label for="email">Email:</label>
+      <input id="email" type="email" value="{{ profile.email }}">
 
-    <label>Email:</label>
-    <input type="email" id="email" value="{{ profile.email }}">
-
-    <label>Jenis Kelamin:</label>
-    <select id="jk">
+      <label for="jk">Jenis Kelamin:</label>
+      <select id="jk">
         <option value="">- Pilih -</option>
-        <option value="Laki-laki" {{ "selected" if profile.jk=="Laki-laki" else "" }}>Laki-laki</option>
-        <option value="Perempuan" {{ "selected" if profile.jk=="Perempuan" else "" }}>Perempuan</option>
-    </select>
+        <option value="Laki-laki" {% if profile.jk=="Laki-laki" %}selected{% endif %}>Laki-laki</option>
+        <option value="Perempuan" {% if profile.jk=="Perempuan" %}selected{% endif %}>Perempuan</option>
+      </select>
 
-    <label>Umur:</label>
-    <input type="number" id="umur" value="{{ profile.umur }}">
+      <label for="umur">Umur:</label>
+      <input id="umur" type="number" value="{{ profile.umur }}">
 
-    <label>Bio / Keterangan:</label>
-    <textarea id="bio">{{ profile.bio }}</textarea>
+      <label for="bio">Bio / Keterangan:</label>
+      <textarea id="bio">{{ profile.bio }}</textarea>
 
-    <button id="save-btn" class="save-btn">Simpan Perubahan</button>
+      <button id="save-btn" class="save-btn">Simpan Perubahan</button>
+    </div>
 
+    <aside class="right-card">
+      <div class="preview-title">Preview</div>
+      <div class="preview-box">
+        <img src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}" alt="preview">
+        <div>
+          <div style="font-weight:700;color:var(--neon2)">{{ profile.nama or "Nama" }}</div>
+          <div style="font-size:13px;color:#cfe;">{{ profile.email or "email@domain" }}</div>
+          <div style="margin-top:8px;font-size:13px;color:#ddd;">{{ profile.bio or "Bio singkat..." }}</div>
+        </div>
+      </div>
+    </aside>
+  </div>
 </main>
+
+<footer>
+  <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
+</footer>
 
 <script src="/static/Js/neon.js" defer></script>
 <script src="/static/Js/edit-profile.js" defer></script>
-
 </body>
 </html>
