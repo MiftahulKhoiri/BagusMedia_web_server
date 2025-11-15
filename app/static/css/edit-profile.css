@@ -1,0 +1,162 @@
+/* ============================
+   STYLE UMUM
+============================ */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: black;
+    color: white;
+    overflow-x: hidden;
+}
+
+/* ============================
+   HEADER
+============================ */
+.header {
+    padding: 12px 15px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+}
+
+/* Tombol kembali kiri */
+.btn-back {
+    text-decoration: none;
+    color: cyan;
+    font-size: 25px;
+    font-weight: bold;
+    justify-self: start;
+}
+
+/* Judul di tengah */
+.title {
+    margin: 0;
+    text-align: center;
+    font-size: 22px;
+    color: cyan;
+    text-shadow: 0 0 10px cyan;
+}
+
+/* Ruang kosong kanan (biar header simetris) */
+.empty-space {
+    justify-self: end;
+    width: 25px;
+}
+
+/* ============================
+   FORM EDIT PROFIL
+============================ */
+.edit-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.edit-card {
+    width: 95%;
+    max-width: 420px;
+    background: rgba(0, 0, 0, 0.55);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+}
+
+/* ============================
+   FOTO PROFIL
+============================ */
+.photo-section {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#preview-photo {
+    width: 130px;
+    height: 130px;
+    border-radius: 14px;
+    border: 3px solid cyan;
+    object-fit: cover;
+    box-shadow: 0 0 12px cyan;
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+
+#preview-photo:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 18px cyan;
+}
+
+#upload-photo {
+    width: 100%;
+    background: #0a0a0a;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid cyan;
+    color: cyan;
+}
+
+/* ============================
+   INPUT FORM
+============================ */
+label {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #ccc;
+    display: block;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1px solid cyan;
+    background: #0d0d0d;
+    color: cyan;
+    font-size: 15px;
+}
+
+/* Tinggi textarea */
+textarea {
+    min-height: 80px;
+}
+
+/* ============================
+   TOMBOL SIMPAN DI BAWAH
+============================ */
+.btn-save {
+    width: 100%;
+    margin-top: 18px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    background: cyan;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 0 12px cyan;
+    transition: 0.3s;
+}
+
+.btn-save:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 18px cyan;
+}
+
+/* ============================
+   FOOTER
+============================ */
+footer {
+    text-align: center;
+    padding: 15px;
+    margin-top: 25px;
+    background: rgba(0, 0, 0, 0.45);
+    color: #39FF14;
+    border-top: 1px solid rgba(57, 255, 20, 0.5);
+    text-shadow: 0 0 10px #39FF14;
+}
