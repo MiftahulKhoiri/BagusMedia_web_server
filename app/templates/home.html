@@ -13,9 +13,6 @@
 </head>
 <body>
 
-    <!-- Tidak perlu canvas manual
-         neon.js akan membuatnya sendiri -->
-    
     <header>
         <div class="logo-container">
             <a href="{{ url_for('home') }}" class="logo-link">
@@ -34,7 +31,8 @@
     <main class="main-content">
         <div class="media-options">
 
-            <a href="{{ url_for('mp3_player') }}" class="media-option">
+            <!-- MASUK KE LIST MP3 -->
+            <a href="{{ url_for('audio_list') }}" class="media-option">
                 <div class="option-icon">
                     <img src="{{ url_for('static', filename='icon/Mp3.png') }}" alt="MP3 Player">
                 </div>
@@ -42,7 +40,8 @@
                 <p>Nikmati pengalaman mendengarkan musik.</p>
             </a>
 
-            <a href="{{ url_for('video_player') }}" class="media-option">
+            <!-- MASUK KE LIST VIDEO -->
+            <a href="{{ url_for('video_list') }}" class="media-option">
                 <div class="option-icon">
                     <img src="{{ url_for('static', filename='icon/Video.png') }}" alt="Video Player">
                 </div>
@@ -57,7 +56,6 @@
         <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
     </footer>
 
-    <!-- Script -->
     <script src="/static/Js/neon.js" defer></script>
     <script src="/static/Js/home.js" defer></script>
 </body>
