@@ -1,4 +1,3 @@
-
 import os
 import json
 import shutil
@@ -9,14 +8,49 @@ import time
 import sqlite3
 import hashlib
 from datetime import datetime
-
-# WAJIB! — ini yang membuat render_template, redirect, session bisa digunakan
 from flask import (
     render_template, request, jsonify, send_from_directory,
     redirect, session
 )
-
 from werkzeug.utils import secure_filename
+
+
+# ============================
+#  SET EKSTENSI FILE VALID
+# ============================
+ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mkv', 'mov', 'wmv', 'mp3', 'wav', 'ogg'}
+
+
+# ============================
+#  HELPER FUNCTION SEDERHANA
+# ============================
+def hash_password(password, salt=None):
+    # Hash password
+    if salt is None:
+        salt = os.urandom(16)
+    if isinstance(salt, str):
+        salt = bytes.fromhex(salt)
+    hashed = hashlib.sha256(salt + password.encode()).hexdigest()
+    return salt.hex() + "$" + hashed
+
+
+def verify_password(stored_password, input_pass):
+    # Validasi password
+    salt_hex, hashed = stored_password.split("$")
+    return stored_password == hash_password(input_pass, salt_hex)
+
+
+def allowed_file(filename):
+    # Cek ekstensi file valid
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def get_media_files(folder, ext_list):
+    # Ambil semua file media di folder
+    if not os.path.exists(folder):
+        return []
+    return [f for f in os.listdir(folder) if any(f.lower().endswith(ext) for ext in ext_list)]
+
 # ============================
 #         ROUTES INTI
 # ============================
