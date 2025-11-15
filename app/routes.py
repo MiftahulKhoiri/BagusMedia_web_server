@@ -110,6 +110,13 @@ def init_app(app, sock):
 
         return render_template("login.html")
 
+    @app.route("/change-password")
+    def change_password_page():
+       if "user_id" not in session:
+           return redirect("/login")
+       return
+       render_template("change-password.html")
+
     # ============================================
     # LOGOUT
     # ============================================
