@@ -1,3 +1,22 @@
+
+import os
+import json
+import shutil
+import subprocess
+import threading
+import sys
+import time
+import sqlite3
+import hashlib
+from datetime import datetime
+
+# WAJIB! — ini yang membuat render_template, redirect, session bisa digunakan
+from flask import (
+    render_template, request, jsonify, send_from_directory,
+    redirect, session
+)
+
+from werkzeug.utils import secure_filename
 # ============================
 #         ROUTES INTI
 # ============================
