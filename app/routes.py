@@ -60,9 +60,13 @@ def init_app(app, sock):
     BASE_DIR = app.config["PROJECT_ROOT"]
     PROFILE_FILE = app.config["PROFILE_FILE"]
 
+
     # ============================================
     # REGISTER
     # ============================================
+    @app.route('/update')
+    def update():
+        return render_template('update.html')
     @app.route("/register", methods=["GET", "POST"])
     def register():
         if request.method == "POST":
