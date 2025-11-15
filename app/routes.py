@@ -112,10 +112,52 @@ def init_app(app, sock):
 
     @app.route("/change-password")
     def change_password_page():
-       if "user_id" not in session:
-           return redirect("/login")
-       return
-       render_template("change-password.html")
+           if "user_id" not in session:
+               return redirect("/login")
+           return
+    render_template("change-password.html")
+    
+    @app.route("/api/change-password", methods=["POST"])
+    def change_password():
+        if "user_id" not in session:
+            return jsonify({"status": "error", "message": "Harus login!"}), 403
+
+    data = request.json
+    old_pass = data.get("old_password")
+    new_pass = data.get("new_password")
+
+    if not old_pass or not new_pass:
+        return jsonify({"status": "error", "message": "Data tidak lengkap!"})
+
+    user_id = session["user_id"]
+
+    # Ambil password lama di DB
+    conn = sqlite3.connect(app.config["DATABASE"])
+    cursor = conn.cursor()
+    cursor.execute("SELECT password FROM users WHERE id=?", (user_id,))
+    row = cursor.fetchone()
+
+    if not row:
+        conn.close()
+        return jsonify({"status": "error", "message": "User tidak ditemukan!"})
+
+    stored_password = row[0]
+
+    # Validasi password lama
+    if not verify_password(stored_password, old_pass):
+        conn.close()
+        return jsonify({"status": "error", "message": "Password lama salah!"})
+
+    # Hash password baru
+    new_hashed = hash_password(new_pass)
+
+    # Simpan ke database
+    cursor.execute("UPDATE users SET password=?, updated_at=? WHERE id=?",
+                   (new_hashed, datetime.utcnow().isoformat(), user_id))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"status": "success", "message": "Password berhasil diperbarui!"})
 
     # ============================================
     # LOGOUT
