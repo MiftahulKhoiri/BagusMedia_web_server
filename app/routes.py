@@ -1,72 +1,14 @@
-import os
-import json
-import shutil
-import subprocess
-import threading
-import sys
-import time
-import sqlite3
-import hashlib
-from datetime import datetime
-from flask import (
-    render_template, request, jsonify, send_from_directory,
-    redirect, session
-)
-from werkzeug.utils import secure_filename
-
-
 # ============================
-#  SET EKSTENSI FILE VALID
-# ============================
-ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mkv', 'mov', 'wmv', 'mp3', 'wav', 'ogg'}
-
-
-# ============================
-#  HELPER FUNCTION SEDERHANA
-# ============================
-def hash_password(password, salt=None):
-    # Hash password
-    if salt is None:
-        salt = os.urandom(16)
-    if isinstance(salt, str):
-        salt = bytes.fromhex(salt)
-    hashed = hashlib.sha256(salt + password.encode()).hexdigest()
-    return salt.hex() + "$" + hashed
-
-
-def verify_password(stored_password, input_pass):
-    # Validasi password
-    salt_hex, hashed = stored_password.split("$")
-    return stored_password == hash_password(input_pass, salt_hex)
-
-
-def allowed_file(filename):
-    # Cek ekstensi file valid
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-def get_media_files(folder, ext_list):
-    # Ambil semua file media di folder
-    if not os.path.exists(folder):
-        return []
-    return [f for f in os.listdir(folder) if any(f.lower().endswith(ext) for ext in ext_list)]
-
-
-# ============================
-#        ROUTES INTI
+#         ROUTES INTI
 # ============================
 def init_app(app, sock):
 
     BASE_DIR = app.config["PROJECT_ROOT"]
     PROFILE_FILE = app.config["PROFILE_FILE"]
 
-
     # ============================================
     # REGISTER
     # ============================================
-    @app.route('/update')
-    def update():
-        return render_template('update.html')
     @app.route("/register", methods=["GET", "POST"])
     def register():
         if request.method == "POST":
@@ -144,7 +86,7 @@ def init_app(app, sock):
         return render_template("home.html", current_year=current_year, username=session["username"])
 
     # ============================================
-    # PLAYER MP3
+    # MP3 PLAYER
     # ============================================
     @app.route("/mp3")
     def mp3_player():
@@ -154,7 +96,7 @@ def init_app(app, sock):
         return render_template("mp3.html", mp3_files=mp3_files)
 
     # ============================================
-    # PLAYER VIDEO
+    # VIDEO PLAYER
     # ============================================
     @app.route("/video")
     def video_player():
@@ -164,7 +106,7 @@ def init_app(app, sock):
         return render_template("video.html", video_files=video_files)
 
     # ============================================
-    # ALBUM MP3 (BARU)
+    # ALBUM MP3
     # ============================================
     @app.route("/audios")
     def audio_list():
@@ -175,7 +117,7 @@ def init_app(app, sock):
         return render_template("mp3-list.html", mp3_files=mp3_files)
 
     # ============================================
-    # ALBUM VIDEO (BARU - DIBUAT RUTENYA SAJA)
+    # ALBUM VIDEO
     # ============================================
     @app.route("/videos")
     def video_list():
@@ -195,7 +137,7 @@ def init_app(app, sock):
         return render_template("upload.html")
 
     # ============================================
-    # API UPLOAD
+    # API UPLOAD MEDIA
     # ============================================
     @app.route("/api/upload", methods=["POST"])
     def upload_file():
@@ -259,7 +201,7 @@ def init_app(app, sock):
         return render_template("edit-profile.html", profile=profile_data)
 
     # ============================================
-    # API SIMPAN PROFIL
+    # SIMPAN PROFIL
     # ============================================
     @app.route("/api/save-profile", methods=["POST"])
     def save_profile():
@@ -286,6 +228,54 @@ def init_app(app, sock):
         file.save(filepath)
 
         return jsonify({"status": "success", "filename": filename})
+
+    # ============================================
+    # HALAMAN UPDATE
+    # ============================================
+    @app.route('/update')
+    def update():
+        return render_template('update.html')
+
+    # ============================================
+    # API CHECK UPDATE
+    # ============================================
+    @app.route('/api/check-update')
+    def check_update():
+        repo_path = BASE_DIR
+        try:
+            subprocess.run(["git", "fetch"], cwd=repo_path)
+            status = subprocess.run(["git", "status", "-uno"], cwd=repo_path, capture_output=True, text=True)
+            update_available = "behind" in status.stdout
+            return jsonify({"update_available": update_available, "output": status.stdout})
+        except Exception as e:
+            return jsonify({"update_available": False, "error": str(e)})
+
+    # ============================================
+    # UPDATE WEBSOCKET
+    # ============================================
+    @sock.route('/ws/update')
+    def ws_update(ws):
+        def send(msg):
+            try:
+                ws.send(msg)
+            except:
+                pass
+
+        repo_path = BASE_DIR
+        send("[INFO] Memulai update...\n")
+
+        p = subprocess.Popen(
+            ["git", "pull"],
+            cwd=repo_path,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True
+        )
+
+        for line in p.stdout:
+            send(line.strip())
+
+        send("[DONE]")
 
     # ============================================
     # SERVE MEDIA
