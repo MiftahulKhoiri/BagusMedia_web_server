@@ -1,125 +1,141 @@
-/* ==========================================================
-   🌟 TAMPAKAN NEON HIJAU FUTURISTIK — RESPONSIF HP & PC
-   ========================================================== */
-
-/* Background hitam dengan neon hijau animasi */
+/* ============================
+   STYLE UMUM
+============================ */
 body {
     margin: 0;
-    background: radial-gradient(circle at top, #001400, #000);
-    font-family: 'Poppins', sans-serif;
-    color: #c8ffd9;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: black;
+    color: white;
     overflow-x: hidden;
 }
 
-/* -------------------------------------------
-   HEADER DENGAN TOMBOL HOME & LOGOUT
--------------------------------------------- */
-header {
-    padding: 15px;
-    background: rgba(0, 20, 0, 0.6);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid #0f3;
-    box-shadow: 0 0 20px rgba(0, 255, 120, 0.3);
-}
-
-.header-content {
+/* ============================
+   HEADER
+============================ */
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 12px 15px;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
 }
 
-.back-btn, .logout-btn {
-    color: #00ff99;
+/* Logo + teks profil (jadi tombol home) */
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     text-decoration: none;
-    padding: 8px 14px;
-    border: 1px solid #00ff80;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    transition: 0.3s;
 }
 
-.back-btn:hover, .logout-btn:hover {
-    background: #00ff80;
-    color: #001a0a;
-    box-shadow: 0 0 10px #00ff80;
+.logo {
+    width: 40px;
+    height: 40px;
 }
 
-h1 {
-    font-size: 1.6rem;
-    text-shadow: 0 0 10px #00ff80;
-}
-
-/* -------------------------------------------
-   KARTU PROFIL UTAMA
--------------------------------------------- */
-.profile-card {
-    width: 350px;
-    margin: 50px auto;
-    padding: 25px;
-    background: rgba(0, 30, 0, 0.8);
-    border-radius: 20px;
-    box-shadow: 0 0 30px rgba(0, 255, 120, 0.4);
-    backdrop-filter: blur(12px);
-    text-align: center;
-}
-
-/* Foto Profil */
-#profile-photo {
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    border: 3px solid #00ff80;
-    box-shadow: 0 0 20px #00ff80;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-#profile-photo:hover {
-    transform: scale(1.08);
-    box-shadow: 0 0 40px #00ff80;
-}
-
-#photo-input {
-    display: none;
-}
-
-/* Input */
-input, textarea {
-    width: 100%;
-    margin-top: 12px;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #044;
-    background: rgba(0, 255, 120, 0.05);
-    color: #baffd0;
-    outline: none;
-}
-
-input:focus, textarea:focus {
-    box-shadow: 0 0 15px #00ff80;
-}
-
-/* Tombol Edit / Simpan */
-button {
-    margin-top: 20px;
-    padding: 12px 20px;
-    background: linear-gradient(90deg, #00ff99, #00cc77);
-    color: #002a11;
+.logo-text {
+    color: cyan;
+    font-size: 22px;
     font-weight: bold;
-    border: none;
+}
+
+/* Tombol kanan */
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-edit,
+.btn-logout {
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.btn-edit {
+    background: cyan;
+    color: black;
+}
+
+.btn-logout {
+    background: red;
+    color: white;
+}
+
+/* ============================
+   BADAN PROFIL
+============================ */
+.profile-body {
+    padding: 20px;
+}
+
+/* TOP SECTION: Foto profil + nama */
+.top-section {
+    display: flex;
+    justify-content: flex-end; /* Foto berada di kanan */
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+/* Foto profil kanan atas */
+#profile-photo {
+    width: 110px;
+    height: 110px;
     border-radius: 12px;
-    cursor: pointer;
-    transition: 0.3s;
+    border: 2px solid cyan;
+    object-fit: cover;
 }
 
-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px #00ff80;
+/* Nama besar di kiri foto */
+.profile-name h2 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: bold;
+    text-shadow: 0 0 8px cyan;
 }
 
-/* Footer */
+/* ============================
+   KOLOM INFORMASI
+============================ */
+.info-box {
+    background: rgba(0, 0, 0, 0.55);
+    padding: 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 255, 255, 0.25);
+    backdrop-filter: blur(8px);
+}
+
+.info-box label {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.info-box p {
+    margin: 4px 0 10px;
+    font-size: 16px;
+}
+
+.bio {
+    white-space: pre-wrap;
+}
+
+/* ============================
+   FOOTER
+============================ */
 footer {
     text-align: center;
-    margin-top: 40px;
-    color: #00ff99;
+    padding: 15px;
+    margin-top: 20px;
+    background: rgba(0, 0, 0, 0.45);
+    border-top: 1px solid rgba(57, 255, 20, 0.5);
+    color: #39FF14;
+    text-shadow: 0 0 8px #39FF14;
 }
