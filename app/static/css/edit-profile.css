@@ -1,162 +1,173 @@
 /* ============================
-   STYLE UMUM
-============================ */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background: black;
-    color: white;
-    overflow-x: hidden;
+   EDIT-PROFILE.CSS (COVER + PROFILE)
+   ============================ */
+
+:root{
+  --neon: #00ffd1;
+  --neon-2: #39ff14;
+  --bg: #070707;
+  --card-bg: rgba(10,10,10,0.55);
 }
 
-/* ============================
-   HEADER
-============================ */
-.header {
-    padding: 12px 15px;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(6px);
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
+/* Basic reset */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg);
+  color: #fff;
+  -webkit-font-smoothing:antialiased;
 }
 
-/* Tombol kembali kiri */
-.btn-back {
-    text-decoration: none;
-    color: cyan;
-    font-size: 25px;
-    font-weight: bold;
-    justify-self: start;
+/* Header */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 18px;
+  background: rgba(0,0,0,0.5);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  position:relative;
+  z-index:20;
+}
+.header .btn-back,
+.header .btn-logout{
+  color: var(--neon-2);
+  text-decoration:none;
+  font-weight:600;
+}
+.header h1{
+  margin:0;
+  color:var(--neon);
+  font-size:18px;
+  text-align:center;
 }
 
-/* Judul di tengah */
-.title {
-    margin: 0;
-    text-align: center;
-    font-size: 22px;
-    color: cyan;
-    text-shadow: 0 0 10px cyan;
+/* COVER */
+.cover-section{
+  width:100%;
+  height:200px;
+  position:relative;
+  overflow:hidden;
+  background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.2));
+}
+.cover-section img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  cursor:pointer;
+  transition: transform .35s ease, filter .25s ease;
+  filter: saturate(1.05) brightness(.95);
+}
+.cover-section img:hover{
+  transform: scale(1.02);
+  filter: saturate(1.1) brightness(1);
 }
 
-/* Ruang kosong kanan (biar header simetris) */
-.empty-space {
-    justify-self: end;
-    width: 25px;
+/* PROFILE PHOTO (overlap di bawah cover) */
+.profile-photo-section{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  transform: translateY(-60px);
+  margin-bottom:-40px;
+}
+#profile-photo{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  border:4px solid rgba(0,0,0,0.5);
+  box-shadow: 0 6px 28px rgba(0,0,0,0.6), 0 0 18px rgba(0,255,208,0.14);
+  object-fit:cover;
+  cursor:pointer;
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+#profile-photo:hover{ transform: scale(1.04); box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 28px rgba(0,255,208,0.28); }
+
+/* MAIN FORM CARD */
+.form-box{
+  max-width:900px;
+  margin: 0 auto;
+  padding: 18px;
+  padding-top: 36px;
+}
+.form-grid{
+  display:grid;
+  grid-template-columns: 1fr 340px;
+  gap: 18px;
 }
 
-/* ============================
-   FORM EDIT PROFIL
-============================ */
-.edit-container {
-    display: flex;
-    justify-content: center;
-    padding: 20px;
+/* left: form inputs */
+.left-card{
+  background: var(--card-bg);
+  border-radius:12px;
+  padding:16px;
+  border:1px solid rgba(0,255,200,0.06);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+}
+.left-card label{ display:block; margin-bottom:8px; color:#cde; font-weight:600; }
+.left-card input,
+.left-card select,
+.left-card textarea{
+  width:100%;
+  padding:10px 12px;
+  border-radius:8px;
+  border:1px solid rgba(0,255,200,0.12);
+  background: rgba(0,0,0,0.45);
+  color: #dff;
+  margin-bottom:12px;
+  font-size:14px;
+}
+.left-card textarea{ min-height:110px; resize:vertical; }
+
+/* right: preview card */
+.right-card{
+  background: linear-gradient(180deg, rgba(10,10,10,0.45), rgba(6,6,6,0.35));
+  border-radius:12px;
+  padding:16px;
+  height:100%;
+  border:1px solid rgba(57,255,20,0.06);
+}
+.preview-title{ color:var(--neon-2); font-weight:700; margin-bottom:8px; }
+.preview-box{
+  background: rgba(0,0,0,0.45);
+  border-radius:8px;
+  padding:12px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  border:1px solid rgba(0,255,200,0.04);
+}
+.preview-box img{ width:64px; height:64px; object-fit:cover; border-radius:8px; }
+
+/* save button */
+.save-btn{
+  width:100%;
+  padding:12px;
+  margin-top:8px;
+  background: linear-gradient(90deg, var(--neon), var(--neon-2));
+  color:#000;
+  border:none;
+  border-radius:8px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow: 0 6px 20px rgba(0,255,200,0.16);
 }
 
-.edit-card {
-    width: 95%;
-    max-width: 420px;
-    background: rgba(0, 0, 0, 0.55);
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    backdrop-filter: blur(8px);
+/* small responsive */
+@media(max-width:920px){
+  .form-grid{ grid-template-columns: 1fr; }
+  .profile-photo-section{ transform: translateY(-45px); margin-bottom:-30px; }
+  #profile-photo{ width:96px; height:96px; }
+  .cover-section{ height:140px; }
 }
 
-/* ============================
-   FOTO PROFIL
-============================ */
-.photo-section {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-#preview-photo {
-    width: 130px;
-    height: 130px;
-    border-radius: 14px;
-    border: 3px solid cyan;
-    object-fit: cover;
-    box-shadow: 0 0 12px cyan;
-    margin-bottom: 10px;
-    transition: 0.3s;
-}
-
-#preview-photo:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0 18px cyan;
-}
-
-#upload-photo {
-    width: 100%;
-    background: #0a0a0a;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid cyan;
-    color: cyan;
-}
-
-/* ============================
-   INPUT FORM
-============================ */
-label {
-    margin-top: 12px;
-    font-size: 14px;
-    color: #ccc;
-    display: block;
-}
-
-input, select, textarea {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border-radius: 8px;
-    border: 1px solid cyan;
-    background: #0d0d0d;
-    color: cyan;
-    font-size: 15px;
-}
-
-/* Tinggi textarea */
-textarea {
-    min-height: 80px;
-}
-
-/* ============================
-   TOMBOL SIMPAN DI BAWAH
-============================ */
-.btn-save {
-    width: 100%;
-    margin-top: 18px;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: bold;
-    background: cyan;
-    color: black;
-    border: none;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 0 12px cyan;
-    transition: 0.3s;
-}
-
-.btn-save:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0 18px cyan;
-}
-
-/* ============================
-   FOOTER
-============================ */
-footer {
-    text-align: center;
-    padding: 15px;
-    margin-top: 25px;
-    background: rgba(0, 0, 0, 0.45);
-    color: #39FF14;
-    border-top: 1px solid rgba(57, 255, 20, 0.5);
-    text-shadow: 0 0 10px #39FF14;
+/* footer */
+footer{
+  text-align:center;
+  padding:14px;
+  margin-top:20px;
+  color: #39FF14;
+  border-top:1px solid rgba(57,255,20,0.05);
 }
