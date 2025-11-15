@@ -43,8 +43,8 @@
         <!-- Baris foto + nama -->
         <div class="top-section">
             <img id="profile-photo"
-     src="{{ url_for('static', filename='profile/' + (profile.foto if profile.foto else 'profile.png')) }}"
-     alt="Foto Profil">
+                src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
+                alt="Foto Profil">
 
             <div class="profile-name">
                 <h2>{{ profile.nama }}</h2>
