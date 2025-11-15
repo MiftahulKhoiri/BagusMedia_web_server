@@ -43,10 +43,13 @@
         <!-- Foto dan Nama -->
         <div class="top-section">
 
-            <!-- FOTO PROFIL -->
+            <!-- FOTO PROFIL (KLIK UNTUK GANTI FOTO) -->
             <img id="profile-photo"
                 src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
                 alt="Foto Profil">
+
+            <!-- INPUT FILE TERSEMBUNYI -->
+            <input type="file" id="photo-input" accept="image/*" style="display:none;">
 
             <!-- Nama User -->
             <div class="profile-name">
@@ -80,8 +83,64 @@
         <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
     </footer>
 
-    <!-- Neon Script -->
+    <!-- Script Neon -->
     <script src="/static/Js/neon.js" defer></script>
+
+
+
+    <!-- ============================
+         SCRIPT GANTI FOTO PROFIL
+    =============================== -->
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const photo = document.getElementById("profile-photo");
+        const fileInput = document.getElementById("photo-input");
+
+        /* Klik foto → buka file picker */
+        photo.addEventListener("click", () => {
+            fileInput.click();
+        });
+
+        /* Saat user memilih foto baru */
+        fileInput.addEventListener("change", async () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            // Efek loading
+            photo.style.opacity = "0.4";
+
+            const formData = new FormData();
+            formData.append("photo", file);
+
+            try {
+                const response = await fetch("/api/upload-photo", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.status === "success") {
+                    // Update foto tanpa reload
+                    photo.src = `/static/profile/${result.foto}?t=${Date.now()}`;
+
+                    // Efek smooth
+                    setTimeout(() => {
+                        photo.style.opacity = "1";
+                    }, 200);
+
+                    alert("Foto profil berhasil diperbarui!");
+                } else {
+                    alert("Gagal upload: " + result.message);
+                }
+
+            } catch (err) {
+                alert("Terjadi kesalahan saat upload foto!");
+            }
+        });
+    });
+    </script>
 
 </body>
 </html>
