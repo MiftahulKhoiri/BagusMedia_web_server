@@ -5,15 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Pengguna - BAGUS MEDIA SERVER</title>
 
+    <!-- CSS -->
     <link rel="stylesheet" href="/static/css/neon.css">
     <link rel="stylesheet" href="/static/css/profile.css">
+
     <link rel="icon" href="{{ url_for('static', filename='icon/profil/laki-laki.png') }}">
 </head>
 <body>
 
 <canvas id="neonCanvas"></canvas>
 
-<!-- HEADER -->
+<!-- ============================
+     HEADER
+=============================== -->
 <header class="header">
     <a href="/home" class="logo-area">
         <img src="{{ url_for('static', filename='icon/profil/laki-laki.png') }}" class="logo">
@@ -27,36 +31,36 @@
 </header>
 
 <!-- ============================
-     COVER FOTO KLIK UNTUK GANTI
+     COVER FOTO
 =============================== -->
 <div class="cover-display">
     <img id="cover-photo"
          src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
          alt="Cover">
-
-    <input type="file" id="cover-input" accept="image/*" style="display:none;">
 </div>
 
 <!-- ============================
-     FOTO PROFIL KLIK UNTUK GANTI
+     FOTO PROFIL OVERLAP
+=============================== -->
+<div class="profile-photo-area">
+    <img id="profile-photo"
+         src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
+         alt="Foto Profil">
+</div>
+
+<!-- ============================
+     BADAN PROFIL
 =============================== -->
 <main class="profile-body">
 
-    <div class="top-section">
-
-        <img id="profile-photo"
-             src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
-             alt="Foto Profil">
-
-        <input type="file" id="photo-input" accept="image/*" style="display:none;">
-
-        <div class="profile-name">
-            <h2>{{ profile.nama }}</h2>
-        </div>
+    <!-- Nama -->
+    <div class="profile-name" style="text-align:center; margin-top:10px;">
+        <h2>{{ profile.nama }}</h2>
     </div>
 
-    <!-- INFO -->
+    <!-- Kolom Informasi -->
     <div class="info-box">
+
         <label>Email:</label>
         <p>{{ profile.email }}</p>
 
@@ -68,10 +72,14 @@
 
         <label>Bio / Keterangan:</label>
         <p class="bio">{{ profile.bio }}</p>
+
     </div>
 
 </main>
 
+<!-- ============================
+     FOOTER
+=============================== -->
 <footer>
     <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
 </footer>
