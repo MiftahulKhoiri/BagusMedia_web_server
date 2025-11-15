@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profil</title>
+    <title>Edit Profil - BAGUS MEDIA SERVER</title>
 
     <link rel="stylesheet" href="/static/css/neon.css">
     <link rel="stylesheet" href="/static/css/edit-profile.css">
@@ -12,80 +12,69 @@
 </head>
 <body>
 
-    <canvas id="neonCanvas"></canvas>
+<canvas id="neonCanvas"></canvas>
 
-    <!-- ============================
-         HEADER (tanpa tombol simpan)
-    =============================== -->
-    <header class="header">
+<!-- ============================
+     HEADER
+=============================== -->
+<header class="header">
+    <a href="/profile" class="btn-back">⬅ Kembali</a>
+    <h1>Edit Profil</h1>
+    <a href="/logout" class="btn-logout">Logout</a>
+</header>
 
-        <!-- Tombol kembali kiri -->
-        <a href="/profile" class="btn-back">⬅</a>
+<!-- ============================
+     COVER FOTO
+=============================== -->
+<div class="cover-section">
+    <img id="cover-photo"
+        src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
+        alt="Foto Cover">
 
-        <!-- Judul di tengah -->
-        <h1 class="title">Edit Profil</h1>
+    <input type="file" id="cover-input" accept="image/*" style="display:none;">
+</div>
 
-        <!-- Placeholder kanan (biar header tetap simetris) -->
-        <div class="empty-space"></div>
+<!-- ============================
+     FOTO PROFIL
+=============================== -->
+<div class="profile-photo-section">
+    <img id="profile-photo"
+        src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
+        alt="Foto Profil">
 
-    </header>
+    <input type="file" id="photo-input" accept="image/*" style="display:none;">
+</div>
 
-    <!-- ============================
-         FORM EDIT PROFIL
-    =============================== -->
-    <main class="edit-container">
+<!-- ============================
+     FORM DATA PROFIL
+=============================== -->
+<main class="form-box">
 
-        <div class="edit-card">
+    <label>Nama Lengkap:</label>
+    <input type="text" id="nama" value="{{ profile.nama }}">
 
-            <!-- FOTO PROFIL -->
-            <div class="photo-section">
-                <img id="preview-photo" 
-                     src="{{ profile.foto or url_for('static', filename='icon/profile.png') }}"
-                     alt="Foto Profil">
+    <label>Email:</label>
+    <input type="email" id="email" value="{{ profile.email }}">
 
-                <input type="file" id="upload-photo" accept="image/*">
-            </div>
+    <label>Jenis Kelamin:</label>
+    <select id="jk">
+        <option value="">- Pilih -</option>
+        <option value="Laki-laki" {{ "selected" if profile.jk=="Laki-laki" else "" }}>Laki-laki</option>
+        <option value="Perempuan" {{ "selected" if profile.jk=="Perempuan" else "" }}>Perempuan</option>
+    </select>
 
-            <!-- INPUT NAMA -->
-            <label>Nama:</label>
-            <input type="text" id="edit-nama" value="{{ profile.nama }}">
+    <label>Umur:</label>
+    <input type="number" id="umur" value="{{ profile.umur }}">
 
-            <!-- INPUT EMAIL -->
-            <label>Email:</label>
-            <input type="email" id="edit-email" value="{{ profile.email }}">
+    <label>Bio / Keterangan:</label>
+    <textarea id="bio">{{ profile.bio }}</textarea>
 
-            <!-- INPUT JENIS KELAMIN -->
-            <label>Jenis Kelamin:</label>
-            <select id="edit-jk">
-                <option value="">Pilih</option>
-                <option value="Laki-laki" {% if profile.jk == 'Laki-laki' %}selected{% endif %}>Laki-laki</option>
-                <option value="Perempuan" {% if profile.jk == 'Perempuan' %}selected{% endif %}>Perempuan</option>
-            </select>
+    <button id="save-btn" class="save-btn">Simpan Perubahan</button>
 
-            <!-- INPUT UMUR -->
-            <label>Umur:</label>
-            <input type="number" id="edit-umur" value="{{ profile.umur }}">
+</main>
 
-            <!-- INPUT BIO -->
-            <label>Bio / Keterangan:</label>
-            <textarea id="edit-bio">{{ profile.bio }}</textarea>
-
-            <!-- ============================
-                 TOMBOL SIMPAN DI BAWAH BIO
-            =============================== -->
-            <button id="save-btn" class="btn-save">Simpan</button>
-
-        </div>
-
-    </main>
-
-    <!-- FOOTER -->
-    <footer>
-        <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
-    </footer>
-
-    <script src="/static/Js/neon.js" defer></script>
-    <script src="/static/Js/edit-profile.js"></script>
+<script src="/static/Js/neon.js" defer></script>
+<script src="/static/Js/edit-profile.js" defer></script>
 
 </body>
 </html>
