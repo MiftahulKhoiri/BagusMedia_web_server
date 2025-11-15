@@ -5,20 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Pengguna - BAGUS MEDIA SERVER</title>
 
-    <!-- CSS -->
     <link rel="stylesheet" href="/static/css/neon.css">
     <link rel="stylesheet" href="/static/css/profile.css">
-
-    <!-- Ikon -->
     <link rel="icon" href="{{ url_for('static', filename='icon/profil/laki-laki.png') }}">
 </head>
 <body>
 
 <canvas id="neonCanvas"></canvas>
 
-<!-- ============================
-     HEADER
-=============================== -->
+<!-- HEADER -->
 <header class="header">
     <a href="/home" class="logo-area">
         <img src="{{ url_for('static', filename='icon/profil/laki-laki.png') }}" class="logo">
@@ -32,34 +27,36 @@
 </header>
 
 <!-- ============================
-     COVER FOTO
+     COVER FOTO KLIK UNTUK GANTI
 =============================== -->
 <div class="cover-display">
     <img id="cover-photo"
-        src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
-        alt="Cover">
+         src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
+         alt="Cover">
+
+    <input type="file" id="cover-input" accept="image/*" style="display:none;">
 </div>
 
 <!-- ============================
-     FOTO PROFIL & NAMA
+     FOTO PROFIL KLIK UNTUK GANTI
 =============================== -->
 <main class="profile-body">
 
     <div class="top-section">
+
         <img id="profile-photo"
-        src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
-        alt="Foto Profil">
+             src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
+             alt="Foto Profil">
+
+        <input type="file" id="photo-input" accept="image/*" style="display:none;">
 
         <div class="profile-name">
             <h2>{{ profile.nama }}</h2>
         </div>
     </div>
 
-    <!-- ============================
-         INFORMASI USER
-    =============================== -->
+    <!-- INFO -->
     <div class="info-box">
-
         <label>Email:</label>
         <p>{{ profile.email }}</p>
 
@@ -71,7 +68,6 @@
 
         <label>Bio / Keterangan:</label>
         <p class="bio">{{ profile.bio }}</p>
-
     </div>
 
 </main>
@@ -81,6 +77,7 @@
 </footer>
 
 <script src="/static/Js/neon.js" defer></script>
+<script src="/static/Js/profile.js" defer></script>
 
 </body>
 </html>
