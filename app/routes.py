@@ -260,36 +260,37 @@ def init_app(app, sock):
     # API UPLOAD FOTO PROFIL
     # ============================
     @app.route('/api/upload-photo', methods=['POST'])
-    def upload_photo():
-        if 'photo' not in request.files:
-            return jsonify({"status": "error", "message": "Foto tidak ditemukan"}), 400
+def upload_photo():
+    if 'photo' not in request.files:
+        return jsonify({"status": "error", "message": "Foto tidak ditemukan"}), 400
 
-        file = request.files['photo']
+    file = request.files['photo']
+    if file.filename == "":
+        return jsonify({"status": "error", "message": "Nama file kosong"}), 400
 
-        if file.filename == "":
-            return jsonify({"status": "error", "message": "Nama file kosong"}), 400
+    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    foto_folder = os.path.join(BASE_DIR, "static/profile")
+    os.makedirs(foto_folder, exist_ok=True)
 
-        # Folder simpan foto
-        foto_folder = os.path.join(BASE_DIR, "static/profile")
-        os.makedirs(foto_folder, exist_ok=True)
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(foto_folder, filename)
+    file.save(filepath)
 
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(foto_folder, filename)
-        file.save(filepath)
+    # Update JSON → simpan hanya nama file
+    profile_file = app.config.get('PROFILE_FILE')
 
-        # Update JSON profil
-        if os.path.exists(PROFILE_FILE):
-            with open(PROFILE_FILE, "r", encoding="utf-8") as f:
-                profile_data = json.load(f)
-        else:
-            profile_data = {}
+    if os.path.exists(profile_file):
+        with open(profile_file, "r", encoding="utf-8") as f:
+            profile_data = json.load(f)
+    else:
+        profile_data = {}
 
-        profile_data["foto"] = f"/static/profile/{filename}"
+    profile_data["foto"] = filename
 
-        with open(PROFILE_FILE, "w", encoding="utf-8") as f:
-            json.dump(profile_data, f, indent=4)
+    with open(profile_file, "w", encoding="utf-8") as f:
+        json.dump(profile_data, f, indent=4)
 
-        return jsonify({"status": "success", "foto": profile_data["foto"]})
+    return jsonify({"status": "success", "foto": filename})
 
     # ============================
     # UPDATE CEK GIT
