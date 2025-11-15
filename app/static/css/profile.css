@@ -145,3 +145,13 @@ footer {
     color: #39FF14;
     text-shadow: 0 0 8px #39FF14;
 }
+
+#profile-photo {
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+#profile-photo:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+}
