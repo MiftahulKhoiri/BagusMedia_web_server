@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Musik - BAGUS MEDIA SERVER</title>
+
+    <link rel="stylesheet" href="/static/css/neon.css">
+    <link rel="stylesheet" href="/static/css/mp3-list.css">
+</head>
+<body>
+
+<canvas id="neonCanvas"></canvas>
+
+<header class="header">
+    <a href="/home" class="btn-home">🏠 Home</a>
+    <h1 class="title">Album Musik</h1>
+    <a href="/mp3" class="btn-open">🎧 Pemutar</a>
+</header>
+
+<main class="album-container">
+
+    {% if mp3_files|length == 0 %}
+        <p class="empty">Belum ada lagu yang diupload.</p>
+    {% else %}
+        <div class="mp3-list">
+            {% for file in mp3_files %}
+            <a class="mp3-item"
+               href="/mp3?play={{ file }}">
+                <img src="/static/icon/Mp3.png" class="icon">
+                <span>{{ file }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+</main>
+
+<footer class="footer">
+    © BAGUS MEDIA SERVER
+</footer>
+
+<script src="/static/Js/neon.js" defer></script>
+
+</body>
+</html>
