@@ -5,142 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Pengguna - BAGUS MEDIA SERVER</title>
 
-    <!-- CSS Neon + Profil -->
+    <!-- CSS -->
     <link rel="stylesheet" href="/static/css/neon.css">
     <link rel="stylesheet" href="/static/css/profile.css">
 
-    <!-- Ikon Browser -->
+    <!-- Ikon -->
     <link rel="icon" href="{{ url_for('static', filename='icon/profil/laki-laki.png') }}">
 </head>
 <body>
 
-    <!-- Background Neon -->
-    <canvas id="neonCanvas"></canvas>
+<canvas id="neonCanvas"></canvas>
 
-    <!-- ============================
-         HEADER PROFIL
-    =============================== -->
-    <header class="header">
+<!-- ============================
+     HEADER
+=============================== -->
+<header class="header">
+    <a href="/home" class="logo-area">
+        <img src="{{ url_for('static', filename='icon/profil/laki-laki.png') }}" class="logo">
+        <span class="logo-text">Profil</span>
+    </a>
 
-        <!-- Logo → Tombol Home -->
-        <a href="/home" class="logo-area">
-            <img src="{{ url_for('static', filename='icon/profil/laki-laki.png') }}" class="logo">
-            <span class="logo-text">Profil</span>
-        </a>
+    <div class="header-buttons">
+        <a href="/edit-profile" class="btn-edit">Edit Profil</a>
+        <a href="/logout" class="btn-logout">Logout</a>
+    </div>
+</header>
 
-        <!-- Tombol Edit & Logout -->
-        <div class="header-buttons">
-            <a href="/edit-profile" class="btn-edit">Edit Profil</a>
-            <a href="/logout" class="btn-logout">Logout</a>
+<!-- ============================
+     COVER FOTO
+=============================== -->
+<div class="cover-display">
+    <img id="cover-photo"
+        src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
+        alt="Cover">
+</div>
+
+<!-- ============================
+     FOTO PROFIL & NAMA
+=============================== -->
+<main class="profile-body">
+
+    <div class="top-section">
+        <img id="profile-photo"
+        src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
+        alt="Foto Profil">
+
+        <div class="profile-name">
+            <h2>{{ profile.nama }}</h2>
         </div>
-    </header>
+    </div>
 
     <!-- ============================
-         BADAN PROFIL
+         INFORMASI USER
     =============================== -->
-    <main class="profile-body">
+    <div class="info-box">
 
-        <!-- Foto dan Nama -->
-        <div class="top-section">
+        <label>Email:</label>
+        <p>{{ profile.email }}</p>
 
-            <!-- FOTO PROFIL (KLIK UNTUK GANTI FOTO) -->
-            <img id="profile-photo"
-                src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
-                alt="Foto Profil">
+        <label>Jenis Kelamin:</label>
+        <p>{{ profile.jk or "-" }}</p>
 
-            <!-- INPUT FILE TERSEMBUNYI -->
-            <input type="file" id="photo-input" accept="image/*" style="display:none;">
+        <label>Umur:</label>
+        <p>{{ profile.umur or "-" }}</p>
 
-            <!-- Nama User -->
-            <div class="profile-name">
-                <h2>{{ profile.nama }}</h2>
-            </div>
-        </div>
+        <label>Bio / Keterangan:</label>
+        <p class="bio">{{ profile.bio }}</p>
 
-        <!-- BOX INFORMASI -->
-        <div class="info-box">
+    </div>
 
-            <label>Email:</label>
-            <p>{{ profile.email }}</p>
+</main>
 
-            <label>Jenis Kelamin:</label>
-            <p>{{ profile.jk or "-" }}</p>
+<footer>
+    <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
+</footer>
 
-            <label>Umur:</label>
-            <p>{{ profile.umur or "-" }}</p>
-
-            <label>Bio / Keterangan:</label>
-            <p class="bio">{{ profile.bio }}</p>
-
-        </div>
-
-    </main>
-
-    <!-- ============================
-         FOOTER
-    =============================== -->
-    <footer>
-        <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
-    </footer>
-
-    <!-- Script Neon -->
-    <script src="/static/Js/neon.js" defer></script>
-
-
-
-    <!-- ============================
-         SCRIPT GANTI FOTO PROFIL
-    =============================== -->
-    <script>
-    document.addEventListener("DOMContentLoaded", () => {
-
-        const photo = document.getElementById("profile-photo");
-        const fileInput = document.getElementById("photo-input");
-
-        /* Klik foto → buka file picker */
-        photo.addEventListener("click", () => {
-            fileInput.click();
-        });
-
-        /* Saat user memilih foto baru */
-        fileInput.addEventListener("change", async () => {
-            const file = fileInput.files[0];
-            if (!file) return;
-
-            // Efek loading
-            photo.style.opacity = "0.4";
-
-            const formData = new FormData();
-            formData.append("photo", file);
-
-            try {
-                const response = await fetch("/api/upload-photo", {
-                    method: "POST",
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                if (result.status === "success") {
-                    // Update foto tanpa reload
-                    photo.src = `/static/profile/${result.foto}?t=${Date.now()}`;
-
-                    // Efek smooth
-                    setTimeout(() => {
-                        photo.style.opacity = "1";
-                    }, 200);
-
-                    alert("Foto profil berhasil diperbarui!");
-                } else {
-                    alert("Gagal upload: " + result.message);
-                }
-
-            } catch (err) {
-                alert("Terjadi kesalahan saat upload foto!");
-            }
-        });
-    });
-    </script>
+<script src="/static/Js/neon.js" defer></script>
 
 </body>
 </html>
