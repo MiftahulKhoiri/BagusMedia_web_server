@@ -263,24 +263,58 @@ def init_app(app, sock):
             json.dump(data, f, indent=4)
         return jsonify({"status": "success"})
 
-    # ============================================
-    # UPLOAD FOTO PROFIL / COVER
-    # ============================================
-    @app.route("/api/upload-photo", methods=["POST"])
-    def upload_photo():
-        if "photo" not in request.files:
-            return jsonify({"status": "error"}), 400
+# ============================================
+# UPLOAD FOTO PROFIL / COVER (AUTO HAPUS FOTO LAMA)
+# ============================================
+@app.route("/api/upload-photo", methods=["POST"])
+def upload_photo():
+    if "photo" not in request.files:
+        return jsonify({"status": "error", "message": "Foto tidak ditemukan"}), 400
 
-        file = request.files["photo"]
-        filename = secure_filename(str(int(time.time())) + "_" + file.filename)
+    file = request.files["photo"]
+    if file.filename == "":
+        return jsonify({"status": "error", "message": "Nama file kosong"}), 400
 
-        foto_folder = os.path.join(app.static_folder, "profile")
-        os.makedirs(foto_folder, exist_ok=True)
+    # Folder penyimpanan foto profil
+    foto_folder = os.path.join(app.static_folder, "profile")
+    os.makedirs(foto_folder, exist_ok=True)
 
-        filepath = os.path.join(foto_folder, filename)
-        file.save(filepath)
+    # Nama file baru → timestamp agar unik
+    filename = secure_filename(str(int(time.time())) + "_" + file.filename)
+    filepath = os.path.join(foto_folder, filename)
 
-        return jsonify({"status": "success", "filename": filename})
+    # Simpan foto baru
+    file.save(filepath)
+
+    # --- Perbarui JSON Profil ---
+    profile_file = PROFILE_FILE
+
+    if os.path.exists(profile_file):
+        with open(profile_file, "r", encoding="utf-8") as f:
+            profile_data = json.load(f)
+    else:
+        profile_data = {}
+
+    # Hapus foto lama jika ada
+    old_foto = profile_data.get("foto", "")
+
+    # Jangan hapus default!!! (profile.png / cover.png)
+    if old_foto not in ["", "profile.png", "cover.png"]:
+        old_path = os.path.join(foto_folder, old_foto)
+        if os.path.exists(old_path):
+            os.remove(old_path)
+
+    # Update JSON → simpan nama file baru
+    profile_data["foto"] = filename
+
+    with open(profile_file, "w", encoding="utf-8") as f:
+        json.dump(profile_data, f, indent=4)
+
+    return jsonify({
+        "status": "success",
+        "filename": filename,
+        "message": "Foto profil berhasil diperbarui!"
+    })
 
     # ============================================
     # HALAMAN UPDATE
