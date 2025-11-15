@@ -21,33 +21,40 @@ body {
     text-align: center;
 }
 
-/* Logo + tulisan Profil */
+/* Logo + tulisan PROFIL (HORIZONTAL) */
 .logo-area {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;        /* ← sejajar horizontal */
     justify-content: center;
     align-items: center;
+    gap: 10px;
     text-decoration: none;
+    margin-bottom: 10px;
 }
 
 .logo {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
 }
 
 .logo-text {
-    margin-top: 5px;
+    margin: 0;
     color: cyan;
     font-size: 23px;
     font-weight: bold;
+    text-shadow: 0 0 8px cyan;
 }
 
-/* Tombol Edit & Logout berada di bawah logo */
+/* ============================
+   TOMBOL EDIT & LOGOUT
+============================ */
 .header-buttons {
+    width: 100%;
     display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 15px;
+    justify-content: space-between; /* ← kiri & kanan */
+    align-items: center;
+    padding: 0 5px;
+    margin-top: 5px;
 }
 
 .btn-edit,
@@ -76,15 +83,14 @@ body {
     padding: 20px;
 }
 
-/* TOP SECTION: Nama di kiri, foto di kanan */
+/* Foto kanan, nama kiri */
 .top-section {
     display: flex;
-    justify-content: space-between; /* Nama kiri — foto kanan */
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
 }
 
-/* Foto kanan */
 #profile-photo {
     width: 120px;
     height: 120px;
@@ -93,7 +99,6 @@ body {
     object-fit: cover;
 }
 
-/* Nama kiri */
 .profile-name h2 {
     margin: 0;
     font-size: 28px;
