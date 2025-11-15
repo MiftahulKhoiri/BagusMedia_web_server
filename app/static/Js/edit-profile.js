@@ -1,118 +1,94 @@
-// ============================================
-//  PREVIEW FOTO SAAT USER UPLOAD
-// ============================================
-const uploadInput = document.getElementById("upload-photo");
-const previewPhoto = document.getElementById("preview-photo");
+document.addEventListener("DOMContentLoaded", () => {
 
-if (uploadInput) {
-    uploadInput.addEventListener("change", () => {
-        const file = uploadInput.files[0];
-        if (file) {
-            // Tampilkan preview foto
-            previewPhoto.src = URL.createObjectURL(file);
+    const coverPhoto = document.getElementById("cover-photo");
+    const coverInput = document.getElementById("cover-input");
+
+    const profilePhoto = document.getElementById("profile-photo");
+    const profileInput = document.getElementById("photo-input");
+
+    const saveBtn = document.getElementById("save-btn");
+
+    /* ===============================
+       GANTI COVER FOTO
+    =============================== */
+    coverPhoto.addEventListener("click", () => coverInput.click());
+
+    coverInput.addEventListener("change", async () => {
+        const file = coverInput.files[0];
+        if (!file) return;
+
+        const fd = new FormData();
+        fd.append("photo", file);
+        fd.append("type", "cover");
+
+        const res = await fetch("/api/upload-photo", {
+            method: "POST",
+            body: fd
+        });
+
+        const result = await res.json();
+        if (result.status === "success") {
+            coverPhoto.src = `/static/profile/${result.foto}?t=${Date.now()}`;
+            alert("Cover berhasil diperbarui!");
+        } else {
+            alert("Gagal upload! " + result.message);
         }
     });
-}
 
+    /* ===============================
+       GANTI FOTO PROFIL
+    =============================== */
+    profilePhoto.addEventListener("click", () => profileInput.click());
 
-// ============================================
-//  FUNGSI UPLOAD FOTO KE SERVER
-// ============================================
-async function uploadPhoto() {
-    const file = uploadInput.files[0];
-    if (!file) return null;   // Jika foto tidak diganti
+    profileInput.addEventListener("change", async () => {
+        const file = profileInput.files[0];
+        if (!file) return;
 
-    const formData = new FormData();
-    formData.append("photo", file);
+        const fd = new FormData();
+        fd.append("photo", file);
+        fd.append("type", "profile");
 
-    const res = await fetch("/api/upload-photo", {
-        method: "POST",
-        body: formData
+        const res = await fetch("/api/upload-photo", {
+            method: "POST",
+            body: fd
+        });
+
+        const result = await res.json();
+        if (result.status === "success") {
+            profilePhoto.src = `/static/profile/${result.foto}?t=${Date.now()}`;
+            alert("Foto profil berhasil diperbarui!");
+        } else {
+            alert("Gagal upload! " + result.message);
+        }
     });
 
-    const result = await res.json();
-
-    if (result.status === "success") {
-        return result.foto;   // path foto baru
-    } else {
-        alert("Gagal upload foto!");
-        return null;
-    }
-}
-
-
-// ============================================
-//  TOMBOL SIMPAN PROFIL
-// ============================================
-const saveBtn = document.getElementById("save-btn");
-
-if (saveBtn) {
+    /* ===============================
+       SIMPAN SEMUA DATA PROFIL
+    =============================== */
     saveBtn.addEventListener("click", async () => {
 
-        saveBtn.disabled = true;
-        saveBtn.innerText = "Menyimpan...";
-
-        // Ambil input data user
-        const nama  = document.getElementById("edit-nama").value;
-        const email = document.getElementById("edit-email").value;
-        const jk    = document.getElementById("edit-jk").value;
-        const umur  = document.getElementById("edit-umur").value;
-        const bio   = document.getElementById("edit-bio").value;
-
-        // Upload foto terlebih dahulu
-        const fotoPath = await uploadPhoto();
-
-        // Buat object data profil
         const data = {
-            nama,
-            email,
-            jk,
-            umur,
-            bio,
+            nama: document.getElementById("nama").value,
+            email: document.getElementById("email").value,
+            jk: document.getElementById("jk").value,
+            umur: document.getElementById("umur").value,
+            bio: document.getElementById("bio").value
         };
 
-        // Jika foto diubah → masukkan path foto baru
-        if (fotoPath) {
-            data.foto = fotoPath;
-        }
-
-        // Kirim data ke server
         const res = await fetch("/api/save-profile", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify(data)
         });
 
         const result = await res.json();
-
+        
         if (result.status === "success") {
             alert("Profil berhasil diperbarui!");
-
-            // Kembali ke halaman profil
             window.location.href = "/profile";
         } else {
             alert("Gagal menyimpan profil!");
         }
-
-        saveBtn.disabled = false;
-        saveBtn.innerText = "Simpan";
-    });
-}
-
-
-// ============================================
-//  ANIMASI NEON UNTUK INPUT & TOMBOL
-// ============================================
-document.querySelectorAll("input, textarea, select").forEach(el => {
-    el.addEventListener("focus", () => {
-        el.style.boxShadow = "0 0 12px cyan";
-        el.style.borderColor = "cyan";
     });
 
-    el.addEventListener("blur", () => {
-        el.style.boxShadow = "none";
-        el.style.borderColor = "cyan";
-    });
 });
-
-console.log("edit-profile.js loaded — Ready!");
