@@ -1,173 +1,174 @@
+/* ============================================
+   EDIT-PROFILE.CSS — FINAL VERSION
+   ============================================ */
+
+:root {
+    --neon: #00ffcc;
+    --neon2: #39ff14;
+    --bg-dark: #050505;
+}
+
+/* BASIC */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg-dark);
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
 /* ============================
-   EDIT-PROFILE.CSS (COVER + PROFILE)
-   ============================ */
-
-:root{
-  --neon: #00ffd1;
-  --neon-2: #39ff14;
-  --bg: #070707;
-  --card-bg: rgba(10,10,10,0.55);
+   HEADER
+============================= */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+    z-index: 10;
 }
 
-/* Basic reset */
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: var(--bg);
-  color: #fff;
-  -webkit-font-smoothing:antialiased;
+/* Tombol kembali */
+.btn-back {
+    text-decoration: none;
+    color: black;
+    background: var(--neon);
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+.btn-back:hover { filter: brightness(1.2); }
+
+/* Tombol simpan */
+.btn-save-top {
+    text-decoration: none;
+    color: black;
+    background: var(--neon2);
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+.btn-save-top:hover { filter: brightness(1.2); }
+
+/* ============================
+   COVER FOTO
+============================= */
+.cover-area {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    position: relative;
 }
 
-/* Header */
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:12px 18px;
-  background: rgba(0,0,0,0.5);
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  position:relative;
-  z-index:20;
-}
-.header .btn-back,
-.header .btn-logout{
-  color: var(--neon-2);
-  text-decoration:none;
-  font-weight:600;
-}
-.header h1{
-  margin:0;
-  color:var(--neon);
-  font-size:18px;
-  text-align:center;
+.cover-area img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    filter: brightness(0.9);
 }
 
-/* COVER */
-.cover-section{
-  width:100%;
-  height:200px;
-  position:relative;
-  overflow:hidden;
-  background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.2));
-}
-.cover-section img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-  cursor:pointer;
-  transition: transform .35s ease, filter .25s ease;
-  filter: saturate(1.05) brightness(.95);
-}
-.cover-section img:hover{
-  transform: scale(1.02);
-  filter: saturate(1.1) brightness(1);
+#cover-input {
+    display: none;
 }
 
-/* PROFILE PHOTO (overlap di bawah cover) */
-.profile-photo-section{
-  width:100%;
-  display:flex;
-  justify-content:center;
-  transform: translateY(-60px);
-  margin-bottom:-40px;
-}
-#profile-photo{
-  width:120px;
-  height:120px;
-  border-radius:50%;
-  border:4px solid rgba(0,0,0,0.5);
-  box-shadow: 0 6px 28px rgba(0,0,0,0.6), 0 0 18px rgba(0,255,208,0.14);
-  object-fit:cover;
-  cursor:pointer;
-  transition: transform .22s ease, box-shadow .22s ease;
-}
-#profile-photo:hover{ transform: scale(1.04); box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 28px rgba(0,255,208,0.28); }
-
-/* MAIN FORM CARD */
-.form-box{
-  max-width:900px;
-  margin: 0 auto;
-  padding: 18px;
-  padding-top: 36px;
-}
-.form-grid{
-  display:grid;
-  grid-template-columns: 1fr 340px;
-  gap: 18px;
+/* ============================
+   FOTO PROFIL
+============================= */
+.profile-photo-area {
+    display: flex;
+    justify-content: center;
+    margin-top: -60px;
+    margin-bottom: 20px;
 }
 
-/* left: form inputs */
-.left-card{
-  background: var(--card-bg);
-  border-radius:12px;
-  padding:16px;
-  border:1px solid rgba(0,255,200,0.06);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-}
-.left-card label{ display:block; margin-bottom:8px; color:#cde; font-weight:600; }
-.left-card input,
-.left-card select,
-.left-card textarea{
-  width:100%;
-  padding:10px 12px;
-  border-radius:8px;
-  border:1px solid rgba(0,255,200,0.12);
-  background: rgba(0,0,0,0.45);
-  color: #dff;
-  margin-bottom:12px;
-  font-size:14px;
-}
-.left-card textarea{ min-height:110px; resize:vertical; }
-
-/* right: preview card */
-.right-card{
-  background: linear-gradient(180deg, rgba(10,10,10,0.45), rgba(6,6,6,0.35));
-  border-radius:12px;
-  padding:16px;
-  height:100%;
-  border:1px solid rgba(57,255,20,0.06);
-}
-.preview-title{ color:var(--neon-2); font-weight:700; margin-bottom:8px; }
-.preview-box{
-  background: rgba(0,0,0,0.45);
-  border-radius:8px;
-  padding:12px;
-  display:flex;
-  gap:12px;
-  align-items:center;
-  border:1px solid rgba(0,255,200,0.04);
-}
-.preview-box img{ width:64px; height:64px; object-fit:cover; border-radius:8px; }
-
-/* save button */
-.save-btn{
-  width:100%;
-  padding:12px;
-  margin-top:8px;
-  background: linear-gradient(90deg, var(--neon), var(--neon-2));
-  color:#000;
-  border:none;
-  border-radius:8px;
-  font-weight:800;
-  cursor:pointer;
-  box-shadow: 0 6px 20px rgba(0,255,200,0.16);
+#profile-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--neon);
+    box-shadow: 0 0 12px var(--neon);
+    cursor: pointer;
 }
 
-/* small responsive */
-@media(max-width:920px){
-  .form-grid{ grid-template-columns: 1fr; }
-  .profile-photo-section{ transform: translateY(-45px); margin-bottom:-30px; }
-  #profile-photo{ width:96px; height:96px; }
-  .cover-section{ height:140px; }
+#photo-input {
+    display: none;
 }
 
-/* footer */
-footer{
-  text-align:center;
-  padding:14px;
-  margin-top:20px;
-  color: #39FF14;
-  border-top:1px solid rgba(57,255,20,0.05);
+/* ============================
+   FORM EDIT
+============================= */
+.edit-box {
+    margin: 0 20px;
+    background: rgba(0,0,0,0.55);
+    padding: 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,255,200,0.15);
+    box-shadow: 0 0 10px rgba(0,255,200,0.1);
+}
+
+.edit-box label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--neon2);
+}
+
+.edit-box input,
+.edit-box select,
+.edit-box textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 10px;
+    font-size: 16px;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    outline: none;
+}
+
+.edit-box textarea {
+    height: 100px;
+    resize: none;
+}
+
+/* ============================
+   TOMBOL SIMPAN DI BAWAH FORM
+============================= */
+.save-btn-bottom {
+    width: 100%;
+    padding: 12px;
+    background: var(--neon);
+    border: none;
+    font-size: 18px;
+    color: black;
+    font-weight: bold;
+    border-radius: 8px;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.save-btn-bottom:hover {
+    filter: brightness(1.2);
+}
+
+/* ============================
+   RESPONSIVE
+============================= */
+@media(max-width:480px){
+    #profile-photo {
+        width: 100px;
+        height: 100px;
+    }
 }
