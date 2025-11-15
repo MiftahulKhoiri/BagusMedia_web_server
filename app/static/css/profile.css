@@ -14,43 +14,45 @@ body {
    HEADER
 ============================ */
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
+    padding: 15px;
     background: rgba(0, 0, 0, 0.55);
     backdrop-filter: blur(6px);
     border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+    text-align: center;
 }
 
-/* Logo + teks profil (jadi tombol home) */
+/* Logo + tulisan Profil */
 .logo-area {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 10px;
     text-decoration: none;
 }
 
 .logo {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
 }
 
 .logo-text {
+    margin-top: 5px;
     color: cyan;
-    font-size: 22px;
+    font-size: 23px;
     font-weight: bold;
 }
 
-/* Tombol kanan */
+/* Tombol Edit & Logout berada di bawah logo */
 .header-buttons {
     display: flex;
-    gap: 10px;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 15px;
 }
 
 .btn-edit,
 .btn-logout {
-    padding: 8px 12px;
+    padding: 8px 14px;
     border-radius: 6px;
     font-size: 14px;
     font-weight: bold;
@@ -74,28 +76,27 @@ body {
     padding: 20px;
 }
 
-/* TOP SECTION: Foto profil + nama */
+/* TOP SECTION: Nama di kiri, foto di kanan */
 .top-section {
     display: flex;
-    justify-content: flex-end; /* Foto berada di kanan */
+    justify-content: space-between; /* Nama kiri — foto kanan */
     align-items: center;
-    gap: 15px;
     margin-bottom: 25px;
 }
 
-/* Foto profil kanan atas */
+/* Foto kanan */
 #profile-photo {
-    width: 110px;
-    height: 110px;
+    width: 120px;
+    height: 120px;
     border-radius: 12px;
-    border: 2px solid cyan;
+    border: 3px solid cyan;
     object-fit: cover;
 }
 
-/* Nama besar di kiri foto */
+/* Nama kiri */
 .profile-name h2 {
     margin: 0;
-    font-size: 26px;
+    font-size: 28px;
     font-weight: bold;
     text-shadow: 0 0 8px cyan;
 }
@@ -105,7 +106,7 @@ body {
 ============================ */
 .info-box {
     background: rgba(0, 0, 0, 0.55);
-    padding: 18px;
+    padding: 20px;
     border-radius: 12px;
     border: 1px solid rgba(0, 255, 255, 0.25);
     backdrop-filter: blur(8px);
@@ -113,13 +114,13 @@ body {
 
 .info-box label {
     display: block;
-    margin-top: 10px;
+    margin-top: 12px;
     font-size: 14px;
     color: #ccc;
 }
 
 .info-box p {
-    margin: 4px 0 10px;
+    margin: 4px 0 12px;
     font-size: 16px;
 }
 
@@ -133,7 +134,7 @@ body {
 footer {
     text-align: center;
     padding: 15px;
-    margin-top: 20px;
+    margin-top: 30px;
     background: rgba(0, 0, 0, 0.45);
     border-top: 1px solid rgba(57, 255, 20, 0.5);
     color: #39FF14;
