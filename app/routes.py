@@ -14,15 +14,19 @@ from flask import (
 )
 from werkzeug.utils import secure_filename
 
-# Format ekstensi file yang diizinkan untuk upload
-ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mkv', 'mov', 'wmv', 'mp3', 'wav', 'ogg'}
 
 # ============================
-#         HELPER FUNCTIONS
+#   SET FILE / EKSTENSI VALID
+# ============================
+ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mkv', 'mov', 'wmv', 'mp3', 'wav', 'ogg'}
+
+
+# ============================
+#   HELPER FUNCTION SIMPLE
 # ============================
 
 def hash_password(password, salt=None):
-    # Membuat password hash + salt untuk keamanan
+    # Membuat hash password
     if salt is None:
         salt = os.urandom(16)
     if isinstance(salt, str):
@@ -32,33 +36,38 @@ def hash_password(password, salt=None):
 
 
 def verify_password(stored_password, password_input):
-    # Mengecek apakah password user cocok dengan hash di database
+    # Validasi input password
     salt_hex, hashed = stored_password.split("$")
     return stored_password == hash_password(password_input, salt_hex)
 
 
 def allowed_file(filename):
-    # Mengecek apakah file punya ekstensi yang diizinkan
+    # Cek ekstensi file valid
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def get_media_files(folder, extensions):
-    # Mengambil semua file media dalam folder tertentu
+    # Ambil semua file media di folder
     if not os.path.exists(folder):
         return []
     return [f for f in os.listdir(folder) if any(f.lower().endswith(ext) for ext in extensions)]
 
 
 # ============================
-#         ROUTES
+#       ROUTES UTAMA
 # ============================
 
 def init_app(app, sock):
-    BASE_DIR = app.config.get('PROJECT_ROOT', os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+    BASE_DIR = app.config.get('PROJECT_ROOT', os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+    PROFILE_FILE = app.config.get('PROFILE_FILE')
+
+    # ============================
+    # REGISTER USER
+    # ============================
     @app.route("/register", methods=["GET", "POST"])
     def register():
-        # Registrasi user baru + menyimpan data ke SQLite
+        # Proses daftar user baru
         if request.method == "POST":
             username = request.form["username"].strip()
             password = request.form["password"]
@@ -84,9 +93,12 @@ def init_app(app, sock):
 
         return render_template("register.html")
 
+    # ============================
+    # LOGIN USER
+    # ============================
     @app.route("/login", methods=["GET", "POST"])
     def login():
-        # Login user → cek password → simpan session
+        # Proses login user
         if request.method == "POST":
             username = request.form["username"].strip()
             password = request.form["password"]
@@ -106,51 +118,67 @@ def init_app(app, sock):
 
         return render_template("login.html")
 
+    # ============================
+    # LOGOUT USER
+    # ============================
     @app.route("/logout")
     def logout():
-        # Menghapus session user dan keluar
+        # Menghapus sesi user
         session.clear()
         return redirect("/login")
 
+    # ============================
+    # SPLASH / LANDING
+    # ============================
     @app.route('/')
     def splash():
-        # Halaman pertama (splash screen)
         return render_template('splash.html')
 
+    # ============================
+    # HALAMAN UTAMA
+    # ============================
     @app.route('/home')
     def home():
-        # Halaman utama setelah login
+        # Home setelah login
         if "user_id" not in session:
             return redirect("/login")
         current_year = datetime.now().year
         return render_template('home.html', current_year=current_year, username=session["username"])
 
+    # ============================
+    # MP3 PLAYER
+    # ============================
     @app.route('/mp3')
     def mp3_player():
-        # Menampilkan daftar lagu MP3
         if "user_id" not in session:
             return redirect("/login")
         mp3_files = get_media_files(app.config['MP3_FOLDER'], ['.mp3', '.wav', '.ogg'])
         return render_template('mp3.html', mp3_files=mp3_files)
 
+    # ============================
+    # VIDEO PLAYER
+    # ============================
     @app.route('/video')
     def video_player():
-        # Menampilkan daftar video
         if "user_id" not in session:
             return redirect("/login")
         video_files = get_media_files(app.config['VIDEO_FOLDER'], ['.mp4', '.avi', '.mkv', '.mov', '.wmv'])
         return render_template('video.html', video_files=video_files)
 
+    # ============================
+    # UPLOAD HALAMAN
+    # ============================
     @app.route('/upload')
     def upload():
-        # Halaman upload media
         if "user_id" not in session:
             return redirect("/login")
         return render_template('upload.html')
 
+    # ============================
+    # API UPLOAD FILE
+    # ============================
     @app.route('/api/upload', methods=['POST'])
     def upload_file():
-        # Proses upload file + memindahkannya ke folder mp3/video
         if "user_id" not in session:
             return jsonify({"error": "Harus login!"}), 403
 
@@ -180,43 +208,98 @@ def init_app(app, sock):
 
         return jsonify({'results': results})
 
+    # ============================
+    # HALAMAN PROFIL
+    # ============================
     @app.route('/profile')
     def profile():
-        # Menampilkan profil user (disimpan dalam file JSON sederhana)
         if "user_id" not in session:
             return redirect("/login")
 
-        profile_file = app.config.get('PROFILE_FILE')
-        if os.path.exists(profile_file):
-            with open(profile_file, "r", encoding="utf-8") as f:
+        # Ambil data profil JSON
+        if os.path.exists(PROFILE_FILE):
+            with open(PROFILE_FILE, "r", encoding="utf-8") as f:
                 profile_data = json.load(f)
         else:
-            profile_data = {"nama": "", "email": "", "bio": "", "foto": ""}
+            profile_data = {"nama": "", "email": "", "jk": "", "umur": "", "bio": "", "foto": ""}
 
         current_year = datetime.now().year
         return render_template('profile.html', profile=profile_data, current_year=current_year)
 
+    # ============================
+    # HALAMAN EDIT PROFIL
+    # ============================
+    @app.route('/edit-profile')
+    def edit_profile():
+        # Menampilkan form edit profil
+        if os.path.exists(PROFILE_FILE):
+            with open(PROFILE_FILE, "r", encoding="utf-8") as f:
+                profile_data = json.load(f)
+        else:
+            profile_data = {"nama": "", "email": "", "jk": "", "umur": "", "bio": "", "foto": ""}
+
+        return render_template('edit-profile.html', profile=profile_data)
+
+    # ============================
+    # API SIMPAN PROFIL
+    # ============================
     @app.route('/api/save-profile', methods=['POST'])
     def save_profile():
-        # Menyimpan data profil user ke file JSON
         if "user_id" not in session:
             return jsonify({"status": "error", "message": "Harus login!"}), 403
 
         data = request.json
-        profile_file = app.config.get('PROFILE_FILE')
-        with open(profile_file, "w", encoding="utf-8") as f:
+
+        # Simpan JSON
+        with open(PROFILE_FILE, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
 
-        return jsonify({"status": "success"})
+        return jsonify({"status": "success", "message": "Profil berhasil diperbarui!"})
 
+    # ============================
+    # API UPLOAD FOTO PROFIL
+    # ============================
+    @app.route('/api/upload-photo', methods=['POST'])
+    def upload_photo():
+        if 'photo' not in request.files:
+            return jsonify({"status": "error", "message": "Foto tidak ditemukan"}), 400
+
+        file = request.files['photo']
+
+        if file.filename == "":
+            return jsonify({"status": "error", "message": "Nama file kosong"}), 400
+
+        # Folder simpan foto
+        foto_folder = os.path.join(BASE_DIR, "static/profile")
+        os.makedirs(foto_folder, exist_ok=True)
+
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(foto_folder, filename)
+        file.save(filepath)
+
+        # Update JSON profil
+        if os.path.exists(PROFILE_FILE):
+            with open(PROFILE_FILE, "r", encoding="utf-8") as f:
+                profile_data = json.load(f)
+        else:
+            profile_data = {}
+
+        profile_data["foto"] = f"/static/profile/{filename}"
+
+        with open(PROFILE_FILE, "w", encoding="utf-8") as f:
+            json.dump(profile_data, f, indent=4)
+
+        return jsonify({"status": "success", "foto": profile_data["foto"]})
+
+    # ============================
+    # UPDATE CEK GIT
+    # ============================
     @app.route('/update')
     def update():
-        # Halaman untuk mengecek update Git
         return render_template('update.html')
 
     @app.route('/api/check-update', methods=['GET'])
     def check_update():
-        # Cek apakah repository perlu di-update
         repo_path = app.config.get('PROJECT_ROOT')
         try:
             subprocess.run(["git", "fetch"], cwd=repo_path)
@@ -226,9 +309,12 @@ def init_app(app, sock):
         except Exception as e:
             return jsonify({'update_available': False, 'error': str(e)}), 500
 
+    # ============================
+    # UPDATE DENGAN WEBSOCKET
+    # ============================
     @sock.route('/ws/update')
     def ws_update(ws):
-        # WebSocket untuk menampilkan progress update Git secara realtime
+
         def send(msg):
             try:
                 ws.send(msg)
@@ -252,9 +338,12 @@ def init_app(app, sock):
 
         send("[DONE]")
 
+    # ============================
+    # RESTART SERVER
+    # ============================
     @app.route('/api/restart', methods=['POST'])
     def restart_server():
-        # Restart aplikasi Flask setelah update
+
         def delayed():
             time.sleep(1)
             os.execl(sys.executable, sys.executable, *sys.argv)
@@ -262,9 +351,11 @@ def init_app(app, sock):
         threading.Thread(target=delayed).start()
         return jsonify({"message": "Restart..."})
 
+    # ============================
+    # MENYAJIKAN FILE MEDIA
+    # ============================
     @app.route('/media/<folder>/<filename>')
     def serve_media(folder, filename):
-        # Menyajikan file mp3/video via URL
         if folder == 'mp3':
             return send_from_directory(app.config['MP3_FOLDER'], filename)
         if folder == 'video':
