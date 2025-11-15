@@ -1,157 +1,196 @@
 /* ============================
-   STYLE UMUM
-============================ */
+   PROFILE.CSS FINAL VERSION
+   ============================ */
+
+:root {
+    --neon: #00ffcc;
+    --neon2: #39ff14;
+    --bg-dark: #050505;
+}
+
+/* BASIC */
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
-    padding: 0;
+    background: var(--bg-dark);
+    color: white;
     font-family: Arial, sans-serif;
-    background: black;
-    color: white;
-    overflow-x: hidden;
 }
 
-/* ============================
-   HEADER
-============================ */
+/* HEADER */
 .header {
-    padding: 15px;
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(6px);
-    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-    text-align: center;
-}
-
-/* Logo + tulisan PROFIL (HORIZONTAL) */
-.logo-area {
-    display: flex;
-    flex-direction: row;        /* ← sejajar horizontal */
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    margin-bottom: 10px;
-}
-
-.logo {
-    width: 50px;
-    height: 50px;
-}
-
-.logo-text {
-    margin: 0;
-    color: cyan;
-    font-size: 23px;
-    font-weight: bold;
-    text-shadow: 0 0 8px cyan;
-}
-
-/* ============================
-   TOMBOL EDIT & LOGOUT
-============================ */
-.header-buttons {
-    width: 100%;
-    display: flex;
-    justify-content: space-between; /* ← kiri & kanan */
-    align-items: center;
-    padding: 0 5px;
-    margin-top: 5px;
-}
-
-.btn-edit,
-.btn-logout {
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-.btn-edit {
-    background: cyan;
-    color: black;
-}
-
-.btn-logout {
-    background: red;
-    color: white;
-}
-
-/* ============================
-   BADAN PROFIL
-============================ */
-.profile-body {
-    padding: 20px;
-}
-
-/* Foto kanan, nama kiri */
-.top-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
+    padding: 14px 20px;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+    z-index: 10;
+}
+
+/* Logo area */
+.logo-area {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--neon);
+}
+.logo-area .logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+}
+.logo-area .logo-text {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--neon2);
+}
+
+/* Tombol header */
+.header-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.header-buttons a {
+    text-decoration: none;
+    color: #000;
+    background: var(--neon);
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.header-buttons a:hover {
+    filter: brightness(1.2);
+}
+
+/* ============================
+   COVER FOTO
+   ============================ */
+.cover-display {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.cover-display img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    filter: brightness(0.95);
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+}
+
+/* ============================
+   FOTO PROFIL + NAMA
+   ============================ */
+.profile-body {
+    padding: 0 20px;
+}
+
+.top-section {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: -55px;
 }
 
 #profile-photo {
-    width: 120px;
-    height: 120px;
-    border-radius: 12px;
-    border: 3px solid cyan;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 3px solid var(--neon);
     object-fit: cover;
+    box-shadow: 0px 0px 12px var(--neon);
+    background: #000;
 }
 
 .profile-name h2 {
     margin: 0;
-    font-size: 28px;
-    font-weight: bold;
-    text-shadow: 0 0 8px cyan;
+    font-size: 24px;
+    color: var(--neon);
+    text-shadow: 0 0 6px rgba(0,255,200,0.4);
 }
 
 /* ============================
-   KOLOM INFORMASI
-============================ */
+   INFO BOX
+   ============================ */
 .info-box {
-    background: rgba(0, 0, 0, 0.55);
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid rgba(0, 255, 255, 0.25);
-    backdrop-filter: blur(8px);
+    margin-top: 20px;
+    background: rgba(0,0,0,0.55);
+    padding: 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,255,200,0.15);
+    box-shadow: 0 0 10px rgba(0,255,200,0.1);
 }
 
 .info-box label {
     display: block;
-    margin-top: 12px;
     font-size: 14px;
-    color: #ccc;
+    font-weight: bold;
+    color: var(--neon2);
+    margin-bottom: 4px;
 }
 
 .info-box p {
-    margin: 4px 0 12px;
     font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 14px;
+    color: #e2e2e2;
 }
 
-.bio {
-    white-space: pre-wrap;
+.info-box .bio {
+    white-space: pre-line;
 }
 
 /* ============================
    FOOTER
-============================ */
+   ============================ */
 footer {
     text-align: center;
-    padding: 15px;
+    padding: 14px;
     margin-top: 30px;
-    background: rgba(0, 0, 0, 0.45);
-    border-top: 1px solid rgba(57, 255, 20, 0.5);
-    color: #39FF14;
-    text-shadow: 0 0 8px #39FF14;
+    color: var(--neon2);
+    border-top: 1px solid rgba(57,255,20,0.1);
+    background: rgba(0,0,0,0.4);
+    font-size: 14px;
 }
 
-#profile-photo {
-    cursor: pointer;
-    transition: 0.3s ease;
-}
+/* ============================
+   RESPONSIVE (HP)
+   ============================ */
+@media (max-width: 480px) {
 
-#profile-photo:hover {
-    transform: scale(1.05);
-    filter: brightness(1.2);
+    .top-section {
+        flex-direction: column;
+        align-items: center;
+        margin-top: -60px;
+        text-align: center;
+    }
+
+    .profile-name h2 {
+        font-size: 20px;
+    }
+
+    #profile-photo {
+        width: 100px;
+        height: 100px;
+    }
+
+    .cover-display {
+        height: 150px;
+    }
+
+    .cover-display img {
+        height: 150px;
+    }
 }
