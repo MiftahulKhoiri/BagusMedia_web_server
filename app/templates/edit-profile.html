@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profil</title>
+
+    <link rel="stylesheet" href="/static/css/neon.css">
+    <link rel="stylesheet" href="/static/css/edit-profile.css">
+
+    <link rel="icon" href="{{ url_for('static', filename='icon/profil/laki-laki.png') }}">
+</head>
+<body>
+
+    <canvas id="neonCanvas"></canvas>
+
+    <!-- ============================
+         HEADER (tanpa tombol simpan)
+    =============================== -->
+    <header class="header">
+
+        <!-- Tombol kembali kiri -->
+        <a href="/profile" class="btn-back">⬅</a>
+
+        <!-- Judul di tengah -->
+        <h1 class="title">Edit Profil</h1>
+
+        <!-- Placeholder kanan (biar header tetap simetris) -->
+        <div class="empty-space"></div>
+
+    </header>
+
+    <!-- ============================
+         FORM EDIT PROFIL
+    =============================== -->
+    <main class="edit-container">
+
+        <div class="edit-card">
+
+            <!-- FOTO PROFIL -->
+            <div class="photo-section">
+                <img id="preview-photo" 
+                     src="{{ profile.foto or url_for('static', filename='icon/profile.png') }}"
+                     alt="Foto Profil">
+
+                <input type="file" id="upload-photo" accept="image/*">
+            </div>
+
+            <!-- INPUT NAMA -->
+            <label>Nama:</label>
+            <input type="text" id="edit-nama" value="{{ profile.nama }}">
+
+            <!-- INPUT EMAIL -->
+            <label>Email:</label>
+            <input type="email" id="edit-email" value="{{ profile.email }}">
+
+            <!-- INPUT JENIS KELAMIN -->
+            <label>Jenis Kelamin:</label>
+            <select id="edit-jk">
+                <option value="">Pilih</option>
+                <option value="Laki-laki" {% if profile.jk == 'Laki-laki' %}selected{% endif %}>Laki-laki</option>
+                <option value="Perempuan" {% if profile.jk == 'Perempuan' %}selected{% endif %}>Perempuan</option>
+            </select>
+
+            <!-- INPUT UMUR -->
+            <label>Umur:</label>
+            <input type="number" id="edit-umur" value="{{ profile.umur }}">
+
+            <!-- INPUT BIO -->
+            <label>Bio / Keterangan:</label>
+            <textarea id="edit-bio">{{ profile.bio }}</textarea>
+
+            <!-- ============================
+                 TOMBOL SIMPAN DI BAWAH BIO
+            =============================== -->
+            <button id="save-btn" class="btn-save">Simpan</button>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
+    </footer>
+
+    <script src="/static/Js/neon.js" defer></script>
+    <script src="/static/Js/edit-profile.js"></script>
+
+</body>
+</html>
