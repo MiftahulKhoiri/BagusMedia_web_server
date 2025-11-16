@@ -1,15 +1,13 @@
 import os
 import shutil
+import subprocess
+import threading
+import time
 from flask import (
     render_template, request, jsonify,
-    redirect, session, send_from_directory
+    redirect, session, send_from_directory, current_app
 )
 from werkzeug.utils import secure_filename
-
-# Untuk thumbnail
-from moviepy.editor import VideoFileClip
-from PIL import Image
-
 
 # ============================================================
 #  EKSTENSI VALID
@@ -32,6 +30,46 @@ def get_media_files(folder, ext_list):
     ]
 
 
+def generate_video_thumbnail(video_path, output_path):
+    """
+    Generate thumbnail via ffmpeg.
+    Mengambil frame pada detik ke-1 (-ss 00:00:01) dan menyimpan jpg scaled.
+    Mengembalikan True jika berhasil, False jika gagal.
+    """
+    try:
+        # Pastikan direktorinya ada
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+        # ffmpeg command: -y overwrite, -ss seek, -vframes 1 capture single frame
+        cmd = [
+            "ffmpeg",
+            "-y",
+            "-i", video_path,
+            "-ss", "00:00:01",
+            "-vframes", "1",
+            "-vf", "scale=320:-1",  # scale lebar 320, proporsional tinggi
+            output_path
+        ]
+
+        # Jalankan ffmpeg, capture output untuk debugging (jika perlu)
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+
+        if result.returncode == 0 and os.path.exists(output_path):
+            return True
+        else:
+            # Jika error, hapus file partial jika ada
+            if os.path.exists(output_path):
+                try:
+                    os.remove(output_path)
+                except:
+                    pass
+            current_app.logger.debug("ffmpeg thumb error: %s", result.stderr)
+            return False
+    except Exception as e:
+        current_app.logger.debug("thumb exception: %s", str(e))
+        return False
+
+
 def register_media_routes(app):
     """
     Semua route media:
@@ -42,7 +80,7 @@ def register_media_routes(app):
     VIDEO_FOLDER = app.config["VIDEO_FOLDER"]
     UPLOAD_FOLDER = app.config["UPLOAD_FOLDER"]
 
-    THUMB_FOLDER = os.path.join(app.static_folder, "thumbs")
+    THUMB_FOLDER = os.path.join(app.static_folder, "thumbs", "video")
     os.makedirs(THUMB_FOLDER, exist_ok=True)
 
     os.makedirs(MP3_FOLDER, exist_ok=True)
@@ -98,35 +136,39 @@ def register_media_routes(app):
     # ============================================================
     @app.route("/api/video-thumb")
     def video_thumb():
+        """
+        Serve thumbnail jika ada, atau coba generate lalu serve.
+        Query param: ?file=<filename>
+        """
         file = request.args.get("file")
-
         if not file:
             return jsonify({"error": "file tidak ditemukan"}), 400
 
-        video_path = os.path.join(VIDEO_FOLDER, file)
+        # Sanitasi nama file (ambil basename agar aman)
+        filename = os.path.basename(file)
+        video_path = os.path.join(VIDEO_FOLDER, filename)
         if not os.path.exists(video_path):
             return jsonify({"error": "video tidak ada"}), 404
 
-        thumb_name = file + ".jpg"
+        # thumb name berdasarkan nama file tanpa ekstensi
+        base = os.path.splitext(filename)[0]
+        thumb_name = secure_filename(base) + ".jpg"
         thumb_path = os.path.join(THUMB_FOLDER, thumb_name)
 
-        # Jika thumbnail sudah ada
+        # Jika sudah ada, serve langsung
         if os.path.exists(thumb_path):
             return send_from_directory(THUMB_FOLDER, thumb_name)
 
-        # Generate thumbnail
-        try:
-            clip = VideoFileClip(video_path)
-            frame = clip.get_frame(0.5)
-            clip.close()
-
-            img = Image.fromarray(frame)
-            img.save(thumb_path, "JPEG")
-
+        # Coba generate synchronously (cepat) — fallback ke default jika gagal
+        ok = generate_video_thumbnail(video_path, thumb_path)
+        if ok and os.path.exists(thumb_path):
             return send_from_directory(THUMB_FOLDER, thumb_name)
-
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+        else:
+            # fallback ke gambar default (letakkan di static/icon/default-thumb.png)
+            default = os.path.join(app.static_folder, "icon", "default-thumb.png")
+            if os.path.exists(default):
+                return send_from_directory(os.path.join(app.static_folder, "icon"), "default-thumb.png")
+            return jsonify({"error": "gagal membuat thumbnail"}), 500
 
     # ============================================================
     #  HALAMAN UPLOAD
@@ -165,9 +207,28 @@ def register_media_routes(app):
                 ext = filename.rsplit(".", 1)[1].lower()
                 dest = MP3_FOLDER if ext in ['mp3', 'wav', 'ogg'] else VIDEO_FOLDER
 
-                shutil.move(temp_path, os.path.join(dest, filename))
+                final_path = os.path.join(dest, filename)
+                shutil.move(temp_path, final_path)
 
                 results.append({"filename": filename, "status": "success"})
+
+                # Jika file video → buat thumbnail di background supaya respon cepat
+                if ext in ['mp4', 'avi', 'mkv', 'mov', 'wmv']:
+                    # buat nama thumb berdasarkan filename (tanpa ekstensi)
+                    base = os.path.splitext(filename)[0]
+                    thumb_name = secure_filename(base) + ".jpg"
+                    thumb_path = os.path.join(THUMB_FOLDER, thumb_name)
+
+                    # generate di thread (tidak block request)
+                    def worker_generate(src=final_path, dst=thumb_path):
+                        try:
+                            generate_video_thumbnail(src, dst)
+                        except Exception as e:
+                            app.logger.debug("thumb thread error: %s", str(e))
+
+                    t = threading.Thread(target=worker_generate, daemon=True)
+                    t.start()
+
             else:
                 results.append({"filename": file.filename, "status": "error"})
 
@@ -178,6 +239,7 @@ def register_media_routes(app):
     # ============================================================
     @app.route("/media/<folder>/<filename>")
     def serve_media(folder, filename):
+        # Hanya izinkan folder mp3/video
         if folder == "mp3":
             return send_from_directory(MP3_FOLDER, filename)
 
