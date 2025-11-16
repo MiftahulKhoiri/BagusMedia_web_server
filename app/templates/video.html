@@ -1,117 +1,60 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pemutar Video - BAGUS MEDIA SERVER</title>
+{% extends "base.html" %}
 
-    <!-- CSS Video Player -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/video.css') }}">
+{% block title %}Pemutar Video - BAGUS MEDIA SERVER{% endblock %}
 
-    <!-- Background Neon -->
-    <link rel="stylesheet" href="/static/css/neon.css">
-</head>
-<body>
+{% block css %}
+<link rel="stylesheet" href="/static/css/video.css">
+{% endblock %}
 
-    <!-- ======================================
-         HEADER (Logo dijadikan tombol Home)
-         ====================================== -->
-    <header>
-        <a href="/" class="logo-container" style="text-decoration:none;">
-            <!-- Logo -->
-            <img src="{{ url_for('static', filename='icon/Video.png') }}" 
-                 alt="Logo Video" class="logo">
+{% block content %}
 
-            <!-- Judul halaman -->
-            <h1 style="color:white;">Pemutar Video</h1>
-        </a>
+<header class="page-header">
+    <h1>Pemutar Video</h1>
 
-        <!-- Menu dihapus sesuai permintaan -->
-        <!-- <nav class="menu">
-            <a href="/" class="menu-item">🏠Home</a>
-        </nav> -->
-    </header>
+    <div class="header-btn-group">
+        <a href="{{ url_for('video_list') }}" class="btn-back">⬅ Kembali</a>
+        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+    </div>
+</header>
 
-    <!-- ======================================
-         VIDEO PLAYER FIXED DI BAGIAN ATAS
-         ====================================== -->
-    <section class="video-player-full">
-        <div class="video-container">
-            <video id="video-player" controls preload="metadata">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-    </section>
+<main class="video-player-container">
 
-    <!-- ======================================
-         KONTEN UTAMA (Panel Kontrol + Playlist)
-         ====================================== -->
-    <main class="main-content">
+    <!-- AREA PLAYER -->
+    <div class="video-box">
+        <h2 class="now-playing">Sedang Diputar</h2>
+        <p id="current-video" class="video-title">Tidak ada video</p>
 
-        <!-- Panel kontrol video -->
-        <div class="player-panel">
+        <video id="video-player" controls width="100%">
+            <source id="video-source" src="" type="video/mp4">
+            Browser Anda tidak mendukung video HTML5.
+        </video>
+    </div>
 
-            <!-- Judul video yang diputar -->
-            <div class="video-info">
-                <h2 id="now-playing-title">Pilih video untuk diputar</h2>
-            </div>
+    <!-- PLAYLIST -->
+    <div class="video-list">
+        <h2 class="list-title">Daftar Video</h2>
 
-            <!-- Tombol Kontrol -->
-            <div class="video-controls">
-                <button id="video-prev-btn" class="control-btn">⏮</button>
-                <button id="video-play-btn" class="control-btn play">▶</button>
-                <button id="video-pause-btn" class="control-btn">⏸</button>
-                <button id="video-next-btn" class="control-btn">⏭</button>
-                <button id="video-shuffle-btn" class="control-btn">🔀</button>
-                <button id="video-repeat-btn" class="control-btn">🔁</button>
-                <button id="video-fullscreen-btn" class="control-btn">⛶</button>
-            </div>
+        <ul class="playlist">
+            {% for file in video_files %}
+            <li class="video-item" onclick="playVideo('{{ file }}')">
+                📺 {{ file }}
+            </li>
+            {% endfor %}
+        </ul>
 
-            <!-- Progress Bar -->
-            <div class="video-progress-container">
-                <span id="video-current-time">0:00</span>
+        {% if video_files|length == 0 %}
+        <p class="empty-info">Belum ada file video yang diunggah.</p>
+        {% endif %}
+    </div>
 
-                <div class="progress-bar">
-                    <div class="progress" id="video-progress"></div>
-                </div>
+</main>
 
-                <span id="video-duration">0:00</span>
-            </div>
+<footer>
+    <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
+</footer>
 
-            <!-- Kontrol Volume -->
-            <div class="video-volume-control">
-                <span>🔊</span>
-                <input type="range" id="video-volume-slider" min="0" max="100" value="50">
-            </div>
+{% endblock %}
 
-        </div>
-
-        <!-- ======================================
-             PLAYLIST VIDEO
-             ====================================== -->
-        <div class="playlist-container">
-            <h3>Daftar Video</h3>
-
-            <div class="playlist" id="playlist">
-                {% for file in video_files %}
-                <div class="playlist-item" 
-                     data-src="{{ url_for('serve_media', folder='video', filename=file) }}">
-                    
-                    <span class="video-name">{{ file }}</span>
-                    <button class="play-track">▶</button>
-                </div>
-                {% endfor %}
-            </div>
-
-        </div>
-
-    </main>
-
-    <!-- ======================================
-         SCRIPT
-         ====================================== -->
-    <script src="{{ url_for('static', filename='Js/video.js') }}"></script>
-    <script src="/static/Js/neon.js" defer></script>
-
-</body>
-</html>
+{% block script %}
+<script src="/static/Js/video.js" defer></script>
+{% endblock %}
