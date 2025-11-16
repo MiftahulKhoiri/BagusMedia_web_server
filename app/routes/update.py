@@ -1,7 +1,7 @@
 import subprocess
 from flask import Blueprint, render_template, jsonify
 
-update_bp = Blueprint("update_bp", __name__)
+update = Blueprint("update", __name__)
 
 def init_update(app, sock):
 
@@ -10,7 +10,7 @@ def init_update(app, sock):
     # =============================
     # HALAMAN UPDATE
     # =============================
-    @update_bp.route("/update")
+    @update.route("/update")
     def update_page():
         return render_template("update.html")
 
