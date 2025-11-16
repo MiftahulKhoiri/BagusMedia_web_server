@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register</title>
+
+    <!-- Background neon -->
+    <link rel="stylesheet" href="/static/css/neon.css">
+    <script src="/static/Js/neon.js" defer></script>
+
+    <!-- CSS form responsif -->
+    <link rel="stylesheet" href="/static/css/form.css">
+</head>
+<body>
+
+<!-- ==========================
+     Kotak Form Register (tema pink)
+     ========================== -->
+<div class="form-box form-pink">
+    <h2>Register</h2>
+
+    <!-- Form register ke server -->
+    <form action="/register" method="POST">
+
+        <!-- Input username -->
+        <input 
+            type="text" 
+            name="username" 
+            placeholder="Buat Username">
+
+        <!-- Input password -->
+        <input 
+            type="password" 
+            name="password" 
+            placeholder="Buat Password">
+
+        <!-- Tombol daftar -->
+        <button type="submit">Daftar</button>
+    </form>
+
+    <!-- Link balik ke login -->
+    <p>
+        Sudah punya akun? 
+        <a href="/login">Login disini</a>
+    </p>
+</div>
+
+</body>
+</html>

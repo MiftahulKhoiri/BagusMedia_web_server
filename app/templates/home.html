@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAGUS MEDIA SERVER</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/home.css">
+    <link rel="stylesheet" href="/static/css/neon.css">
+
+    <link rel="icon" href="{{ url_for('static', filename='icon/icon.png') }}">
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <a href="{{ url_for('home') }}" class="logo-link">
+                <img src="{{ url_for('static', filename='icon/icon.png') }}" alt="Logo" class="logo">
+                <h1>BAGUS MEDIA SERVER</h1>
+            </a>
+
+            <nav class="menu">
+                <a href="{{ url_for('profile') }}">Profil</a>
+                <a href="{{ url_for('upload') }}">Upload</a>
+                <a href="{{ url_for('update') }}">Update</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="media-options">
+
+            <!-- MASUK KE LIST MP3 -->
+            <a href="{{ url_for('audio_list') }}" class="media-option">
+                <div class="option-icon">
+                    <img src="{{ url_for('static', filename='icon/Mp3.png') }}" alt="MP3 Player">
+                </div>
+                <h2>Pemutar Musik</h2>
+                <p>Nikmati pengalaman mendengarkan musik.</p>
+            </a>
+
+            <!-- MASUK KE LIST VIDEO -->
+            <a href="{{ url_for('video_list') }}" class="media-option">
+                <div class="option-icon">
+                    <img src="{{ url_for('static', filename='icon/Video.png') }}" alt="Video Player">
+                </div>
+                <h2>Pemutar Video</h2>
+                <p>Tonton video favorit Anda.</p>
+            </a>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
+    </footer>
+
+    <script src="/static/Js/neon.js" defer></script>
+    <script src="/static/Js/home.js" defer></script>
+</body>
+</html>

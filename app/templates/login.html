@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login</title>
+
+    <!-- Background neon bergerak -->
+    <link rel="stylesheet" href="/static/css/neon.css">
+    <script src="/static/Js/neon.js" defer></script>
+
+    <!-- CSS khusus form login / register -->
+    <link rel="stylesheet" href="/static/css/form.css">
+</head>
+<body>
+
+<!-- ==========================
+     Kotak Form Login
+     ========================== -->
+<div class="form-box">
+    <h2>Login</h2>
+
+    <!-- Form login ke backend Flask -->
+    <form action="/login" method="POST">
+
+        <!-- Input username -->
+        <input 
+            type="text" 
+            name="username" 
+            placeholder="Masukkan Username">
+
+        <!-- Input password -->
+        <input 
+            type="password" 
+            name="password" 
+            placeholder="Masukkan Password">
+
+        <!-- Tombol login -->
+        <button type="submit">Masuk</button>
+    </form>
+
+    <!-- Link menuju halaman register -->
+    <p>
+        Belum punya akun? 
+        <a href="/register">Daftar disini</a>
+    </p>
+</div>
+
+</body>
+</html>

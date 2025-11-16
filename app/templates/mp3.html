@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pemutar Musik MP3 - BAGUS MEDIA SERVER</title>
+
+    <!-- ===== CSS Utama ===== -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mp3.css') }}">
+    <link rel="stylesheet" href="/static/css/neon.css">
+    <script src="/static/Js/neon.js" defer></script>
+
+    <!-- Ikon -->
+    <link rel="icon" href="{{ url_for('static', filename='icon/icon.png') }}">
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+
+        <!-- 
+            Logo + Judul dijadikan link Home
+            (pengganti tombol Home di menu)
+        -->
+        <a href="{{ url_for('home') }}" class="logo-container" style="text-decoration:none;">
+            <img src="{{ url_for('static', filename='icon/Mp3.png') }}" 
+                 alt="Logo MP3" 
+                 class="logo">
+            <h1 style="color:white;">Media MP3</h1>
+        </a>
+
+        <!-- 
+            Menu asli berisi tombol Home → DIHAPUS sesuai permintaan 
+            Sisakan hanya tombol mode gelap/terang 
+        -->
+        <nav class="menu">
+            <!-- <a href="{{ url_for('home') }}" class="menu-item">🏠 Home</a> -->
+            <button id="theme-toggle" class="theme-toggle" title="Ganti Mode">🌙</button>
+        </nav>
+
+    </header>
+
+    <!-- ===== KONTEN UTAMA ===== -->
+    <main class="main-content">
+        <div class="player-container">
+
+            <!-- =======================
+                 PEMUTAR MUSIK
+                 ======================= -->
+            <div class="music-player">
+
+                <!-- Judul lagu yang sedang dimainkan -->
+                <div class="now-playing">
+                    <div class="visualizer">
+                        <div></div><div></div><div></div><div></div><div></div>
+                    </div>
+                    <h2 id="now-playing-title">🎵 Pilih lagu untuk diputar</h2>
+                </div>
+
+                <!-- Tombol kontrol player -->
+                <div class="player-controls">
+                    <button id="prev-btn" class="control-btn">⏮</button>
+                    <button id="play-btn" class="control-btn play">▶</button>
+                    <button id="pause-btn" class="control-btn">⏸</button>
+                    <button id="next-btn" class="control-btn">⏭</button>
+                    <button id="shuffle-btn" class="control-btn">🔀</button>
+                    <button id="repeat-btn" class="control-btn">🔁</button>
+                </div>
+
+                <!-- Indikator mode shuffle / repeat -->
+                <div class="status-indicators">
+                    <span id="shuffle-status" class="shuffle-status">Shuffle: Off</span>
+                    <span id="repeat-status" class="repeat-status">Repeat: Off</span>
+                </div>
+
+                <!-- Progress bar -->
+                <div class="progress-container">
+                    <span id="current-time">0:00</span>
+                    <div class="progress-bar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    <span id="duration">0:00</span>
+                </div>
+
+                <!-- Volume -->
+                <div class="volume-control">
+                    <span>🔊</span>
+                    <input type="range" id="volume-slider" min="0" max="100" value="50">
+                </div>
+
+            </div>
+
+            <!-- =======================
+                 PLAYLIST LAGU
+                 ======================= -->
+            <div class="playlist-container">
+                <h3>Daftar Lagu</h3>
+
+                <div class="playlist" id="playlist">
+                    {% for file in mp3_files %}
+                    <div class="playlist-item" 
+                         data-src="{{ url_for('serve_media', folder='mp3', filename=file) }}">
+                        <span class="track-name">{{ file }}</span>
+                        <button class="play-track">▶</button>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ===== AUDIO PLAYER ===== -->
+    <audio id="audio-player"></audio>
+
+    <!-- ===== SCRIPT ===== -->
+    <script src="{{ url_for('static', filename='Js/mp3.js') }}"></script>
+
+</body>
+</html>
