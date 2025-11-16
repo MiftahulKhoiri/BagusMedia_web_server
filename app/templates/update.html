@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Update Sistem - BAGUS MEDIA SERVER{% endblock %}
+{% block title %}Cek Update - BAGUS MEDIA SERVER{% endblock %}
 
 {% block css %}
 <link rel="stylesheet" href="/static/css/update.css">
@@ -9,7 +9,7 @@
 {% block content %}
 
 <header class="page-header">
-    <h1>Update Sistem</h1>
+    <h1>Pembaruan Sistem</h1>
 
     <div class="header-btn-group">
         <a href="{{ url_for('home') }}" class="btn-back">⬅ Kembali</a>
@@ -17,19 +17,22 @@
     </div>
 </header>
 
-<main class="update-box">
+<main class="update-container">
 
-    <button id="check-update-btn" class="check-btn">
-        Cek Pembaruan
-    </button>
+    <div class="update-box">
 
-    <pre id="update-output" class="update-output">
-Klik "Cek Pembaruan" untuk melihat status update...
-    </pre>
+        <h2>Cek pembaruan terbaru</h2>
+        <p>Tekan tombol di bawah untuk memeriksa versi terbaru dari repositori.</p>
 
-    <button id="run-update-btn" class="update-btn" disabled>
-        Jalankan Update
-    </button>
+        <button id="check-update-btn" class="btn-check">Cek Update</button>
+
+        <div id="update-status" class="update-status"></div>
+
+        <button id="apply-update-btn" class="btn-update hidden">Terapkan Update</button>
+
+        <pre id="update-log" class="update-log hidden"></pre>
+
+    </div>
 
 </main>
 
