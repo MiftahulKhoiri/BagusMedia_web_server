@@ -1,91 +1,63 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Pengguna - BAGUS MEDIA SERVER</title>
+{% extends "base.html" %}
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="/static/css/neon.css">
-    <link rel="stylesheet" href="/static/css/profile.css">
+{% block title %}Profil - BAGUS MEDIA SERVER{% endblock %}
 
-    <link rel="icon" href="{{ url_for('static', filename='icon/profile.png') }}">
-</head>
-<body>
+{% block css %}
+<link rel="stylesheet" href="/static/css/profile.css">
+{% endblock %}
 
-<canvas id="neonCanvas"></canvas>
+{% block content %}
 
-<!-- ============================
-     HEADER
-=============================== -->
 <header class="header">
-    <a href="/home" class="logo-area">
-        <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
-        <span class="logo-text">Profil</span>
-    </a>
-
-    <div class="header-buttons">
-        <a href="/edit-profile" class="btn-edit">Edit Profil</a>
-        <a href="/logout" class="btn-logout">Logout</a>
+    <h1 class="profile-title">Profil Saya</h1>
+    <div class="header-btn-group">
+        <a href="{{ url_for('home') }}" class="btn-back">⬅ Kembali</a>
+        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
     </div>
 </header>
 
-<!-- ============================
+<!-- ===============================
      COVER FOTO
 =============================== -->
-<div class="cover-display">
-    <img id="cover-photo"
-         src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
-         alt="Cover">
+<div class="cover-area">
+    <img class="cover-photo" 
+         src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}" 
+         alt="Foto Cover">
 </div>
 
-<!-- ============================
-     FOTO PROFIL OVERLAP
+<!-- ===============================
+     FOTO PROFIL (OVERLAP)
 =============================== -->
 <div class="profile-photo-area">
-    <img id="profile-photo"
+    <img class="profile-photo"
          src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
          alt="Foto Profil">
 </div>
 
-<!-- ============================
-     BADAN PROFIL
+<!-- ===============================
+     INFORMASI PROFIL
 =============================== -->
-<main class="profile-body">
+<main class="profile-box">
 
-    <!-- Nama -->
-    <div class="profile-name" style="text-align:center; margin-top:10px;">
-        <h2>{{ profile.nama }}</h2>
+    <h2 class="username">{{ profile.nama if profile.nama else session['username'] }}</h2>
+
+    <div class="profile-info">
+        <p><strong>Email:</strong> {{ profile.email if profile.email else '-' }}</p>
+        <p><strong>Jenis Kelamin:</strong> {{ profile.jk if profile.jk else '-' }}</p>
+        <p><strong>Umur:</strong> {{ profile.umur if profile.umur else '-' }}</p>
+        <p><strong>Bio:</strong> {{ profile.bio if profile.bio else '-' }}</p>
     </div>
 
-    <!-- Kolom Informasi -->
-    <div class="info-box">
-
-        <label>Email:</label>
-        <p>{{ profile.email }}</p>
-
-        <label>Jenis Kelamin:</label>
-        <p>{{ profile.jk or "-" }}</p>
-
-        <label>Umur:</label>
-        <p>{{ profile.umur or "-" }}</p>
-
-        <label>Bio / Keterangan:</label>
-        <p class="bio">{{ profile.bio }}</p>
-
-    </div>
+    <a href="{{ url_for('edit_profile') }}" class="btn-edit-profile">Edit Profil</a>
 
 </main>
 
-<!-- ============================
-     FOOTER
-=============================== -->
 <footer>
     <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
 </footer>
 
-<script src="/static/Js/neon.js" defer></script>
-<script src="/static/Js/profile.js" defer></script>
+{% endblock %}
 
-</body>
-</html>
+{% block script %}
+<script src="/static/Js/profile.js" defer></script>
+{% endblock %}
