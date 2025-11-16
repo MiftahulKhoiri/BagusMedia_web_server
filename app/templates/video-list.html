@@ -25,10 +25,17 @@
                  src="/api/video-thumb?file={{ vid }}"
                  alt="thumb-{{ vid }}"
                  onerror="this.src='/static/icon/video-icon.png'">
-            <div class="video-meta">
-                <div class="video-name" title="{{ vid }}">{{ vid }}</div>
-                <button class="btn-play" aria-label="Putar {{ vid }}">▶</button>
-            </div>
+<div class="video-meta">
+    <div class="video-name" title="{{ vid }}">{{ vid }}</div>
+    <div class="video-buttons">
+        <button class="btn-play" aria-label="Putar {{ vid }}">▶</button>
+
+        <a class="btn-download"
+           href="/media/video/{{ vid }}"
+           download="{{ vid }}"
+           title="Download {{ vid }}">⬇</a>
+    </div>
+</div>
         </div>
         {% endfor %}
     </div>
