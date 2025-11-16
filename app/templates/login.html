@@ -1,51 +1,34 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>Login</title>
+{% block title %}Login - BAGUS MEDIA SERVER{% endblock %}
 
-    <!-- Background neon bergerak -->
-    <link rel="stylesheet" href="/static/css/neon.css">
-    <script src="/static/Js/neon.js" defer></script>
+{% block css %}
+<link rel="stylesheet" href="/static/css/login.css">
+{% endblock %}
 
-    <!-- CSS khusus form login / register -->
-    <link rel="stylesheet" href="/static/css/form.css">
-</head>
-<body>
+{% block content %}
+<div class="login-container">
 
-<!-- ==========================
-     Kotak Form Login
-     ========================== -->
-<div class="form-box">
-    <h2>Login</h2>
+    <h1 class="login-title">Masuk</h1>
 
-    <!-- Form login ke backend Flask -->
-    <form action="/login" method="POST">
+    <form action="/login" method="POST" class="login-form">
 
-        <!-- Input username -->
-        <input 
-            type="text" 
-            name="username" 
-            placeholder="Masukkan Username">
+        <label>Username</label>
+        <input type="text" name="username" required>
 
-        <!-- Input password -->
-        <input 
-            type="password" 
-            name="password" 
-            placeholder="Masukkan Password">
+        <label>Password</label>
+        <input type="password" name="password" required>
 
-        <!-- Tombol login -->
-        <button type="submit">Masuk</button>
+        <button type="submit" class="login-btn">Masuk</button>
     </form>
 
-    <!-- Link menuju halaman register -->
-    <p>
-        Belum punya akun? 
-        <a href="/register">Daftar disini</a>
+    <p class="register-link">
+        Belum punya akun? <a href="/register">Daftar</a>
     </p>
-</div>
 
-</body>
-</html>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="/static/Js/login.js"></script>
+{% endblock %}
