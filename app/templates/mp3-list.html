@@ -9,43 +9,33 @@
 {% block content %}
 
 <header class="page-header">
-    <h1>Daftar Musik</h1>
-
-    <div class="header-btn-group">
-        <a href="{{ url_for('home') }}" class="btn-back">⬅ Kembali</a>
-        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
-    </div>
+    <a href="{{ url_for('home') }}" class="btn-back">⬅ Kembali</a>
+    <h1 class="page-title">Daftar Musik</h1>
+    <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
 </header>
 
-<main class="list-container">
+<main class="mp3-container">
 
     {% if mp3_files %}
-        <ul class="media-list">
-
-            {% for file in mp3_files %}
-            <li class="media-item">
-                
-                <a href="{{ url_for('mp3_player') }}?file={{ file }}" class="media-link">
-
-                    <img src="{{ url_for('static', filename='icon/Mp3.png') }}" 
-                         alt="MP3 Icon" class="media-thumb">
-
-                    <div class="media-info">
-                        <h3 class="media-title">{{ file }}</h3>
-                        <p class="media-subtitle">Klik untuk memutar</p>
-                    </div>
-                </a>
-
+        <ul class="music-list">
+            {% for song in mp3_files %}
+            <li class="music-item" data-file="{{ song }}">
+                <img src="/static/icon/music-icon.png" class="music-thumb">
+                <span class="music-name">{{ song }}</span>
+                <button class="btn-play">▶</button>
             </li>
             {% endfor %}
-
         </ul>
-
     {% else %}
-        <p class="empty-info">Belum ada file musik yang diunggah.</p>
+        <p class="empty">Tidak ada file musik.</p>
     {% endif %}
 
 </main>
+
+<!-- PLAYER -->
+<div class="player-bar" id="player-bar">
+    <audio id="audio-player" controls></audio>
+</div>
 
 <footer>
     <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
