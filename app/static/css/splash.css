@@ -74,3 +74,32 @@ body {
 .fade-out-active {
     opacity: 1;
 }
+
+/* ===== TEKS UTAMA / SUBTEKS LEBIH TERLIHAT ===== */
+.splash-subtext {
+    color: #e0e0e0; /* abu muda */
+    font-size: 18px;
+    margin-top: 10px;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
+
+/* ===== TOMBOL MASUK NEON HIJAU ===== */
+.splash-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 28px;
+    background: #00ff99; /* hijau stabilo */
+    color: #000; /* teks hitam biar jelas */
+    font-weight: bold;
+    font-size: 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    box-shadow: 0 0 15px #00ff99, 0 0 30px #00ffcc;
+    transition: 0.25s ease-in-out;
+}
+
+.splash-button:hover {
+    background: #00ffaa;
+    box-shadow: 0 0 25px #00ffbb, 0 0 40px #00ffee;
+    transform: scale(1.05);
+}
