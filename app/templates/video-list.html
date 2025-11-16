@@ -9,48 +9,34 @@
 {% block content %}
 
 <header class="page-header">
-    <h1>Daftar Video</h1>
-
-    <div class="header-btn-group">
-        <a href="{{ url_for('home') }}" class="btn-back">⬅ Kembali</a>
-        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
-    </div>
+    <a href="{{ url_for('home') }}" class="btn-back">⬅ Kembali</a>
+    <h1 class="page-title">Daftar Video</h1>
+    <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
 </header>
 
-<main class="list-container">
+<main class="video-container">
 
     {% if video_files %}
-        <ul class="media-list">
-
-            {% for file in video_files %}
-            <li class="media-item">
-
-                <a href="{{ url_for('video_player') }}?file={{ file }}" class="media-link">
-
-                    <div class="thumb-box">
-                        <img src="{{ url_for('static', filename='thumbnail/' ~ file ~ '.jpg') }}"
-                             onerror="this.src='{{ url_for('static', filename='icon/Video.png') }}'"
-                             class="media-thumb"
-                             alt="Thumbnail Video">
-                    </div>
-
-                    <div class="media-info">
-                        <h3 class="media-title">{{ file }}</h3>
-                        <p class="media-subtitle">Klik untuk memutar</p>
-                    </div>
-
-                </a>
-
-            </li>
-            {% endfor %}
-
-        </ul>
-
+    <div class="video-grid">
+        {% for vid in video_files %}
+        <div class="video-item" data-file="{{ vid }}">
+            <img src="/static/thumbnails/{{ vid }}.jpg"
+                 onerror="this.src='/static/icon/video-icon.png'"
+                 class="video-thumb">
+            <p class="video-name">{{ vid }}</p>
+        </div>
+        {% endfor %}
+    </div>
     {% else %}
-        <p class="empty-info">Belum ada file video yang diunggah.</p>
+        <p class="empty">Tidak ada file video.</p>
     {% endif %}
 
 </main>
+
+<!-- PLAYER -->
+<div class="video-player-box" id="video-player-box">
+    <video id="video-player" controls></video>
+</div>
 
 <footer>
     <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
