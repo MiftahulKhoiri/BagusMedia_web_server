@@ -273,3 +273,42 @@ footer {
     /* Glow neon hijau halus */
     text-shadow: 0 0 8px #39FF14;
 }
+
+.update-box {
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(20, 20, 20, 0.6);
+    border-radius: 18px;
+    backdrop-filter: blur(10px);
+    color: white;
+}
+
+.check-btn, .update-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.check-btn {
+    background: #00e1ff;
+}
+
+.update-btn {
+    background: #00ff7f;
+}
+
+.update-output {
+    background: rgba(0,0,0,0.4);
+    padding: 12px;
+    border-radius: 10px;
+    height: 250px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
