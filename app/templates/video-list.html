@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Daftar Video - BAGUS MEDIA SERVER{% endblock %}
+{% block title %}Video List - BAGUS MEDIA SERVER{% endblock %}
 
 {% block css %}
 <link rel="stylesheet" href="/static/css/video-list.css">
@@ -9,49 +9,36 @@
 {% block content %}
 
 <header class="page-header">
-    <a href="{{ url_for('home') }}" class="btn-back">⬅ Kembali</a>
-    <h1 class="page-title">Daftar Video</h1>
-    <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+    <h1>Daftar Video</h1>
+
+    <div class="header-btn-group">
+        <a href="{{ url_for('home') }}" class="btn-back">⬅ Kembali</a>
+        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+    </div>
 </header>
 
-<main class="video-container">
+<main class="video-list-container">
 
     {% if video_files %}
-    <div class="video-grid">
-        {% for vid in video_files %}
-        <div class="video-item" data-file="{{ vid }}">
-            <!-- thumbnail di-generate lewat /api/video-thumb -->
-            <img class="video-thumb"
-                 src="/api/video-thumb?file={{ vid }}"
-                 alt="thumb-{{ vid }}"
-                 onerror="this.src='/static/icon/video-icon.png'">
-<div class="video-meta">
-    <div class="video-name" title="{{ vid }}">{{ vid }}</div>
-    <div class="video-buttons">
-        <button class="btn-play" aria-label="Putar {{ vid }}">▶</button>
+        <div class="video-grid">
+            {% for video in video_files %}
+                <div class="video-card">
+                    <img class="thumb"
+                        data-file="{{ video }}"
+                        src="/static/icon/default-thumb.png"
+                        alt="thumbnail">
 
-        <a class="btn-download"
-           href="/media/video/{{ vid }}"
-           download="{{ vid }}"
-           title="Download {{ vid }}">⬇</a>
-    </div>
-</div>
+                    <p class="video-name">{{ video }}</p>
+
+                    <a href="/media/video/{{ video }}" class="btn-play">▶ Play</a>
+                </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
     {% else %}
-        <p class="empty">Tidak ada file video.</p>
+        <p class="empty-text">Belum ada video yang diupload.</p>
     {% endif %}
 
 </main>
-
-<!-- PLAYER BAWAH (muncul saat play) -->
-<div id="video-player-box" class="video-player-box" aria-hidden="true">
-    <div class="player-inner">
-        <button id="close-player" class="close-player" title="Tutup">✕</button>
-        <video id="video-player" controls preload="metadata"></video>
-    </div>
-</div>
 
 <footer>
     <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
