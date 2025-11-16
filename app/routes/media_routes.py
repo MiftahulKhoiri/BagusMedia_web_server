@@ -6,6 +6,10 @@ from flask import (
 )
 from werkzeug.utils import secure_filename
 
+# Untuk thumbnail
+from moviepy.editor import VideoFileClip
+from PIL import Image
+
 
 # ============================================================
 #  EKSTENSI VALID
@@ -30,13 +34,16 @@ def get_media_files(folder, ext_list):
 
 def register_media_routes(app):
     """
-    Semua route yang berhubungan dengan media:
-    MP3, video, upload, album list, dan serve file.
+    Semua route media:
+    MP3, video, upload, album list, serve file, thumbnail.
     """
 
     MP3_FOLDER = app.config["MP3_FOLDER"]
     VIDEO_FOLDER = app.config["VIDEO_FOLDER"]
     UPLOAD_FOLDER = app.config["UPLOAD_FOLDER"]
+
+    THUMB_FOLDER = os.path.join(app.static_folder, "thumbs")
+    os.makedirs(THUMB_FOLDER, exist_ok=True)
 
     os.makedirs(MP3_FOLDER, exist_ok=True)
     os.makedirs(VIDEO_FOLDER, exist_ok=True)
@@ -65,7 +72,7 @@ def register_media_routes(app):
         return render_template("video.html", video_files=video_files)
 
     # ============================================================
-    #  LIST MUSIK (GALERI)
+    #  MP3 LIST / GALERI
     # ============================================================
     @app.route("/audios")
     def audio_list():
@@ -76,7 +83,7 @@ def register_media_routes(app):
         return render_template("mp3-list.html", mp3_files=mp3_files)
 
     # ============================================================
-    #  LIST VIDEO (GALERI)
+    #  VIDEO LIST / GALERI
     # ============================================================
     @app.route("/videos")
     def video_list():
@@ -85,6 +92,41 @@ def register_media_routes(app):
 
         video_files = get_media_files(VIDEO_FOLDER, ['.mp4', '.avi', '.mkv', '.mov', '.wmv'])
         return render_template("video-list.html", video_files=video_files)
+
+    # ============================================================
+    #  API THUMBNAIL VIDEO OTOMATIS
+    # ============================================================
+    @app.route("/api/video-thumb")
+    def video_thumb():
+        file = request.args.get("file")
+
+        if not file:
+            return jsonify({"error": "file tidak ditemukan"}), 400
+
+        video_path = os.path.join(VIDEO_FOLDER, file)
+        if not os.path.exists(video_path):
+            return jsonify({"error": "video tidak ada"}), 404
+
+        thumb_name = file + ".jpg"
+        thumb_path = os.path.join(THUMB_FOLDER, thumb_name)
+
+        # Jika thumbnail sudah ada
+        if os.path.exists(thumb_path):
+            return send_from_directory(THUMB_FOLDER, thumb_name)
+
+        # Generate thumbnail
+        try:
+            clip = VideoFileClip(video_path)
+            frame = clip.get_frame(0.5)
+            clip.close()
+
+            img = Image.fromarray(frame)
+            img.save(thumb_path, "JPEG")
+
+            return send_from_directory(THUMB_FOLDER, thumb_name)
+
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
 
     # ============================================================
     #  HALAMAN UPLOAD
@@ -97,7 +139,7 @@ def register_media_routes(app):
         return render_template("upload.html")
 
     # ============================================================
-    #  API UPLOAD FILE
+    #  API UPLOAD MEDIA
     # ============================================================
     @app.route("/api/upload", methods=["POST"])
     def upload_file():
@@ -111,8 +153,8 @@ def register_media_routes(app):
         results = []
 
         for file in files:
-            if file.filename == "":
-                results.append({"filename": "", "status": "error", "message": "Nama kosong"})
+            if not file.filename:
+                results.append({"filename": "", "status": "error"})
                 continue
 
             if file and allowed_file(file.filename):
@@ -120,19 +162,19 @@ def register_media_routes(app):
                 temp_path = os.path.join(UPLOAD_FOLDER, filename)
                 file.save(temp_path)
 
-                # Tentukan folder tujuan
                 ext = filename.rsplit(".", 1)[1].lower()
                 dest = MP3_FOLDER if ext in ['mp3', 'wav', 'ogg'] else VIDEO_FOLDER
+
                 shutil.move(temp_path, os.path.join(dest, filename))
 
                 results.append({"filename": filename, "status": "success"})
             else:
-                results.append({"filename": file.filename, "status": "error", "message": "Ekstensi tidak valid"})
+                results.append({"filename": file.filename, "status": "error"})
 
         return jsonify({"results": results})
 
     # ============================================================
-    #  MENYAJIKAN FILE MEDIA
+    #  MEDIA SERVER
     # ============================================================
     @app.route("/media/<folder>/<filename>")
     def serve_media(folder, filename):
