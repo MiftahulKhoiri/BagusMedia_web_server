@@ -7,29 +7,36 @@
 {% endblock %}
 
 {% block content %}
+
 <div class="register-container">
 
-    <h1 class="register-title">Daftar Akun</h1>
+    <div class="register-card">
 
-    <form action="/register" method="POST" class="register-form">
+        <h1 class="register-title">Daftar Akun</h1>
 
-        <label>Username</label>
-        <input type="text" name="username" required>
+        <form method="POST" action="/register" class="register-form">
 
-        <label>Password</label>
-        <input type="password" name="password" required>
+            <label>Username</label>
+            <input type="text" name="username" required placeholder="Masukkan username">
 
-        <button type="submit" class="register-btn">Daftar</button>
+            <label>Password</label>
+            <input type="password" name="password" required placeholder="Masukkan password">
 
-    </form>
+            <button type="submit" class="btn-register">Daftar</button>
 
-    <p class="login-link">
-        Sudah punya akun? <a href="/login">Masuk</a>
-    </p>
+        </form>
+
+        <p class="login-link">
+            Sudah punya akun?
+            <a href="/login">Masuk</a>
+        </p>
+
+    </div>
 
 </div>
+
 {% endblock %}
 
 {% block script %}
-<script src="/static/Js/register.js"></script>
+<!-- Tidak butuh JS -->
 {% endblock %}
