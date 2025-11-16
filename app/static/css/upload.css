@@ -278,3 +278,49 @@ header {
         padding: 40px 20px;
     }
 }
+
+/* ======== Tombol Pilih File ======== */
+.btn-select {
+    background: #1e2a38;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.btn-select:hover {
+    background: #2d3d50;
+    transform: scale(1.05);
+}
+
+/* ======== Tombol Upload ======== */
+.btn-upload {
+    background: #3a8ef6;
+    color: white;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 300px;
+    transition: 0.3s ease;
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/* Aktif ketika siap upload */
+.btn-upload.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.btn-upload:hover {
+    background: #1e6fd8;
+    transform: scale(1.05);
+}
