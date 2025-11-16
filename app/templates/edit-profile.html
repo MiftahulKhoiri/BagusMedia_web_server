@@ -8,43 +8,34 @@
 
 {% block content %}
 
-<header class="header">
+<header class="header-edit">
+    <a href="{{ url_for('profile') }}" class="btn-back">⬅ Kembali</a>
     <h1 class="edit-title">Edit Profil</h1>
-
-    <div class="header-btn-group">
-        <a href="{{ url_for('profile') }}" class="btn-back">⬅ Kembali</a>
-        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
-    </div>
+    <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
 </header>
 
-<!-- ===============================
-     COVER FOTO
-=============================== -->
+<!-- COVER -->
 <div class="cover-area">
     <img id="cover-photo"
          src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
-         alt="Foto Cover">
+         alt="Cover">
 
-    <input id="cover-input" type="file" accept="image/*" style="display:none;">
+    <input id="cover-input" type="file" accept="image/*" hidden>
 </div>
 
-<!-- ===============================
-     FOTO PROFIL OVERLAP
-=============================== -->
-<div class="profile-photo-area">
+<!-- FOTO PROFIL -->
+<div class="photo-area">
     <img id="profile-photo"
          src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
          alt="Foto Profil">
 
-    <input id="photo-input" type="file" accept="image/*" style="display:none;">
+    <input id="photo-input" type="file" accept="image/*" hidden>
 </div>
 
-<!-- ===============================
-     FORM EDIT PROFIL
-=============================== -->
+<!-- FORM -->
 <main class="edit-box">
 
-    <label>Nama Lengkap:</label>
+    <label>Nama:</label>
     <input id="nama" type="text" value="{{ profile.nama }}">
 
     <label>Email:</label>
@@ -60,25 +51,10 @@
     <label>Umur:</label>
     <input id="umur" type="number" value="{{ profile.umur }}">
 
-    <label>Bio / Keterangan:</label>
+    <label>Bio:</label>
     <textarea id="bio">{{ profile.bio }}</textarea>
 
-    <button id="save-btn" class="save-btn">Simpan Perubahan</button>
-
-    <hr class="divider">
-
-    <!-- ===============================
-         GANTI PASSWORD
-    =============================== -->
-    <h2 class="pw-title">Ganti Password</h2>
-
-    <label>Password Lama:</label>
-    <input id="old_password" type="password" placeholder="••••••••">
-
-    <label>Password Baru:</label>
-    <input id="new_password" type="password" placeholder="••••••••">
-
-    <button id="pw-btn" class="pw-btn">Ubah Password</button>
+    <button id="save-btn" class="btn-save">Simpan Perubahan</button>
 
 </main>
 
