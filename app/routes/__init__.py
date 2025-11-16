@@ -14,7 +14,7 @@ def init_routes(app, sock):
 
     # Daftarkan di Flask
     app.register_blueprint(auth)
-    app.register_blueprint(home_bp)
+    app.register_blueprint(home)
     app.register_blueprint(media)
-    app.register_blueprint(profile_bp)
-    app.register_blueprint(update_bp)
+    app.register_blueprint(profile)
+    app.register_blueprint(update)
