@@ -3,8 +3,12 @@ from flask import render_template, request, redirect, session, jsonify
 from datetime import datetime
 from .helper import hash_password, verify_password
 
+
 def register_auth_routes(app):
 
+    # =========================================================
+    #  REGISTER
+    # =========================================================
     @app.route("/register", methods=["GET", "POST"])
     def register():
         if request.method == "POST":
@@ -21,18 +25,22 @@ def register_auth_routes(app):
                 conn = sqlite3.connect(app.config["DATABASE"])
                 cursor = conn.cursor()
                 cursor.execute(
-                    "INSERT INTO users (username,password,created_at,updated_at) VALUES (?,?,?,?)",
+                    "INSERT INTO users (username, password, created_at, updated_at) VALUES (?,?,?,?)",
                     (username, hashed, now, now)
                 )
                 conn.commit()
                 conn.close()
                 return redirect("/login")
+
             except sqlite3.IntegrityError:
                 return "Username sudah dipakai!"
 
         return render_template("register.html")
 
-    @app.route("/login", methods=["GET","POST"])
+    # =========================================================
+    #  LOGIN
+    # =========================================================
+    @app.route("/login", methods=["GET", "POST"])
     def login():
         if request.method == "POST":
             username = request.form["username"].strip()
@@ -40,7 +48,7 @@ def register_auth_routes(app):
 
             conn = sqlite3.connect(app.config["DATABASE"])
             cursor = conn.cursor()
-            cursor.execute("SELECT id,password FROM users WHERE username=?", (username,))
+            cursor.execute("SELECT id, password FROM users WHERE username=?", (username,))
             user = cursor.fetchone()
             conn.close()
 
@@ -53,26 +61,44 @@ def register_auth_routes(app):
 
         return render_template("login.html")
 
+    # =========================================================
+    #  LOGOUT
+    # =========================================================
     @app.route("/logout")
     def logout():
         session.clear()
         return redirect("/login")
 
+    # =========================================================
+    #  CHANGE PASSWORD PAGE
+    # =========================================================
     @app.route("/change-password")
     def change_password_page():
-        return render_template("change-password.html")
+        if "user_id" not in session:
+            return redirect("/login")
 
+        current_year = datetime.now().year
+
+        return render_template(
+            "change-password.html",
+            username=session.get("username", "User"),
+            current_year=current_year
+        )
+
+    # =========================================================
+    #  API GANTI PASSWORD
+    # =========================================================
     @app.route("/api/change-password", methods=["POST"])
     def change_password():
         if "user_id" not in session:
-            return jsonify({"status":"error","message":"Harus login!"}), 403
+            return jsonify({"status": "error", "message": "Harus login!"}), 403
 
         data = request.json
         old_pass = data.get("old_password")
         new_pass = data.get("new_password")
 
         if not old_pass or not new_pass:
-            return jsonify({"status":"error","message":"Data tidak lengkap!"})
+            return jsonify({"status": "error", "message": "Data tidak lengkap!"})
 
         user_id = session["user_id"]
 
@@ -83,17 +109,22 @@ def register_auth_routes(app):
 
         if not row:
             conn.close()
-            return jsonify({"status":"error","message":"User tidak ditemukan!"})
+            return jsonify({"status": "error", "message": "User tidak ditemukan!"})
 
+        # cek password lama
         if not verify_password(row[0], old_pass):
             conn.close()
-            return jsonify({"status":"error","message":"Password lama salah!"})
+            return jsonify({"status": "error", "message": "Password lama salah!"})
 
+        # hash password baru
         new_hash = hash_password(new_pass)
 
-        cursor.execute("UPDATE users SET password=?, updated_at=? WHERE id=?",
-                       (new_hash, datetime.utcnow().isoformat(), user_id))
+        cursor.execute(
+            "UPDATE users SET password=?, updated_at=? WHERE id=?",
+            (new_hash, datetime.utcnow().isoformat(), user_id)
+        )
+
         conn.commit()
         conn.close()
 
-        return jsonify({"status":"success","message":"Password berhasil diubah!"})
+        return jsonify({"status": "success", "message": "Password berhasil diubah!"})
