@@ -1,0 +1,35 @@
+/* Mengatur background halaman agar hitam dan konten tidak keluar layar */
+body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+/* Canvas untuk efek neon bergerak di belakang */
+#neonCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Tetap di belakang semua elemen halaman */
+}
+
+/* Aman untuk semua halaman */
+html, body {
+    overflow-y: auto !important; /* scroll ke bawah boleh */
+    overflow-x: hidden;          /* cegah scroll samping */
+}
+
+/* Canvas neon tidak menghalangi scroll atau klik */
+#neonCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}

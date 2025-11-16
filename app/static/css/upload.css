@@ -1,0 +1,280 @@
+/* ======== Reset dan Font ======== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ======== Latar Belakang Halaman ======== */
+body {
+    background: linear-gradient(135deg, #cfd9df, #e2ebf0);
+    color: #1e2a38;
+    min-height: 100vh;
+    animation: fadeInBody 1s ease-in-out;
+}
+
+@keyframes fadeInBody {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ======== Header ======== */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    animation: fadeInHeader 1.2s ease;
+}
+
+@keyframes fadeInHeader {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ======== Logo & Judul ======== */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #1e2a38;
+    background: rgba(255, 255, 255, 0.8);
+    transition: transform 0.4s ease;
+}
+
+.logo:hover {
+    transform: rotate(8deg) scale(1.05);
+}
+
+.logo-container h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1e2a38;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+}
+
+/* ======== Menu ======== */
+.menu {
+    display: flex;
+    gap: 20px;
+}
+
+.menu-item {
+    color: #1e2a38;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.menu-item:hover {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: #1e2a38;
+    transform: translateY(-2px);
+}
+
+/* ======== Konten Utama ======== */
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 50px 20px;
+    min-height: calc(100vh - 160px);
+    animation: fadeInMain 1.5s ease;
+}
+
+@keyframes fadeInMain {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ======== Kontainer Upload ======== */
+.upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    width: 100%;
+    max-width: 700px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* ======== Area Upload ======== */
+.upload-area {
+    border: 2px dashed #3a506b;
+    border-radius: 20px;
+    padding: 60px 30px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.upload-area:hover,
+.upload-area.drag-over {
+    background: rgba(240, 248, 255, 0.9);
+    transform: translateY(-5px);
+    border-color: #1e2a38;
+}
+
+.upload-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: #1e2a38;
+    transition: transform 0.3s ease;
+}
+
+.upload-area:hover .upload-icon {
+    transform: scale(1.1);
+}
+
+.upload-area h2 {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #1e2a38;
+}
+
+.upload-area p {
+    color: #3a506b;
+    font-size: 15px;
+}
+
+#file-input {
+    display: none;
+}
+
+/* ======== Progress Upload ======== */
+.upload-progress-container {
+    width: 100%;
+    animation: fadeInProgress 1s ease;
+}
+
+@keyframes fadeInProgress {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.upload-progress-container h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1e2a38;
+    font-size: 20px;
+}
+
+.progress-item {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 15px;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    animation: fadeInItem 0.5s ease;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Efek Fokus (Aktif Upload) + Napas Lembut */
+.progress-item.active {
+    background: rgba(248, 251, 255, 0.95);
+    box-shadow: 0 0 15px rgba(91, 143, 211, 0.5);
+    transform: scale(1.02);
+    animation: breathing 2.5s ease-in-out infinite;
+}
+
+@keyframes breathing {
+    0%   { box-shadow: 0 0 10px rgba(91, 143, 211, 0.3); }
+    50%  { box-shadow: 0 0 25px rgba(91, 143, 211, 0.7); }
+    100% { box-shadow: 0 0 10px rgba(91, 143, 211, 0.3); }
+}
+
+@keyframes fadeInItem {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    background: rgba(200, 200, 220, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    height: 10px;
+    width: 100%;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #5b8fd3, #1e2a38);
+    border-radius: 10px;
+    transition: width 0.4s ease, background 0.3s ease;
+}
+
+/* ======== Status dan Warna ======== */
+.status {
+    font-weight: 600;
+    color: #1e2a38;
+    transition: color 0.3s ease;
+}
+
+.status.success {
+    color: #1b7a3a;
+}
+
+.status.error {
+    color: #d62828;
+}
+
+.progress-fill.success {
+    background: linear-gradient(90deg, #6fd67d, #1b7a3a);
+}
+
+.progress-fill.error {
+    background: linear-gradient(90deg, #ff7b7b, #d62828);
+}
+
+/* ======== Responsif ======== */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .logo-container h1 {
+        font-size: 22px;
+    }
+
+    .upload-container {
+        padding: 25px;
+        gap: 30px;
+    }
+
+    .upload-area {
+        padding: 40px 20px;
+    }
+}
