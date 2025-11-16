@@ -1,51 +1,35 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>Register</title>
+{% block title %}Daftar Akun - BAGUS MEDIA SERVER{% endblock %}
 
-    <!-- Background neon -->
-    <link rel="stylesheet" href="/static/css/neon.css">
-    <script src="/static/Js/neon.js" defer></script>
+{% block css %}
+<link rel="stylesheet" href="/static/css/register.css">
+{% endblock %}
 
-    <!-- CSS form responsif -->
-    <link rel="stylesheet" href="/static/css/form.css">
-</head>
-<body>
+{% block content %}
+<div class="register-container">
 
-<!-- ==========================
-     Kotak Form Register (tema pink)
-     ========================== -->
-<div class="form-box form-pink">
-    <h2>Register</h2>
+    <h1 class="register-title">Daftar Akun</h1>
 
-    <!-- Form register ke server -->
-    <form action="/register" method="POST">
+    <form action="/register" method="POST" class="register-form">
 
-        <!-- Input username -->
-        <input 
-            type="text" 
-            name="username" 
-            placeholder="Buat Username">
+        <label>Username</label>
+        <input type="text" name="username" required>
 
-        <!-- Input password -->
-        <input 
-            type="password" 
-            name="password" 
-            placeholder="Buat Password">
+        <label>Password</label>
+        <input type="password" name="password" required>
 
-        <!-- Tombol daftar -->
-        <button type="submit">Daftar</button>
+        <button type="submit" class="register-btn">Daftar</button>
+
     </form>
 
-    <!-- Link balik ke login -->
-    <p>
-        Sudah punya akun? 
-        <a href="/login">Login disini</a>
+    <p class="login-link">
+        Sudah punya akun? <a href="/login">Masuk</a>
     </p>
-</div>
 
-</body>
-</html>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="/static/Js/register.js"></script>
+{% endblock %}
