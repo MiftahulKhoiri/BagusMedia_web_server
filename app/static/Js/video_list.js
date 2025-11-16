@@ -64,3 +64,19 @@ document.addEventListener("DOMContentLoaded", () => {
         // closePlayer();
     });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const thumbs = document.querySelectorAll(".thumb");
+
+    thumbs.forEach(img => {
+        const file = img.dataset.file;
+
+        // Minta thumbnail ke API
+        img.src = `/api/video-thumb?file=${file}`;
+
+        // Jika gagal → tetap pakai default-thumbnail
+        img.onerror = () => {
+            img.src = "/static/icon/default-thumb.png";
+        };
+    });
+});
