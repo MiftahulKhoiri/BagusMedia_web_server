@@ -1,62 +1,58 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BAGUS MEDIA SERVER</title>
+{% extends "base.html" %}
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="/static/css/home.css">
-    <link rel="stylesheet" href="/static/css/neon.css">
+{% block title %}Home - BAGUS MEDIA SERVER{% endblock %}
 
-    <link rel="icon" href="{{ url_for('static', filename='icon/icon.png') }}">
-</head>
-<body>
+{% block css %}
+<link rel="stylesheet" href="/static/css/home.css">
+{% endblock %}
 
-    <header>
-        <div class="logo-container">
-            <a href="{{ url_for('home') }}" class="logo-link">
-                <img src="{{ url_for('static', filename='icon/icon.png') }}" alt="Logo" class="logo">
-                <h1>BAGUS MEDIA SERVER</h1>
-            </a>
+{% block content %}
 
-            <nav class="menu">
-                <a href="{{ url_for('profile') }}">Profil</a>
-                <a href="{{ url_for('upload') }}">Upload</a>
-                <a href="{{ url_for('update') }}">Update</a>
-            </nav>
-        </div>
-    </header>
+<header class="header">
+    <div class="logo-container">
+        <a href="{{ url_for('home') }}" class="logo-link">
+            <img src="{{ url_for('static', filename='icon/icon.png') }}" class="logo" alt="Logo">
+            <h1>BAGUS MEDIA SERVER</h1>
+        </a>
 
-    <main class="main-content">
-        <div class="media-options">
+        <nav class="menu">
+            <a href="{{ url_for('profile') }}">Profil</a>
+            <a href="{{ url_for('upload') }}">Upload</a>
+            <a href="{{ url_for('update') }}">Update</a>
+        </nav>
+    </div>
+</header>
 
-            <!-- MASUK KE LIST MP3 -->
-            <a href="{{ url_for('audio_list') }}" class="media-option">
-                <div class="option-icon">
-                    <img src="{{ url_for('static', filename='icon/Mp3.png') }}" alt="MP3 Player">
-                </div>
-                <h2>Pemutar Musik</h2>
-                <p>Nikmati pengalaman mendengarkan musik.</p>
-            </a>
+<main class="main-content">
 
-            <!-- MASUK KE LIST VIDEO -->
-            <a href="{{ url_for('video_list') }}" class="media-option">
-                <div class="option-icon">
-                    <img src="{{ url_for('static', filename='icon/Video.png') }}" alt="Video Player">
-                </div>
-                <h2>Pemutar Video</h2>
-                <p>Tonton video favorit Anda.</p>
-            </a>
+    <div class="media-options">
 
-        </div>
-    </main>
+        <a href="{{ url_for('audio_list') }}" class="media-option">
+            <div class="option-icon">
+                <img src="{{ url_for('static', filename='icon/Mp3.png') }}" alt="MP3 Player">
+            </div>
+            <h2>Pemutar Musik</h2>
+            <p>Nikmati pengalaman mendengarkan musik.</p>
+        </a>
 
-    <footer>
-        <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
-    </footer>
+        <a href="{{ url_for('video_list') }}" class="media-option">
+            <div class="option-icon">
+                <img src="{{ url_for('static', filename='icon/Video.png') }}" alt="Video Player">
+            </div>
+            <h2>Pemutar Video</h2>
+            <p>Tonton video favorit Anda.</p>
+        </a>
 
-    <script src="/static/Js/neon.js" defer></script>
-    <script src="/static/Js/home.js" defer></script>
-</body>
-</html>
+    </div>
+
+</main>
+
+<footer>
+    <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
+</footer>
+
+{% endblock %}
+
+{% block script %}
+<script src="/static/Js/home.js" defer></script>
+{% endblock %}
