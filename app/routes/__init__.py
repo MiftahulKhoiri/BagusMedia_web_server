@@ -1,8 +1,8 @@
 from .auth import auth, init_auth
-from .home import home_bp, init_home
+from .home import home, init_home
 from .media import media, init_media
-from .profile import profile_bp, init_profile
-from .update import update_bp, init_update
+from .profile import profile, init_profile
+from .update import update, init_update
 
 def init_routes(app, sock):
     # Inisialisasi semua blueprint
