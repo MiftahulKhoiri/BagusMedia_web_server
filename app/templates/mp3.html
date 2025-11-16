@@ -9,43 +9,32 @@
 {% block content %}
 
 <header class="page-header">
-    <h1>Pemutar Musik</h1>
-
-    <div class="header-btn-group">
-        <a href="{{ url_for('audio_list') }}" class="btn-back">⬅ Kembali</a>
-        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
-    </div>
+    <a href="{{ url_for('home') }}" class="btn-back">⬅ Kembali</a>
+    <h1 class="page-title">Pemutar Musik</h1>
+    <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
 </header>
 
-<main class="player-container">
+<main class="mp3-container">
 
-    <div class="audio-box">
-        <h2 class="now-playing">Sedang Diputar</h2>
-        <p id="current-song" class="song-title">Tidak ada lagu</p>
-
-        <audio id="audio-player" controls>
-            <source id="audio-source" src="" type="audio/mpeg">
-            Browser Anda tidak mendukung audio HTML5.
-        </audio>
-    </div>
-
-    <div class="playlist-box">
-        <h2 class="playlist-title">Playlist</h2>
-
-        <ul class="playlist">
-            {% for file in mp3_files %}
-            <li class="song-item" onclick="playSong('{{ file }}')">
-                🎵 {{ file }}
-            </li>
-            {% endfor %}
-        </ul>
-
-        {% if mp3_files|length == 0 %}
-        <p class="empty-info">Belum ada file musik yang diunggah.</p>
-        {% endif %}
-    </div>
+    {% if mp3_files %}
+    <ul class="mp3-list">
+        {% for song in mp3_files %}
+        <li class="mp3-item" data-file="{{ song }}">
+            <img src="/static/icon/music.png" class="mp3-icon">
+            <span class="song-name">{{ song }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p class="empty">Tidak ada file musik.</p>
+    {% endif %}
 
 </main>
+
+<!-- PLAYER -->
+<div class="player-box" id="player-box">
+    <audio id="audio-player" controls></audio>
+</div>
 
 <footer>
     <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
