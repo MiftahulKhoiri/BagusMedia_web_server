@@ -1,30 +1,20 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profil - BAGUS MEDIA SERVER</title>
+{% extends "base.html" %}
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="/static/css/neon.css">
-    <link rel="stylesheet" href="/static/css/edit-profile.css">
+{% block title %}Edit Profil - BAGUS MEDIA SERVER{% endblock %}
 
-    <!-- Ikon -->
-    <link rel="icon" href="{{ url_for('static', filename='icon/profile.png') }}">
-</head>
-<body>
+{% block css %}
+<link rel="stylesheet" href="/static/css/edit-profile.css">
+{% endblock %}
 
-<!-- Background Neon -->
-<canvas id="neonCanvas"></canvas>
+{% block content %}
 
-<!-- ===============================
-     HEADER
-=============================== -->
 <header class="header">
     <h1 class="edit-title">Edit Profil</h1>
 
-    <a href="/profile" class="btn-back">⬅ Kembali</a>
-    <a href="/logout" class="btn-logout">Logout</a>
+    <div class="header-btn-group">
+        <a href="{{ url_for('profile') }}" class="btn-back">⬅ Kembali</a>
+        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+    </div>
 </header>
 
 <!-- ===============================
@@ -39,7 +29,7 @@
 </div>
 
 <!-- ===============================
-     FOTO PROFIL (OVERLAP)
+     FOTO PROFIL OVERLAP
 =============================== -->
 <div class="profile-photo-area">
     <img id="profile-photo"
@@ -73,26 +63,31 @@
     <label>Bio / Keterangan:</label>
     <textarea id="bio">{{ profile.bio }}</textarea>
 
-    <!-- Tombol Simpan Profil -->
     <button id="save-btn" class="save-btn">Simpan Perubahan</button>
 
+    <hr class="divider">
+
     <!-- ===============================
-         TOMBOL GANTI PASSWORD (BARU)
-    ================================ -->
-    <a href="/change-password" class="change-pass-btn">Ganti Password</a>
+         GANTI PASSWORD
+    =============================== -->
+    <h2 class="pw-title">Ganti Password</h2>
+
+    <label>Password Lama:</label>
+    <input id="old_password" type="password" placeholder="••••••••">
+
+    <label>Password Baru:</label>
+    <input id="new_password" type="password" placeholder="••••••••">
+
+    <button id="pw-btn" class="pw-btn">Ubah Password</button>
 
 </main>
 
-<!-- ===============================
-     FOOTER
-=============================== -->
 <footer>
     <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
 </footer>
 
-<!-- Script -->
-<script src="/static/Js/neon.js" defer></script>
-<script src="/static/Js/edit-profile.js" defer></script>
+{% endblock %}
 
-</body>
-</html>
+{% block script %}
+<script src="/static/Js/edit-profile.js" defer></script>
+{% endblock %}
