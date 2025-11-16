@@ -1,153 +1,69 @@
-/* ===== Header ===== */
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 22px;
-    background: rgba(0,0,0,0.32);
-    backdrop-filter: blur(6px);
+/* ===== Layout Utama ===== */
+.video-list-container {
+    padding: 20px;
 }
 
-.page-title {
-    color: #fff;
-    text-shadow: 0 0 12px #ff00ff;
-}
-
-/* ===== Container ===== */
-.video-container {
-    padding: 18px;
-}
-
-/* ===== Grid Video ===== */
 .video-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 16px;
+    gap: 20px;
 }
 
-/* setiap item video */
-.video-item {
-    background: rgba(255,255,255,0.03);
-    border-radius: 12px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform .18s ease, box-shadow .18s ease;
-    border: 1px solid transparent;
-    display: flex;
-    flex-direction: column;
-}
-
-.video-item:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 8px 22px rgba(255,0,255,0.08);
-    border-color: rgba(255,0,255,0.12);
-}
-
-/* thumbnail */
-.video-thumb {
-    width: 100%;
-    height: 110px;
-    object-fit: cover;
-    display: block;
-}
-
-/* meta bawah thumbnail */
-.video-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 10px;
-    gap: 8px;
-}
-
-.video-name {
-    color: #fff;
-    font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* tombol play kecil */
-.btn-play {
-    background: linear-gradient(90deg, #ff00dd, #00ffff);
-    border: none;
-    padding: 6px 10px;
-    border-radius: 8px;
-    color: #000;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 0 12px #ff00dd55;
-}
-
-.video-buttons {
-    display: flex;
-    gap: 6px;
-}
-
-/* Tombol download */
-.btn-download {
-    background: linear-gradient(90deg, #00ff9d, #00c3ff);
-    padding: 6px 9px;
-    border-radius: 8px;
-    text-decoration: none;
-    color: #000;
-    font-weight: bold;
-    box-shadow: 0 0 12px #00ff9d88;
-    transition: transform .18s ease;
-}
-
-.btn-download:hover {
-    transform: scale(1.12);
-}
-
-/* ==== PLAYER BAWAH ==== */
-.video-player-box {
-    position: fixed;
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    z-index: 9999;
-    display: none; /* muncul saat dipanggil */
-    justify-content: center;
-    align-items: center;
-    pointer-events: auto;
-}
-
-.player-inner {
-    width: 100%;
-    max-width: 900px;
-    background: rgba(0,0,0,0.75);
-    border-radius: 12px;
+.video-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border-radius: 15px;
     padding: 10px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-    position: relative;
+    text-align: center;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform .2s, box-shadow .2s;
 }
 
-/* video element */
-#video-player {
+.video-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #00eaff;
+}
+
+/* Thumbnail */
+.thumb {
     width: 100%;
-    height: 360px;
-    max-height: 60vh;
-    background: #000;
-    border-radius: 8px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
-/* tombol tutup player */
-.close-player {
-    position: absolute;
-    right: 12px;
-    top: 12px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: #fff;
-    padding: 6px 9px;
-    border-radius: 8px;
-    cursor: pointer;
+/* Nama Video */
+.video-name {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: #e6faff;
 }
 
-/* responsif */
-@media (max-width: 768px) {
-    .video-thumb { height: 96px; }
-    #video-player { height: 220px; }
+/* Tombol Play */
+.btn-play {
+    display: inline-block;
+    padding: 8px 14px;
+    background: #00ffaa;
+    color: #000;
+    font-weight: bold;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.btn-play:hover {
+    background: #00ffbb;
+    box-shadow: 0 0 10px #00ffaa;
+}
+
+/* Jika kosong */
+.empty-text {
+    text-align: center;
+    font-size: 18px;
+    opacity: 0.7;
+    margin-top: 50px;
 }
