@@ -111,3 +111,15 @@ themeToggle.addEventListener('click', () => {
         themeToggle.textContent = "🌙";
     }
 });
+
+function playSong(filename) {
+    const audio = document.getElementById("audio-player");
+    const source = document.getElementById("audio-source");
+    const current = document.getElementById("current-song");
+
+    source.src = `/media/mp3/${filename}`;
+    audio.load();
+    audio.play();
+
+    current.textContent = filename;
+}
