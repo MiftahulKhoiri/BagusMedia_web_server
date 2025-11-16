@@ -1,46 +1,58 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Album Musik - BAGUS MEDIA SERVER</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet" href="/static/css/neon.css">
-    <link rel="stylesheet" href="/static/css/mp3-list.css">
-</head>
-<body>
+{% block title %}Daftar Musik - BAGUS MEDIA SERVER{% endblock %}
 
-<canvas id="neonCanvas"></canvas>
+{% block css %}
+<link rel="stylesheet" href="/static/css/mp3-list.css">
+{% endblock %}
 
-<header class="header">
-    <a href="/home" class="btn-home">🏠 Home</a>
-    <h1 class="title">Album Musik</h1>
-    <a href="/mp3" class="btn-open">🎧 Pemutar</a>
+{% block content %}
+
+<header class="page-header">
+    <h1>Daftar Musik</h1>
+
+    <div class="header-btn-group">
+        <a href="{{ url_for('home') }}" class="btn-back">⬅ Kembali</a>
+        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+    </div>
 </header>
 
-<main class="album-container">
+<main class="list-container">
 
-    {% if mp3_files|length == 0 %}
-        <p class="empty">Belum ada lagu yang diupload.</p>
-    {% else %}
-        <div class="mp3-list">
+    {% if mp3_files %}
+        <ul class="media-list">
+
             {% for file in mp3_files %}
-            <a class="mp3-item"
-               href="/mp3?play={{ file }}">
-                <img src="/static/icon/Mp3.png" class="icon">
-                <span>{{ file }}</span>
-            </a>
+            <li class="media-item">
+                
+                <a href="{{ url_for('mp3_player') }}?file={{ file }}" class="media-link">
+
+                    <img src="{{ url_for('static', filename='icon/Mp3.png') }}" 
+                         alt="MP3 Icon" class="media-thumb">
+
+                    <div class="media-info">
+                        <h3 class="media-title">{{ file }}</h3>
+                        <p class="media-subtitle">Klik untuk memutar</p>
+                    </div>
+                </a>
+
+            </li>
             {% endfor %}
-        </div>
+
+        </ul>
+
+    {% else %}
+        <p class="empty-info">Belum ada file musik yang diunggah.</p>
     {% endif %}
 
 </main>
 
-<footer class="footer">
-    © BAGUS MEDIA SERVER
+<footer>
+    <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
 </footer>
 
-<script src="/static/Js/neon.js" defer></script>
+{% endblock %}
 
-</body>
-</html>
+{% block script %}
+<script src="/static/Js/mp3-list.js" defer></script>
+{% endblock %}
