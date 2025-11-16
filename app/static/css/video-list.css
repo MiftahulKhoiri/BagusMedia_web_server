@@ -1,69 +1,132 @@
+/* ===== Header ===== */
 .page-header {
     display: flex;
     justify-content: space-between;
-    padding: 16px 30px;
-    background: rgba(0,0,0,0.35);
+    align-items: center;
+    padding: 14px 22px;
+    background: rgba(0,0,0,0.32);
     backdrop-filter: blur(6px);
 }
 
 .page-title {
     color: #fff;
-    text-shadow: 0 0 15px #ff00ff;
+    text-shadow: 0 0 12px #ff00ff;
 }
 
+/* ===== Container ===== */
 .video-container {
-    padding: 25px;
+    padding: 18px;
 }
 
+/* ===== Grid Video ===== */
 .video-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
 }
 
+/* setiap item video */
 .video-item {
-    background: rgba(255,255,255,0.08);
-    padding: 12px;
+    background: rgba(255,255,255,0.03);
     border-radius: 12px;
-    text-align: center;
-    border: 1px solid transparent;
-    transition: .3s;
+    overflow: hidden;
     cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease;
+    border: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
 }
 
 .video-item:hover {
-    border-color: #ff00ff;
-    box-shadow: 0 0 15px #ff00ff55;
-    transform: translateY(-4px);
+    transform: translateY(-6px);
+    box-shadow: 0 8px 22px rgba(255,0,255,0.08);
+    border-color: rgba(255,0,255,0.12);
 }
 
+/* thumbnail */
 .video-thumb {
     width: 100%;
-    height: 100px;
+    height: 110px;
     object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    filter: drop-shadow(0 0 8px #ff00ff);
+    display: block;
+}
+
+/* meta bawah thumbnail */
+.video-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    gap: 8px;
 }
 
 .video-name {
     color: #fff;
-    font-size: 14px;
-    word-break: break-all;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* PLAYER BOX */
+/* tombol play kecil */
+.btn-play {
+    background: linear-gradient(90deg, #ff00dd, #00ffff);
+    border: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 12px #ff00dd55;
+}
+
+/* ==== PLAYER BAWAH ==== */
 .video-player-box {
-    display: none;
-    padding: 15px;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(8px);
     position: fixed;
-    bottom: 0;
-    width: 100%;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    z-index: 9999;
+    display: none; /* muncul saat dipanggil */
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto;
 }
 
-video {
+.player-inner {
     width: 100%;
-    border-radius: 10px;
+    max-width: 900px;
+    background: rgba(0,0,0,0.75);
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    position: relative;
+}
+
+/* video element */
+#video-player {
+    width: 100%;
+    height: 360px;
+    max-height: 60vh;
+    background: #000;
+    border-radius: 8px;
+}
+
+/* tombol tutup player */
+.close-player {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #fff;
+    padding: 6px 9px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* responsif */
+@media (max-width: 768px) {
+    .video-thumb { height: 96px; }
+    #video-player { height: 220px; }
 }
