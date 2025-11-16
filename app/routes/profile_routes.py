@@ -1,19 +1,23 @@
+# app/routes/profile_routes.py
 import os
 import json
 import time
 import sqlite3
+from datetime import datetime
 from flask import (
     render_template, request, jsonify,
     redirect, session, current_app
 )
 from werkzeug.utils import secure_filename
 
-from .helper import hash_password, verify_password
+# helper functions (jika hash/verify dipakai, pastikan helper.py menyediakan fungsi tersebut)
+from .helper import hash_password, verify_password  # tetap boleh ada, dipakai untuk ganti password jika diperlukan di masa depan
 
 
 def register_profile_routes(app):
     """
     Semua route yang berhubungan dengan profil user.
+    Catatan: endpoint ganti password diletakkan di auth_routes.py agar tidak duplikat.
     """
 
     PROFILE_FILE = app.config.get("PROFILE_FILE")
@@ -80,7 +84,7 @@ def register_profile_routes(app):
         else:
             old = {}
 
-        # jangan hapus foto / cover sebelumnya
+        # jangan hapus foto / cover sebelumnya jika tidak dikirim
         data["foto"] = old.get("foto", "")
         data["cover"] = old.get("cover", "")
 
@@ -126,7 +130,10 @@ def register_profile_routes(app):
         if old_name not in ["", "profile.png", "cover.png"]:
             old_path = os.path.join(FOTO_FOLDER, old_name)
             if os.path.exists(old_path):
-                os.remove(old_path)
+                try:
+                    os.remove(old_path)
+                except Exception:
+                    pass
 
         # Simpan nama file baru
         data[key] = filename
@@ -135,59 +142,3 @@ def register_profile_routes(app):
             json.dump(data, f, indent=4)
 
         return jsonify({"status": "success", "foto": filename})
-
-    # ============================================================
-    #  GANTI PASSWORD — HALAMAN
-    # ============================================================
-    @app.route("/change-password")
-    def change_password_page():
-        if "user_id" not in session:
-            return redirect("/login")
-
-        return render_template("change-password.html")
-
-    # ============================================================
-    #  GANTI PASSWORD — API
-    # ============================================================
-    @app.route("/api/change-password", methods=["POST"])
-    def change_password():
-        if "user_id" not in session:
-            return jsonify({"status": "error", "message": "Harus login!"}), 403
-
-        data = request.json
-        old_pass = data.get("old_password")
-        new_pass = data.get("new_password")
-
-        if not old_pass or not new_pass:
-            return jsonify({"status": "error", "message": "Data tidak lengkap!"})
-
-        user_id = session["user_id"]
-
-        # Cek password lama dari DB
-        conn = sqlite3.connect(app.config["DATABASE"])
-        cursor = conn.cursor()
-        cursor.execute("SELECT password FROM users WHERE id=?", (user_id,))
-        row = cursor.fetchone()
-
-        if not row:
-            conn.close()
-            return jsonify({"status": "error", "message": "User tidak ditemukan!"})
-
-        old_hash = row[0]
-
-        # validasi password lama
-        if not verify_password(old_hash, old_pass):
-            conn.close()
-            return jsonify({"status": "error", "message": "Password lama salah!"})
-
-        # hash baru
-        new_hash = hash_password(new_pass)
-
-        cursor.execute(
-            "UPDATE users SET password=?, updated_at=? WHERE id=?",
-            (new_hash, datetime.utcnow().isoformat(), user_id)
-        )
-        conn.commit()
-        conn.close()
-
-        return jsonify({"status": "success", "message": "Password berhasil diperbarui!"})
