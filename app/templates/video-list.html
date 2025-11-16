@@ -20,10 +20,15 @@
     <div class="video-grid">
         {% for vid in video_files %}
         <div class="video-item" data-file="{{ vid }}">
-            <img src="/static/thumbnails/{{ vid }}.jpg"
-                 onerror="this.src='/static/icon/video-icon.png'"
-                 class="video-thumb">
-            <p class="video-name">{{ vid }}</p>
+            <!-- thumbnail di-generate lewat /api/video-thumb -->
+            <img class="video-thumb"
+                 src="/api/video-thumb?file={{ vid }}"
+                 alt="thumb-{{ vid }}"
+                 onerror="this.src='/static/icon/video-icon.png'">
+            <div class="video-meta">
+                <div class="video-name" title="{{ vid }}">{{ vid }}</div>
+                <button class="btn-play" aria-label="Putar {{ vid }}">▶</button>
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -33,9 +38,12 @@
 
 </main>
 
-<!-- PLAYER -->
-<div class="video-player-box" id="video-player-box">
-    <video id="video-player" controls></video>
+<!-- PLAYER BAWAH (muncul saat play) -->
+<div id="video-player-box" class="video-player-box" aria-hidden="true">
+    <div class="player-inner">
+        <button id="close-player" class="close-player" title="Tutup">✕</button>
+        <video id="video-player" controls preload="metadata"></video>
+    </div>
 </div>
 
 <footer>
