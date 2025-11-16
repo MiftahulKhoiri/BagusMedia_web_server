@@ -1,49 +1,48 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     const checkBtn = document.getElementById("check-update-btn");
-    const updateBtn = document.getElementById("run-update-btn");
-    const output = document.getElementById("update-output");
+    const updateBtn = document.getElementById("apply-update-btn");
+    const statusBox = document.getElementById("update-status");
+    const logBox = document.getElementById("update-log");
 
-    /* ==========================
-       CEK UPDATE
-    =========================== */
+    // ===========================
+    // Cek Update
+    // ===========================
     checkBtn.addEventListener("click", async () => {
-        output.textContent = "Memeriksa update...\n";
+        statusBox.style.display = "block";
+        statusBox.textContent = "Memeriksa pembaruan...";
+        statusBox.style.background = "rgba(0,150,255,0.4)";
 
         const res = await fetch("/api/check-update");
         const result = await res.json();
 
-        if (result.error) {
-            output.textContent += "Error: " + result.error;
-            return;
-        }
-
-        output.textContent += result.output;
-
         if (result.update_available) {
-            output.textContent += "\n🚀 Update tersedia!";
-            updateBtn.disabled = false;
+            statusBox.textContent = "Update tersedia!";
+            statusBox.style.background = "rgba(0,255,100,0.4)";
+            updateBtn.classList.remove("hidden");
         } else {
-            output.textContent += "\n✔ Sistem sudah terbaru.";
-            updateBtn.disabled = true;
+            statusBox.textContent = "Sudah versi terbaru.";
+            statusBox.style.background = "rgba(255,50,50,0.4)";
         }
     });
 
-    /* ==========================
-       JALANKAN UPDATE
-    =========================== */
+    // ===========================
+    // Terapkan Update
+    // ===========================
     updateBtn.addEventListener("click", () => {
-
-        output.textContent = "Menjalankan update...\n";
+        updateBtn.classList.add("hidden");
+        logBox.classList.remove("hidden");
+        logBox.textContent = "Memulai update...\n";
 
         const ws = new WebSocket("ws://" + window.location.host + "/ws/update");
 
         ws.onmessage = (event) => {
-            output.textContent += event.data + "\n";
+            logBox.textContent += event.data + "\n";
+            logBox.scrollTop = logBox.scrollHeight;
         };
 
         ws.onclose = () => {
-            output.textContent += "\n[WS CLOSED]";
+            logBox.textContent += "\nUpdate selesai!";
         };
     });
 
