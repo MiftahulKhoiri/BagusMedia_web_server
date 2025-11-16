@@ -1,81 +1,97 @@
-// Ambil elemen yang dibutuhkan
-const fileInput = document.getElementById('file-input');
-const uploadArea = document.getElementById('upload-area');
-const progressContainer = document.getElementById('upload-progress');
+document.addEventListener("DOMContentLoaded", () => {
 
-// Ketika area di-klik, buka file picker
-uploadArea.addEventListener('click', () => {
-    fileInput.click();
-});
+    const fileInput = document.getElementById("file-input");
+    const selectBtn = document.getElementById("select-btn");
+    const uploadBtn = document.getElementById("upload-btn");
+    const fileList = document.getElementById("file-list");
 
-// Ketika file dipilih
-fileInput.addEventListener('change', () => {
-    const files = fileInput.files;
-    if (files.length > 0) {
-        uploadSequentially(files);
-    }
-});
+    let selectedFiles = [];
 
-// Fungsi utama upload berurutan
-async function uploadSequentially(files) {
-    progressContainer.innerHTML = ''; // Kosongkan progress sebelumnya
+    /* ============================
+       PILIH FILE
+    ============================ */
+    selectBtn.addEventListener("click", () => {
+        fileInput.click();
+    });
 
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const progressItem = document.createElement('div');
-        progressItem.classList.add('progress-item');
+    fileInput.addEventListener("change", () => {
+        selectedFiles = Array.from(fileInput.files);
 
-        progressItem.innerHTML = `
-            <div class="progress-info">
-                <span>${file.name}</span>
-                <span class="status">Menunggu...</span>
-            </div>
-            <div class="progress-bar"><div class="progress-fill"></div></div>
-        `;
-
-        progressContainer.appendChild(progressItem);
-
-        // 🔵 Tambahkan class aktif agar efek "bernapas" muncul
-        progressItem.classList.add('active');
-
-        // Jalankan upload
-        await uploadSingleFile(file, progressItem);
-
-        // 🔵 Setelah selesai upload, hapus efek aktif
-        progressItem.classList.remove('active');
-    }
-}
-
-// Fungsi upload satu file
-async function uploadSingleFile(file, progressItem) {
-    const progressFill = progressItem.querySelector('.progress-fill');
-    const statusText = progressItem.querySelector('.status');
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-        statusText.textContent = 'Mengupload...';
-
-        const response = await fetch('/upload', {
-            method: 'POST',
-            body: formData
+        fileList.innerHTML = "";
+        selectedFiles.forEach(file => {
+            const li = document.createElement("li");
+            li.textContent = file.name;
+            fileList.appendChild(li);
         });
 
-        if (response.ok) {
-            statusText.textContent = 'Selesai ✅';
-            statusText.classList.add('success');
-            progressFill.style.width = '100%';
-            progressFill.classList.add('success');
+        if (selectedFiles.length > 0) {
+            uploadBtn.classList.add("active");
+            uploadBtn.disabled = false;
         } else {
-            statusText.textContent = 'Gagal ❌';
-            statusText.classList.add('error');
-            progressFill.classList.add('error');
+            uploadBtn.classList.remove("active");
+            uploadBtn.disabled = true;
         }
-    } catch (error) {
-        console.error(error);
-        statusText.textContent = 'Gagal ❌';
-        statusText.classList.add('error');
-        progressFill.classList.add('error');
+    });
+
+    /* ============================
+       UPLOAD FILE
+    ============================ */
+    uploadBtn.addEventListener("click", () => {
+        if (selectedFiles.length === 0) return;
+        uploadSequentially(selectedFiles);
+    });
+
+    async function uploadSequentially(files) {
+        uploadBtn.disabled = true;
+
+        fileList.innerHTML = ""; // Kosongkan list → tampilkan progress
+
+        for (let file of files) {
+            const fileBox = document.createElement("li");
+            fileBox.innerHTML = `
+                <strong>${file.name}</strong>
+                <div class="progress">
+                    <div class="progress-bar"></div>
+                </div>
+                <span class="status">Mengupload...</span>
+            `;
+            fileList.appendChild(fileBox);
+
+            await uploadSingleFile(file, fileBox);
+        }
+
+        uploadBtn.disabled = false;
     }
-}
+
+    async function uploadSingleFile(file, box) {
+
+        const bar = box.querySelector(".progress-bar");
+        const status = box.querySelector(".status");
+
+        const fd = new FormData();
+        fd.append("files", file);
+
+        try {
+            const res = await fetch("/api/upload", {
+                method: "POST",
+                body: fd
+            });
+
+            if (res.ok) {
+                bar.style.width = "100%";
+                bar.classList.add("success");
+                status.textContent = "Selesai ✅";
+                status.classList.add("success");
+            } else {
+                bar.classList.add("error");
+                status.textContent = "Gagal ❌";
+                status.classList.add("error");
+            }
+        } catch (e) {
+            bar.classList.add("error");
+            status.textContent = "Gagal ❌";
+            status.classList.add("error");
+        }
+    }
+
+});
