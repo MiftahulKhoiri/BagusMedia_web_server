@@ -6,7 +6,7 @@ from flask import (
 )
 from werkzeug.utils import secure_filename
 
-profile_bp = Blueprint("profile_bp", __name__)
+profile = Blueprint("profile", __name__)
 
 def init_profile(app):
 
@@ -15,7 +15,7 @@ def init_profile(app):
     # =============================
     # HALAMAN PROFIL
     # =============================
-    @profile_bp.route("/profile")
+    @profile.route("/profile")
     def profile():
         if "user_id" not in session:
             return redirect("/login")
@@ -40,7 +40,7 @@ def init_profile(app):
     # =============================
     # HALAMAN EDIT PROFIL
     # =============================
-    @profile_bp.route("/edit-profile")
+    @profile.route("/edit-profile")
     def edit_profile():
         if os.path.exists(PROFILE_FILE):
             with open(PROFILE_FILE, "r", encoding="utf-8") as f:
@@ -61,7 +61,7 @@ def init_profile(app):
     # =============================
     # SIMPAN PROFIL
     # =============================
-    @profile_bp.route("/api/save-profile", methods=["POST"])
+    @profile.route("/api/save-profile", methods=["POST"])
     def save_profile():
         data = request.json
 
@@ -91,7 +91,7 @@ def init_profile(app):
     # =============================
     # UPLOAD FOTO PROFIL & COVER
     # =============================
-    @profile_bp.route("/api/upload-photo", methods=["POST"])
+    @profile.route("/api/upload-photo", methods=["POST"])
     def upload_photo():
         if "photo" not in request.files:
             return jsonify({"status": "error", "message": "Foto tidak ditemukan"}), 400
