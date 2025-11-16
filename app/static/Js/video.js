@@ -142,3 +142,15 @@ playlistItems.forEach((item, index) => {
 if (videos.length > 0) {
     loadVideo(0, false);
 }
+
+function playVideo(filename) {
+    const video = document.getElementById("video-player");
+    const source = document.getElementById("video-source");
+    const current = document.getElementById("current-video");
+
+    source.src = `/media/video/${filename}`;
+    video.load();
+    video.play();
+
+    current.textContent = filename;
+}
