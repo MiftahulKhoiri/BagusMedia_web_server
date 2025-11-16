@@ -8,9 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const saveBtn = document.getElementById("save-btn");
 
-    /* ===============================
-       GANTI COVER
-    =============================== */
+    // ==== UPLOAD COVER ====
     coverPhoto.addEventListener("click", () => coverInput.click());
 
     coverInput.addEventListener("change", async () => {
@@ -26,14 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (result.status === "success") {
             coverPhoto.src = `/static/profile/${result.foto}?t=${Date.now()}`;
-        } else {
-            alert("Gagal upload cover!");
+            alert("Cover berhasil diperbarui!");
         }
     });
 
-    /* ===============================
-       GANTI FOTO PROFIL
-    =============================== */
+    // ==== UPLOAD FOTO PROFIL ====
     profilePhoto.addEventListener("click", () => profileInput.click());
 
     profileInput.addEventListener("change", async () => {
@@ -49,14 +44,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (result.status === "success") {
             profilePhoto.src = `/static/profile/${result.foto}?t=${Date.now()}`;
-        } else {
-            alert("Gagal upload foto profil!");
+            alert("Foto profil berhasil diperbarui!");
         }
     });
 
-    /* ===============================
-       SIMPAN PROFIL TANPA HILANG FOTO
-    =============================== */
+    // ==== SIMPAN PROFIL ====
     saveBtn.addEventListener("click", async () => {
 
         const data = {
@@ -64,16 +56,12 @@ document.addEventListener("DOMContentLoaded", () => {
             email: document.getElementById("email").value,
             jk: document.getElementById("jk").value,
             umur: document.getElementById("umur").value,
-            bio: document.getElementById("bio").value,
-
-            // simpan nama file foto terbaru
-            foto: profilePhoto.src.split("/").pop().split("?")[0],
-            cover: coverPhoto.src.split("/").pop().split("?")[0]
+            bio: document.getElementById("bio").value
         };
 
         const res = await fetch("/api/save-profile", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify(data)
         });
 
@@ -82,8 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (result.status === "success") {
             alert("Profil berhasil diperbarui!");
             window.location.href = "/profile";
-        } else {
-            alert("Gagal menyimpan profil!");
         }
     });
 
