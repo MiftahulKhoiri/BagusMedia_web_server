@@ -80,6 +80,27 @@
     box-shadow: 0 0 12px #ff00dd55;
 }
 
+.video-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+/* Tombol download */
+.btn-download {
+    background: linear-gradient(90deg, #00ff9d, #00c3ff);
+    padding: 6px 9px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+    box-shadow: 0 0 12px #00ff9d88;
+    transition: transform .18s ease;
+}
+
+.btn-download:hover {
+    transform: scale(1.12);
+}
+
 /* ==== PLAYER BAWAH ==== */
 .video-player-box {
     position: fixed;
