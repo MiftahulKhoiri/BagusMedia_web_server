@@ -1,72 +1,54 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+    const uploadArea = document.getElementById("upload-area");
     const fileInput = document.getElementById("file-input");
-    const selectBtn = document.getElementById("select-btn");
-    const uploadBtn = document.getElementById("upload-btn");
-    const fileList = document.getElementById("file-list");
+    const progressContainer = document.getElementById("upload-progress");
 
-    let selectedFiles = [];
+    // Klik area → buka file picker
+    uploadArea.addEventListener("click", () => fileInput.click());
 
-    /* ============================
-       PILIH FILE
-    ============================ */
-    selectBtn.addEventListener("click", () => {
-        fileInput.click();
-    });
-
+    // Handle file terpilih
     fileInput.addEventListener("change", () => {
-        selectedFiles = Array.from(fileInput.files);
-
-        fileList.innerHTML = "";
-        selectedFiles.forEach(file => {
-            const li = document.createElement("li");
-            li.textContent = file.name;
-            fileList.appendChild(li);
-        });
-
-        if (selectedFiles.length > 0) {
-            uploadBtn.classList.add("active");
-            uploadBtn.disabled = false;
-        } else {
-            uploadBtn.classList.remove("active");
-            uploadBtn.disabled = true;
+        const files = fileInput.files;
+        if (files.length > 0) {
+            startUpload(files);
         }
     });
 
-    /* ============================
-       UPLOAD FILE
-    ============================ */
-    uploadBtn.addEventListener("click", () => {
-        if (selectedFiles.length === 0) return;
-        uploadSequentially(selectedFiles);
-    });
+    // Fungsi upload berurutan
+    async function startUpload(files) {
+        progressContainer.innerHTML = "";
 
-    async function uploadSequentially(files) {
-        uploadBtn.disabled = true;
+        for (const file of files) {
+            const item = createProgressItem(file.name);
+            progressContainer.appendChild(item);
 
-        fileList.innerHTML = ""; // Kosongkan list → tampilkan progress
-
-        for (let file of files) {
-            const fileBox = document.createElement("li");
-            fileBox.innerHTML = `
-                <strong>${file.name}</strong>
-                <div class="progress">
-                    <div class="progress-bar"></div>
-                </div>
-                <span class="status">Mengupload...</span>
-            `;
-            fileList.appendChild(fileBox);
-
-            await uploadSingleFile(file, fileBox);
+            await uploadSingle(file, item);
         }
-
-        uploadBtn.disabled = false;
     }
 
-    async function uploadSingleFile(file, box) {
+    // Buat UI progress
+    function createProgressItem(filename) {
+        const div = document.createElement("div");
+        div.classList.add("progress-item");
 
-        const bar = box.querySelector(".progress-bar");
-        const status = box.querySelector(".status");
+        div.innerHTML = `
+            <div class="progress-info">
+                <span>${filename}</span>
+                <span class="status">Menunggu...</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>`;
+        return div;
+    }
+
+    // Upload file
+    async function uploadSingle(file, item) {
+        const status = item.querySelector(".status");
+        const fill = item.querySelector(".progress-fill");
+
+        status.textContent = "Mengupload...";
 
         const fd = new FormData();
         fd.append("files", file);
@@ -77,20 +59,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: fd
             });
 
-            if (res.ok) {
-                bar.style.width = "100%";
-                bar.classList.add("success");
-                status.textContent = "Selesai ✅";
+            const result = await res.json();
+
+            if (result.results && result.results[0].status === "success") {
+                status.textContent = "Selesai ✓";
                 status.classList.add("success");
+                fill.style.width = "100%";
+                fill.classList.add("success");
             } else {
-                bar.classList.add("error");
-                status.textContent = "Gagal ❌";
-                status.classList.add("error");
+                throw new Error("Gagal upload");
             }
-        } catch (e) {
-            bar.classList.add("error");
-            status.textContent = "Gagal ❌";
-            status.classList.add("error");
+
+        } catch (err) {
+            status.textContent = "Gagal ✗";
+            fill.classList.add("error");
         }
     }
 
