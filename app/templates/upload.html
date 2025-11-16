@@ -8,28 +8,22 @@
 
 {% block content %}
 
-<header class="page-header">
-    <h1>Upload Media</h1>
-
-    <div class="header-btn-group">
-        <a href="{{ url_for('home') }}" class="btn-back">⬅ Kembali</a>
-        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
-    </div>
+<header class="upload-header">
+    <a href="{{ url_for('home') }}" class="btn-back">⬅ Kembali</a>
+    <h1 class="upload-title">Upload Media</h1>
+    <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
 </header>
 
 <main class="upload-container">
 
-    <div class="upload-box">
-        <h2>Pilih File Media</h2>
-        <p>Format yang didukung: <strong>mp3, wav, ogg, mp4, avi, mkv, mov, wmv</strong></p>
-
-        <input type="file" id="file-input" multiple accept="audio/*,video/*" style="display:none;">
-        <button id="select-btn" class="btn-select">Pilih File</button>
-
-        <ul id="file-list" class="file-list"></ul>
-
-        <button id="upload-btn" class="btn-upload" disabled>Mulai Upload</button>
+    <div id="upload-area" class="upload-area">
+        <div class="upload-icon">⬆</div>
+        <h2>Klik atau Seret File ke Sini</h2>
+        <p>Format: mp3, wav, ogg, mp4, avi, mkv, mov, wmv</p>
+        <input id="file-input" type="file" multiple hidden>
     </div>
+
+    <div id="upload-progress" class="upload-progress-container"></div>
 
 </main>
 
