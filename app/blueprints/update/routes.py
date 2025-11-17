@@ -1,5 +1,5 @@
 import subprocess
-from flask import render_template, jsonify
+from flask import render_template, jsonify, current_app
 
 from . import update_bp
 
@@ -14,7 +14,7 @@ def update():
 @update_bp.route("/api/check-update")
 def check_update():
     try:
-        base = update_bp.app.config["PROJECT_ROOT"]
+        base = current_app.config["PROJECT_ROOT"]
 
         subprocess.run(["git", "fetch"], cwd=base)
         status = subprocess.run(
@@ -37,10 +37,9 @@ def check_update():
 # WEBSOCKET UNTUK GIT PULL
 def register_websocket(sock):
 
-    base = update_bp.app.config["PROJECT_ROOT"]
-
     @sock.route("/ws/update")
     def ws_update(ws):
+        base = current_app.config["PROJECT_ROOT"]
 
         def send(msg):
             try:
