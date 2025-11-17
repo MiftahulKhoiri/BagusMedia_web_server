@@ -15,4 +15,8 @@ def home():
         return redirect("/login")
 
     current_year = datetime.now().year
-    return render_template("home.html", current_year=current_year, username=session["username"])
+    return render_template(
+        "home.html",
+        current_year=current_year,
+        username=session["username"]
+    )
