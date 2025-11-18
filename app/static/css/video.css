@@ -1,189 +1,54 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #121212;
-    color: white;
-}
+/* Reset dan gaya dasar / body { margin: 0; / Menghilangkan margin default browser / font-family: Arial, sans-serif; / Mengatur font utama / background: #121212; / Warna latar belakang gelap / color: white; / Warna teks */ }
 
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #222;
-    padding: 10px 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-}
+/* Bagian header, berisi logo dan menu / header { display: flex; / Mengatur elemen menjadi sejajar secara horizontal / justify-content: space-between; / Logo kiri, menu kanan / align-items: center; / Meratakan elemen secara vertikal / background: #222; / Warna header / padding: 10px 20px; / Ruang dalam / box-shadow: 0 2px 6px rgba(0,0,0,0.4); / Bayangan bawah */ }
 
-.logo-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+/* Kontainer logo / .logo-container { display: flex; / Menyusun logo & teks secara horizontal / align-items: center; / Meratakan elemen / gap: 10px; / Jarak antar elemen */ }
 
-.logo {
-    height: 40px;
-}
+.logo { height: 40px; /* Ukuran logo */ }
 
-.menu-item {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    background: #444;
-    padding: 8px 12px;
-    border-radius: 6px;
-}
+/* Link menu header / .menu-item { color: white; text-decoration: none; / Menghilangkan garis bawah / font-weight: bold; background: #444; / Background tombol / padding: 8px 12px; border-radius: 6px; / Membulatkan sudut */ }
 
-.menu-item:hover {
-    background: #666;
-}
+.menu-item:hover { background: #666; /* Efek hover */ }
 
-.video-player-full {
-    background: black;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
+/* Bagian player saat mode penuh / .video-player-full { background: black; position: sticky; / Tetap di atas saat scroll / top: 0; z-index: 10; / Supaya di atas elemen lain */ }
 
-.video-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
+.video-container { width: 100%; display: flex; justify-content: center; /* Video berada di tengah */ }
 
-video {
-    width: 100%;
-    max-height: 65vh;
-    background: black;
-}
+video { width: 100%; max-height: 65vh; /* Batas tinggi video */ background: black; }
 
-.main-content {
-    display: flex;
-    gap: 20px;
-    padding: 20px;
-    flex-wrap: wrap;
-}
+/* Layout utama (kontrol + playlist) / .main-content { display: flex; gap: 20px; padding: 20px; flex-wrap: wrap; / Supaya responsif */ }
 
-/* Kontrol Pemutar */
-.player-panel {
-    flex: 1;
-    min-width: 280px;
-}
+/* Panel kontrol video / .player-panel { flex: 1; / Mengambil ruang fleksibel / min-width: 280px; / Minimal lebar */ }
 
-.video-controls {
-    margin: 10px 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
+.video-controls { margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px; /* Jarak antar tombol */ }
 
-.control-btn {
-    background: #333;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 18px;
-}
+/* Tombol kontrol video */ .control-btn { background: #333; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 18px; }
 
-.control-btn:hover {
-    background: #555;
-}
+.control-btn:hover { background: #555; /* Efek hover */ }
 
-.video-progress-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+/* Bar progress video */ .video-progress-container { display: flex; align-items: center; gap: 10px; }
 
-.progress-bar {
-    flex: 1;
-    background: #444;
-    height: 6px;
-    border-radius: 3px;
-    cursor: pointer;
-    position: relative;
-}
+.progress-bar { flex: 1; background: #444; height: 6px; border-radius: 3px; cursor: pointer; position: relative; }
 
-.progress {
-    background: #00bcd4;
-    height: 100%;
-    width: 0%;
-    border-radius: 3px;
-}
+.progress { background: #00bcd4; /* Warna progress / height: 100%; width: 0%; / Awal 0% */ border-radius: 3px; }
 
-.video-volume-control {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+/* Kontrol volume */ .video-volume-control { margin-top: 10px; display: flex; align-items: center; gap: 10px; }
 
-/* Playlist */
-.playlist-container {
-    flex: 1;
-    min-width: 250px;
-    background: #1e1e1e;
-    border-radius: 10px;
-    padding: 15px;
-    max-height: 60vh;
-    overflow-y: auto;
-}
+/* Playlist / .playlist-container { flex: 1; min-width: 250px; background: #1e1e1e; border-radius: 10px; padding: 15px; max-height: 60vh; / Tinggi maksimal scroll / overflow-y: auto; / Aktifkan scroll vertical */ }
 
-.playlist-container h3 {
-    margin-bottom: 10px;
-    border-bottom: 2px solid #444;
-    padding-bottom: 5px;
-}
+.playlist-container h3 { margin-bottom: 10px; border-bottom: 2px solid #444; padding-bottom: 5px; }
 
-.playlist-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 10px;
-    margin-bottom: 6px;
-    background: #2a2a2a;
-    border-radius: 6px;
-    transition: 0.2s;
-}
+.playlist-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; margin-bottom: 6px; background: #2a2a2a; border-radius: 6px; transition: 0.2s; }
 
-.playlist-item.active {
-    background: #00bcd4;
-    color: black;
-}
+.playlist-item.active { background: #00bcd4; /* Video sedang diputar */ color: black; }
 
-.playlist-item:hover {
-    background: #3a3a3a;
-}
+.playlist-item:hover { background: #3a3a3a; }
 
-.video-name {
-    flex: 1;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
+.video-name { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; /* Memotong teks panjang */ }
 
-.play-track {
-    background: #444;
-    border: none;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 5px 8px;
-}
+/* Tombol play di list */ .play-track { background: #444; border: none; color: white; border-radius: 5px; cursor: pointer; padding: 5px 8px; }
 
-.play-track:hover {
-    background: #666;
-}
+.play-track:hover { background: #666; }
 
-/* Scrollbar */
-.playlist::-webkit-scrollbar {
-    width: 8px;
-}
-.playlist::-webkit-scrollbar-thumb {
-    background: #555;
-    border-radius: 4px;
-}
-.playlist::-webkit-scrollbar-thumb:hover {
-    background: #777;
-}
+/* Scrollbar playlist */ .playlist::-webkit-scrollbar { width: 8px; } .playlist::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; } .playlist::-webkit-scrollbar-thumb:hover { background: #777; }
+
