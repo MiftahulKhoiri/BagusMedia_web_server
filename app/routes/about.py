@@ -1,13 +1,14 @@
 # app/routes/about.py
 
 from flask import Blueprint, render_template, current_app
-import platform, os, psutil, socket
+import platform, os, psutil, socket, subprocess
 from datetime import datetime
 
 about = Blueprint("about", __name__)
 
 def format_gb(bytes_value):
     return round(bytes_value / (1024**3), 2)
+
 
 @about.route("/about")
 def about_page():
@@ -16,7 +17,8 @@ def about_page():
         "os": platform.system(),
         "os_version": platform.release(),
         "python": platform.python_version(),
-        "flask_version": "?"  # optional
+        "flask_version": "2.x",
+        "uptime": None
     }
 
     # --- CPU ---
@@ -32,10 +34,19 @@ def about_page():
     disk_total = format_gb(disk_info.total)
     disk_used = format_gb(disk_info.used)
 
-    # --- Uptime ---
-    boot_time = datetime.fromtimestamp(psutil.boot_time())
-    uptime = datetime.now() - boot_time
-    uptime_str = str(uptime).split('.')[0]
+    # --- Uptime (Fix Android/Termux) ---
+    try:
+        boot_time = datetime.fromtimestamp(psutil.boot_time())
+        uptime = datetime.now() - boot_time
+        uptime_str = str(uptime).split('.')[0]
+    except Exception:
+        uptime_str = "Tidak tersedia (dibatasi Android)"
+
+    # Alternatif uptime dari terminal (Android mengizinkan)
+    try:
+        alt_uptime = subprocess.check_output(["uptime", "-p"]).decode().strip()
+    except:
+        alt_uptime = "Tidak tersedia"
 
     # --- IP Server ---
     try:
@@ -52,8 +63,9 @@ def about_page():
         disk_total=disk_total,
         disk_used=disk_used,
         uptime=uptime_str,
+        alt_uptime=alt_uptime,
         ip_address=ip_server,
         project_root=current_app.config["PROJECT_ROOT"],
         current_year=datetime.now().year,
-        version="1.0 Stable"
+        version="1.0 Stable",
     )
