@@ -21,9 +21,20 @@
       HEADER
 ============================ -->
 <header class="header">
-    <a href="/home" class="btn-home">🏠 Home</a>
+
+    <!-- 
+        PERBAIKAN:
+        /home → harus url_for('main.home')
+    -->
+    <a href="{{ url_for('main.home') }}" class="btn-home">🏠 Home</a>
+
     <h1 class="title"> Video </h1>
-    <a href="/video" class="btn-open">🎬 Pemutar</a>
+
+    <!-- 
+        PERBAIKAN:
+        /video → url_for('media.video_player')
+    -->
+    <a href="{{ url_for('media.video_player') }}" class="btn-open">🎬 Pemutar</a>
 </header>
 
 <!-- ============================
@@ -38,12 +49,23 @@
         <div class="video-grid">
             {% for file in video_files %}
 
-            <a class="video-item" href="/video?play={{ file }}">
+            <!-- 
+                PERBAIKAN:
+                href="/video?play={{ file }}"
+                → url_for('media.video_player', play=file)
+            -->
+            <a class="video-item" href="{{ url_for('media.video_player', play=file) }}">
 
                 <!-- Thumbnail otomatis -->
                 <div class="thumb-box">
                     <video class="thumb-video" preload="metadata" muted>
-                        <source src="{{ url_for('serve_media', folder='video', filename=file) }}">
+                        
+                        <!-- 
+                            PERBAIKAN:
+                            url_for('serve_media')
+                            → url_for('media.serve_media')
+                        -->
+                        <source src="{{ url_for('media.serve_media', folder='video', filename=file) }}">
                     </video>
                 </div>
 
