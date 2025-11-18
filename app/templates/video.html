@@ -5,37 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pemutar Video - BAGUS MEDIA SERVER</title>
 
-    <!-- CSS Video Player -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/video.css') }}">
-
-    <!-- Background Neon -->
     <link rel="stylesheet" href="/static/css/neon.css">
 </head>
 <body>
 
-    <!-- ======================================
-         HEADER (Logo → tombol Home)
-    ====================================== -->
+    <!-- HEADER -->
     <header>
-
-        <!-- 
-            PERBAIKAN:
-            "/" → HARUS url_for('main.home')
-            karena home berada dalam Blueprint "main"
-        -->
         <a href="{{ url_for('main.home') }}" class="logo-container" style="text-decoration:none;">
-
             <img src="{{ url_for('static', filename='icon/Video.png') }}" 
                  alt="Logo Video" class="logo">
-
             <h1 style="color:white;">Pemutar Video</h1>
         </a>
-
     </header>
 
-    <!-- ======================================
-         VIDEO PLAYER
-    ====================================== -->
+    <!-- VIDEO PLAYER -->
     <section class="video-player-full">
         <div class="video-container">
             <video id="video-player" controls preload="metadata">
@@ -44,12 +28,9 @@
         </div>
     </section>
 
-    <!-- ======================================
-         KONTEN UTAMA
-    ====================================== -->
+    <!-- MAIN PANEL -->
     <main class="main-content">
 
-        <!-- Panel kontrol video -->
         <div class="player-panel">
 
             <div class="video-info">
@@ -68,11 +49,9 @@
 
             <div class="video-progress-container">
                 <span id="video-current-time">0:00</span>
-
                 <div class="progress-bar">
                     <div class="progress" id="video-progress"></div>
                 </div>
-
                 <span id="video-duration">0:00</span>
             </div>
 
@@ -83,22 +62,13 @@
 
         </div>
 
-        <!-- ======================================
-             PLAYLIST VIDEO
-        ====================================== -->
+        <!-- PLAYLIST VIDEO -->
         <div class="playlist-container">
             <h3>Daftar Video</h3>
 
             <div class="playlist" id="playlist">
                 {% for file in video_files %}
-                <div class="playlist-item" 
-
-                     <!-- 
-                        PERBAIKAN:
-                        url_for('serve_media')
-                        → HARUS url_for('media.serve_media')
-                        karena fungsi ini ada dalam Blueprint media
-                     -->
+                <div class="playlist-item"
                      data-src="{{ url_for('media.serve_media', folder='video', filename=file) }}">
 
                     <span class="video-name">{{ file }}</span>
@@ -111,9 +81,7 @@
 
     </main>
 
-    <!-- ======================================
-         SCRIPT
-    ====================================== -->
+    <!-- SCRIPTS -->
     <script src="{{ url_for('static', filename='Js/video.js') }}"></script>
     <script src="/static/Js/neon.js" defer></script>
 
