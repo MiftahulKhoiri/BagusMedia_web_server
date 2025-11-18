@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang Sistem - BAGUS MEDIA SERVER</title>
+
+    <link rel="stylesheet" href="/static/css/neon.css">
+    <link rel="stylesheet" href="/static/css/about.css">
+
+    <link rel="icon" href="{{ url_for('static', filename='icon/icon.png') }}">
+</head>
+<body>
+
+<canvas id="neonCanvas"></canvas>
+
+<header class="header">
+    <h1 class="title">Tentang Server</h1>
+    <a href="/" class="btn-back">⬅ Kembali</a>
+</header>
+
+<main class="about-box">
+
+    <h2>Informasi Server</h2>
+    <div class="info-card">
+        <p><strong>OS:</strong> {{ system.os }}</p>
+        <p><strong>Versi OS:</strong> {{ system.os_version }}</p>
+        <p><strong>Processor:</strong> {{ system.processor }}</p>
+        <p><strong>Python:</strong> {{ system.python }}</p>
+        <p><strong>Flask Engine:</strong> {{ system.flask_version }}</p>
+        <p><strong>Server Uptime:</strong> {{ system.uptime }}</p>
+    </div>
+
+    <h2>Penyimpanan</h2>
+    <div class="info-card">
+        <p><strong>Total:</strong> {{ disk.total }}</p>
+        <p><strong>Terpakai:</strong> {{ disk.used }}</p>
+        <p><strong>Tersedia:</strong> {{ disk.free }}</p>
+        <p><strong>Persentase:</strong> {{ disk.percent }}</p>
+    </div>
+
+</main>
+
+<footer>
+    <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
+</footer>
+
+<script src="/static/Js/neon.js" defer></script>
+
+</body>
+</html>
