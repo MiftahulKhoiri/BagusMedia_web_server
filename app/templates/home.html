@@ -15,15 +15,37 @@
 
     <header>
         <div class="logo-container">
+
+            <!-- 
+                PERBAIKAN:
+                url_for('home') → harus pakai prefix blueprint = main.home
+            -->
             <a href="{{ url_for('main.home') }}" class="logo-link">
                 <img src="{{ url_for('static', filename='icon/icon.png') }}" alt="Logo" class="logo">
                 <h1>BAGUS MEDIA SERVER</h1>
             </a>
 
             <nav class="menu">
-                <a href="{{ url_for('profile') }}">Profil</a>
-                <a href="{{ url_for('upload') }}">Upload</a>
-                <a href="{{ url_for('update') }}">Update</a>
+
+                <!-- 
+                    PERBAIKAN:
+                    url_for('profile') → url_for('profile.profile_page')
+                -->
+                <a href="{{ url_for('profile.profile_page') }}">Profil</a>
+
+                <!-- 
+                    PERBAIKAN:
+                    url_for('upload') → url_for('media.upload')
+                    karena upload ada di Blueprint "media"
+                -->
+                <a href="{{ url_for('media.upload') }}">Upload</a>
+
+                <!-- 
+                    PERBAIKAN:
+                    url_for('update') → url_for('update_bp.update')
+                -->
+                <a href="{{ url_for('update_bp.update') }}">Update</a>
+
             </nav>
         </div>
     </header>
@@ -32,7 +54,11 @@
         <div class="media-options">
 
             <!-- MASUK KE LIST MP3 -->
-            <a href="{{ url_for('audio_list') }}" class="media-option">
+            <!-- 
+                PERBAIKAN:
+                url_for('audio_list') → url_for('media.audio_list')
+            -->
+            <a href="{{ url_for('media.audio_list') }}" class="media-option">
                 <div class="option-icon">
                     <img src="{{ url_for('static', filename='icon/Mp3.png') }}" alt="MP3 Player">
                 </div>
@@ -41,7 +67,11 @@
             </a>
 
             <!-- MASUK KE LIST VIDEO -->
-            <a href="{{ url_for('video_list') }}" class="media-option">
+            <!-- 
+                PERBAIKAN:
+                url_for('video_list') → url_for('media.video_list')
+            -->
+            <a href="{{ url_for('media.video_list') }}" class="media-option">
                 <div class="option-icon">
                     <img src="{{ url_for('static', filename='icon/Video.png') }}" alt="Video Player">
                 </div>
