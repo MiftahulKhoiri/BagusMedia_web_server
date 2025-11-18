@@ -5,132 +5,104 @@ from datetime import datetime
 from flask import current_app as app
 from .utils import hash_password, verify_password
 
-# ============================================
-# BLUEPRINT UNTUK AUTENTIKASI
-# ============================================
 auth = Blueprint("auth", __name__)
 
 
-# ============================================
-# REGISTER USER
-# ============================================
+# =====================================================
+# REGISTER USER BARU (role default = "user")
+# =====================================================
 @auth.route("/register", methods=["GET", "POST"])
 def register():
-    """
-    Halaman + proses registrasi user baru.
-    Jika POST:
-        - Ambil username dan password
-        - Hash password
-        - Simpan ke database
-    Jika GET:
-        - Tampilkan halaman register.html
-    """
     if request.method == "POST":
         username = request.form["username"].strip()
         password = request.form["password"]
 
-        # Cek data kosong
         if username == "" or password == "":
-            return "Harus diisi!"
+            return "Semua field harus diisi!"
 
-        # Hash password
         hashed = hash_password(password)
         now = datetime.utcnow().isoformat()
 
         try:
-            # Simpan ke database
             conn = sqlite3.connect(app.config["DATABASE"])
             cursor = conn.cursor()
-            cursor.execute(
-                "INSERT INTO users (username, password, created_at, updated_at) VALUES (?, ?, ?, ?)",
-                (username, hashed, now, now)
-            )
+
+            # Tambahkan role (default user)
+            cursor.execute("""
+                INSERT INTO users (username, password, role, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?)
+            """, (username, hashed, "user", now, now))
+
             conn.commit()
             conn.close()
             return redirect("/login")
 
         except sqlite3.IntegrityError:
-            # Username sudah ada
             return "Username sudah dipakai!"
 
     return render_template("register.html")
 
 
-# ============================================
-# LOGIN USER
-# ============================================
+# =====================================================
+# LOGIN USER (root / user)
+# =====================================================
 @auth.route("/login", methods=["GET", "POST"])
 def login():
-    """
-    Halaman login + proses login.
-    Jika POST:
-        - Cocokkan username dan password
-        - Jika benar -> set session
-        - Jika salah -> tampilkan pesan gagal
-    """
     if request.method == "POST":
         username = request.form["username"].strip()
         password = request.form["password"]
 
-        # Query user berdasarkan username
         conn = sqlite3.connect(app.config["DATABASE"])
         cursor = conn.cursor()
-        cursor.execute("SELECT id, password FROM users WHERE username=?", (username,))
+
+        cursor.execute("SELECT id, password, role FROM users WHERE username=?", (username,))
         user = cursor.fetchone()
         conn.close()
 
-        # Cek user & password
-        if user and verify_password(user[1], password):
-            session["user_id"] = user[0]
-            session["username"] = username
-            return redirect("/home")
+        if not user:
+            return "Username tidak ditemukan!"
 
-        return "Username atau password salah!"
+        user_id, stored_pass, role = user
+
+        # Verifikasi password
+        if not verify_password(stored_pass, password):
+            return "Password salah!"
+
+        # Simpan ke session
+        session["user_id"] = user_id
+        session["username"] = username
+        session["role"] = role  # 🔥 role dimasukkan ke session
+
+        return redirect("/home")
 
     return render_template("login.html")
 
 
-# ============================================
+# =====================================================
 # LOGOUT
-# ============================================
+# =====================================================
 @auth.route("/logout")
 def logout():
-    """
-    Menghapus semua data session user.
-    Setelah logout, user dikembalikan ke halaman login.
-    """
-    session.clear()
+    session.clear()  # role ikut terhapus
     return redirect("/")
 
 
-# ============================================
+# =====================================================
 # HALAMAN GANTI PASSWORD
-# ============================================
+# =====================================================
 @auth.route("/change-password")
 def change_password_page():
-    """
-    Menampilkan halaman form ganti password.
-    Hanya bisa diakses jika user sudah login.
-    """
     if "user_id" not in session:
         return redirect("/login")
 
     return render_template("change-password.html")
 
 
-# ============================================
+# =====================================================
 # API GANTI PASSWORD
-# ============================================
+# =====================================================
 @auth.route("/api/change-password", methods=["POST"])
 def change_password():
-    """
-    Endpoint untuk mengganti password user.
-    Proses:
-        - Validasi login
-        - Ambil old_password & new_password
-        - Verifikasi password lama
-        - Simpan password baru ke database
-    """
     if "user_id" not in session:
         return jsonify({"status": "error", "message": "Harus login!"}), 403
 
@@ -143,9 +115,9 @@ def change_password():
 
     user_id = session["user_id"]
 
-    # Ambil password lama dari database
     conn = sqlite3.connect(app.config["DATABASE"])
     cursor = conn.cursor()
+
     cursor.execute("SELECT password FROM users WHERE id=?", (user_id,))
     row = cursor.fetchone()
 
