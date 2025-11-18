@@ -13,12 +13,11 @@ main = Blueprint("main", __name__)
 # ============================================
 @main.route("/")
 def splash():
-    """
-    Menampilkan halaman splash utama.
-    Tidak butuh login.
-    """
-    return render_template("splash.html")
+    # Jika sudah login, langsung masuk ke home
+    if "user_id" in session:
+        return redirect("/home")
 
+    return render_template("splash.html", current_year=datetime.utcnow().year)
 
 # ============================================
 # HALAMAN HOME
