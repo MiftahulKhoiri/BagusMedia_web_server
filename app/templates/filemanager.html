@@ -1,0 +1,63 @@
+<!-- app/templates/filemanager.html -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>File Manager - BAGUS MEDIA SERVER</title>
+  <link rel="stylesheet" href="/static/css/neon.css">
+  <link rel="stylesheet" href="/static/css/filemanager.css">
+</head>
+<body>
+  <canvas id="neonCanvas"></canvas>
+
+  <header class="header">
+    <h1 class="title">File Manager</h1>
+    <a href="{{ url_for('main.home') }}" class="btn-back">⬅ Kembali</a>
+  </header>
+
+  <main class="fm-container">
+    <div class="fm-controls">
+      <select id="type-filter">
+        <option value="all">Semua</option>
+        <option value="mp3">Musik (MP3)</option>
+        <option value="video">Video</option>
+        <option value="upload">Uploads</option>
+      </select>
+
+      <input id="search" placeholder="Cari nama file..." />
+
+      <button id="refresh">Refresh</button>
+    </div>
+
+    <div id="fm-list" class="fm-list">
+      <!-- file cards di-render via JS -->
+    </div>
+
+    <!-- modal rename -->
+    <div id="modal-rename" class="modal hidden">
+      <div class="modal-card">
+        <h3>Ganti Nama</h3>
+        <input id="rename-input" placeholder="Nama baru.mp4" />
+        <div class="modal-actions">
+          <button id="rename-cancel">Batal</button>
+          <button id="rename-save">Simpan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- player mini -->
+    <div id="mini-player" class="mini-player hidden">
+      <div id="mini-media-area"></div>
+      <button id="mini-close">Tutup</button>
+    </div>
+  </main>
+
+  <footer>
+    <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
+  </footer>
+
+  <script src="/static/Js/filemanager.js" defer></script>
+  <script src="/static/Js/neon.js" defer></script>
+</body>
+</html>
