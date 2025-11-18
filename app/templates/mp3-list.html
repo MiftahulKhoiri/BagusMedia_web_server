@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Album Musik - BAGUS MEDIA SERVER</title>
 
+    <!-- CSS tampilan -->
     <link rel="stylesheet" href="/static/css/neon.css">
     <link rel="stylesheet" href="/static/css/mp3-list.css">
 </head>
@@ -13,9 +14,22 @@
 <canvas id="neonCanvas"></canvas>
 
 <header class="header">
-    <a href="/home" class="btn-home">🏠 Home</a>
+
+    <!-- 
+        PERBAIKAN:
+        /home → harus pakai url_for('main.home')
+    -->
+    <a href="{{ url_for('main.home') }}" class="btn-home">🏠 Home</a>
+
     <h1 class="title"> Musik </h1>
-    <a href="/mp3" class="btn-open">🎧 Pemutar</a>
+
+    <!-- 
+        PERBAIKAN:
+        /mp3 → harus pakai url_for('media.mp3_player')
+        karena route mp3 player berada di Blueprint "media".
+    -->
+    <a href="{{ url_for('media.mp3_player') }}" class="btn-open">🎧 Pemutar</a>
+
 </header>
 
 <main class="album-container">
@@ -24,13 +38,22 @@
         <p class="empty">Belum ada lagu yang diupload.</p>
     {% else %}
         <div class="mp3-list">
+
             {% for file in mp3_files %}
+
+            <!-- 
+                PERBAIKAN:
+                href="/mp3?play=..." → harus url_for('media.mp3_player', play=file)
+                supaya tidak error dan tetap mengikuti Blueprint.
+            -->
             <a class="mp3-item"
-               href="/mp3?play={{ file }}">
+               href="{{ url_for('media.mp3_player', play=file) }}">
                 <img src="/static/icon/Mp3.png" class="icon">
                 <span>{{ file }}</span>
             </a>
+
             {% endfor %}
+
         </div>
     {% endif %}
 
