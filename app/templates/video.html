@@ -14,27 +14,28 @@
 <body>
 
     <!-- ======================================
-         HEADER (Logo dijadikan tombol Home)
-         ====================================== -->
+         HEADER (Logo → tombol Home)
+    ====================================== -->
     <header>
-        <a href="/" class="logo-container" style="text-decoration:none;">
-            <!-- Logo -->
+
+        <!-- 
+            PERBAIKAN:
+            "/" → HARUS url_for('main.home')
+            karena home berada dalam Blueprint "main"
+        -->
+        <a href="{{ url_for('main.home') }}" class="logo-container" style="text-decoration:none;">
+
             <img src="{{ url_for('static', filename='icon/Video.png') }}" 
                  alt="Logo Video" class="logo">
 
-            <!-- Judul halaman -->
             <h1 style="color:white;">Pemutar Video</h1>
         </a>
 
-        <!-- Menu dihapus sesuai permintaan -->
-        <!-- <nav class="menu">
-            <a href="/" class="menu-item">🏠Home</a>
-        </nav> -->
     </header>
 
     <!-- ======================================
-         VIDEO PLAYER FIXED DI BAGIAN ATAS
-         ====================================== -->
+         VIDEO PLAYER
+    ====================================== -->
     <section class="video-player-full">
         <div class="video-container">
             <video id="video-player" controls preload="metadata">
@@ -44,19 +45,17 @@
     </section>
 
     <!-- ======================================
-         KONTEN UTAMA (Panel Kontrol + Playlist)
-         ====================================== -->
+         KONTEN UTAMA
+    ====================================== -->
     <main class="main-content">
 
         <!-- Panel kontrol video -->
         <div class="player-panel">
 
-            <!-- Judul video yang diputar -->
             <div class="video-info">
                 <h2 id="now-playing-title">Pilih video untuk diputar</h2>
             </div>
 
-            <!-- Tombol Kontrol -->
             <div class="video-controls">
                 <button id="video-prev-btn" class="control-btn">⏮</button>
                 <button id="video-play-btn" class="control-btn play">▶</button>
@@ -67,7 +66,6 @@
                 <button id="video-fullscreen-btn" class="control-btn">⛶</button>
             </div>
 
-            <!-- Progress Bar -->
             <div class="video-progress-container">
                 <span id="video-current-time">0:00</span>
 
@@ -78,7 +76,6 @@
                 <span id="video-duration">0:00</span>
             </div>
 
-            <!-- Kontrol Volume -->
             <div class="video-volume-control">
                 <span>🔊</span>
                 <input type="range" id="video-volume-slider" min="0" max="100" value="50">
@@ -88,15 +85,22 @@
 
         <!-- ======================================
              PLAYLIST VIDEO
-             ====================================== -->
+        ====================================== -->
         <div class="playlist-container">
             <h3>Daftar Video</h3>
 
             <div class="playlist" id="playlist">
                 {% for file in video_files %}
                 <div class="playlist-item" 
-                     data-src="{{ url_for('serve_media', folder='video', filename=file) }}">
-                    
+
+                     <!-- 
+                        PERBAIKAN:
+                        url_for('serve_media')
+                        → HARUS url_for('media.serve_media')
+                        karena fungsi ini ada dalam Blueprint media
+                     -->
+                     data-src="{{ url_for('media.serve_media', folder='video', filename=file) }}">
+
                     <span class="video-name">{{ file }}</span>
                     <button class="play-track">▶</button>
                 </div>
@@ -109,7 +113,7 @@
 
     <!-- ======================================
          SCRIPT
-         ====================================== -->
+    ====================================== -->
     <script src="{{ url_for('static', filename='Js/video.js') }}"></script>
     <script src="/static/Js/neon.js" defer></script>
 
