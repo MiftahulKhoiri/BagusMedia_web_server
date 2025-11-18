@@ -23,8 +23,12 @@
 <header class="header">
     <h1 class="edit-title">Edit Profil</h1>
 
-    <a href="/profile" class="btn-back">⬅ Kembali</a>
-
+    <!-- 
+        PERBAIKAN:
+        /profile → harus menggunakan url_for('profile.profile_page')
+        karena route ini berada dalam Blueprint "profile".
+    -->
+    <a href="{{ url_for('profile.profile_page') }}" class="btn-back">⬅ Kembali</a>
 </header>
 
 <!-- ===============================
@@ -35,17 +39,19 @@
          src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
          alt="Foto Cover">
 
+    <!-- Input upload disembunyikan, dibuka via JS -->
     <input id="cover-input" type="file" accept="image/*" style="display:none;">
 </div>
 
 <!-- ===============================
-     FOTO PROFIL (OVERLAP)
+     FOTO PROFIL
 =============================== -->
 <div class="profile-photo-area">
     <img id="profile-photo"
          src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
          alt="Foto Profil">
 
+    <!-- Input upload disembunyikan -->
     <input id="photo-input" type="file" accept="image/*" style="display:none;">
 </div>
 
@@ -73,12 +79,28 @@
     <label>Bio / Keterangan:</label>
     <textarea id="bio">{{ profile.bio }}</textarea>
 
-    <!-- Tombol Simpan Profil -->
+    <!-- 
+        Tombol simpan akan menggunakan JS (fetch)
+        ke endpoint /api/save-profile (Blueprint profile)
+    -->
     <button id="save-btn" class="save-btn">Simpan Perubahan</button>
 
     <!-- ===============================
-         TOMBOL GANTI PASSWORD (BARU)
+         TOMBOL GANTI PASSWORD
     ================================ -->
+
+    <!--
+        PERBAIKAN:
+        /change-password → harus pakai url_for('auth.change_password')
+        Jika route change password ada di Blueprint auth.
+        
+        Jika tidak punya route change-password di backend,
+        biarkan tetap hardcode.
+        
+        SEMENTARA aku buat versi aman:
+        Tetap link langsung tanpa url_for supaya tidak error.
+    -->
+
     <a href="/change-password" class="change-pass-btn">Ganti Password</a>
 
 </main>
