@@ -6,6 +6,7 @@ from .media import media
 from .profile import profile
 from .update import update_bp, register_ws
 from .about import about
+from .filemanager import filemanager
 
 def register_blueprints(app, sock=None):
     """
@@ -24,6 +25,7 @@ def register_blueprints(app, sock=None):
     app.register_blueprint(profile)
     app.register_blueprint(update_bp)
     app.register_blueprint(about)
+    app.register_blueprint(filemanager)
 
     # Daftarkan websocket jika disediakan
     if sock is not None:
