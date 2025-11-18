@@ -15,34 +15,44 @@
 <canvas id="neonCanvas"></canvas>
 
 <header class="header">
-    <h1 class="title">Tentang Server</h1>
-    <a href="/" class="btn-back">⬅ Kembali</a>
+    <h1 class="title">Tentang Sistem</h1>
+    <a href="/home" class="btn-home">🏠 Home</a>
 </header>
 
-<main class="about-box">
+<main class="container">
 
-    <h2>Informasi Server</h2>
-    <div class="info-card">
-        <p><strong>OS:</strong> {{ system.os }}</p>
-        <p><strong>Versi OS:</strong> {{ system.os_version }}</p>
-        <p><strong>Processor:</strong> {{ system.processor }}</p>
-        <p><strong>Python:</strong> {{ system.python }}</p>
-        <p><strong>Flask Engine:</strong> {{ system.flask_version }}</p>
-        <p><strong>Server Uptime:</strong> {{ system.uptime }}</p>
+    <!-- Kartu Informasi -->
+    <div class="card fade-in">
+        <h2>📦 Informasi Aplikasi</h2>
+        <p><strong>Nama Sistem:</strong> BAGUS MEDIA SERVER</p>
+        <p><strong>Versi:</strong> {{ version }}</p>
+        <p><strong>Developer:</strong> Bagus Choiri</p>
     </div>
 
-    <h2>Penyimpanan</h2>
-    <div class="info-card">
-        <p><strong>Total:</strong> {{ disk.total }}</p>
-        <p><strong>Terpakai:</strong> {{ disk.used }}</p>
-        <p><strong>Tersedia:</strong> {{ disk.free }}</p>
-        <p><strong>Persentase:</strong> {{ disk.percent }}</p>
+    <!-- Kartu Device / Server -->
+    <div class="card fade-in delay1">
+        <h2>🖥️ Informasi Server</h2>
+        <p><strong>Sistem Operasi:</strong> {{ system }}</p>
+        <p><strong>CPU:</strong> {{ cpu_count }} Core</p>
+        <p><strong>RAM Total:</strong> {{ ram_total }} GB</p>
+        <p><strong>RAM Terpakai:</strong> {{ ram_used }} GB</p>
+        <p><strong>Disk Total:</strong> {{ disk_total }} GB</p>
+        <p><strong>Disk Terpakai:</strong> {{ disk_used }} GB</p>
+    </div>
+
+    <!-- Kartu Status -->
+    <div class="card fade-in delay2">
+        <h2>⚡ Status Sistem</h2>
+        <p><strong>Uptime:</strong> {{ uptime }}</p>
+        <p><strong>IP Server:</strong> {{ ip_address }}</p>
+        <p><strong>Lokasi Folder Aplikasi:</strong></p>
+        <code>{{ project_root }}</code>
     </div>
 
 </main>
 
 <footer>
-    <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
+    <p>© {{ current_year }} BAGUS MEDIA SERVER — Dibuat karena hobi 😄</p>
 </footer>
 
 <script src="/static/Js/neon.js" defer></script>
