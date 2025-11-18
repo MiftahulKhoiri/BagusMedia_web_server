@@ -4,18 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Sistem - BAGUS MEDIA SERVER</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/update.css') }}">
-    <!-- Neon Transition -->
     <link rel="stylesheet" href="/static/css/neon.css">
 </head>
 <body>
+
 <header>
     <div class="logo-container">
         <img src="{{ url_for('static', filename='icon/Update.png') }}" alt="Logo Update" class="logo">
         <h1>Pembaruan Sistem</h1>
     </div>
     <nav class="menu">
-                        <a href="/" class="menu-item">🏠 Home</a>
+
+        <!-- 
+            PERBAIKAN:
+            "/" → harus url_for('main.home')
+            karena home ada pada Blueprint "main"
+        -->
+        <a href="{{ url_for('main.home') }}" class="menu-item">🏠 Home</a>
+
     </nav>
 </header>
 
@@ -53,33 +61,44 @@ function addLogEntry(msg, type='info') {
     progressLog.scrollTop = progressLog.scrollHeight;
 }
 
-// Cek pembaruan
+// ======================
+// Cek pembaruan via API
+// ======================
 checkUpdateBtn.addEventListener('click', async () => {
     addLogEntry("Memeriksa pembaruan dari GitHub...");
+
     try {
+        // API ini aman karena tetap sama: /api/check-update
         const res = await fetch('/api/check-update');
         const data = await res.json();
+
         if (data.update_available) {
             addLogEntry("Pembaruan tersedia!", "success");
             updateBtn.disabled = false;
         } else {
             addLogEntry("Sistem sudah versi terbaru.", "info");
         }
+
     } catch (e) {
         addLogEntry("Gagal memeriksa pembaruan: " + e.message, "error");
     }
 });
 
-// Jalankan pembaruan via WebSocket
+// ======================
+// Eksekusi Update via WebSocket
+// ======================
 updateBtn.addEventListener('click', () => {
     updateBtn.disabled = true;
     addLogEntry("Menghubungkan ke server pembaruan...");
 
+    // WebSocket tidak menggunakan blueprint prefix, tetap /ws/update
     const socket = new WebSocket(`ws://${window.location.host}/ws/update`);
 
     socket.onopen = () => addLogEntry("Koneksi ke server berhasil, memulai pembaruan...");
+
     socket.onmessage = (event) => {
         const msg = event.data.trim();
+
         if (msg.includes("[INFO]")) addLogEntry(msg.replace("[INFO]", "").trim(), "info");
         else if (msg.includes("[SUCCESS]")) addLogEntry(msg.replace("[SUCCESS]", "").trim(), "success");
         else if (msg.includes("[ERROR]")) addLogEntry(msg.replace("[ERROR]", "").trim(), "error");
@@ -87,23 +106,32 @@ updateBtn.addEventListener('click', () => {
             addLogEntry("Pembaruan selesai!", "success");
             restartBtn.disabled = false;
             socket.close();
-        } else addLogEntry(msg, "info");
+        } else {
+            addLogEntry(msg, "info");
+        }
     };
+
     socket.onerror = (err) => addLogEntry("Kesalahan WebSocket: " + err.message, "error");
 });
 
-// Restart sistem
+// ======================
+// Restart sistem via API
+// (Catatan: pastikan endpoint /api/restart ada)
+// ======================
 restartBtn.addEventListener('click', async () => {
     addLogEntry("Merestart server...");
     restartBtn.disabled = true;
+    
     await fetch('/api/restart', { method: 'POST' });
-    addLogEntry("Server direstart. Tunggu beberapa detik dan refresh halaman.", "success");
+    addLogEntry("Server direstart. Tunggu beberapa detik lalu refresh halaman.", "success");
 });
 </script>
-    <footer>
-        <p>© {{ current_year }} BAGUS MEDIA SERVER
-di buat dengan penuh kegabutan 😄😁🤣</p>
-    </footer>
+
+<footer>
+    <p>© {{ current_year }} BAGUS MEDIA SERVER
+    di buat dengan penuh kegabutan 😄😁🤣</p>
+</footer>
+
 <script src="/static/Js/neon.js" defer></script>
 </body>
 </html>
