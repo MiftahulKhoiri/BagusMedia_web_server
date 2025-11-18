@@ -16,13 +16,17 @@
 <body>
 
 <!-- ==========================
-     Kotak Form Register (tema pink)
-     ========================== -->
+     Kotak Form Register
+========================== -->
 <div class="form-box form-pink">
     <h2>Register</h2>
 
-    <!-- Form register ke server -->
-    <form action="/register" method="POST">
+    <!-- 
+        PERBAIKAN:
+        action="/register" → url_for('auth.register')
+        karena endpoint register ada di Blueprint "auth"
+    -->
+    <form action="{{ url_for('auth.register') }}" method="POST">
 
         <!-- Input username -->
         <input 
@@ -40,10 +44,14 @@
         <button type="submit">Daftar</button>
     </form>
 
-    <!-- Link balik ke login -->
+    <!-- 
+        PERBAIKAN:
+        /login → url_for('auth.login')
+        karena login juga ada di Blueprint "auth"
+    -->
     <p>
         Sudah punya akun? 
-        <a href="/login">Login disini</a>
+        <a href="{{ url_for('auth.login') }}">Login disini</a>
     </p>
 </div>
 
