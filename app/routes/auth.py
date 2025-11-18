@@ -100,7 +100,7 @@ def logout():
     Setelah logout, user dikembalikan ke halaman login.
     """
     session.clear()
-    return redirect("/login")
+    return redirect("/")
 
 
 # ============================================
