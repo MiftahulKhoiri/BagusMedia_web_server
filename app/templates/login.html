@@ -21,8 +21,12 @@
 <div class="form-box">
     <h2>Login</h2>
 
-    <!-- Form login ke backend Flask -->
-    <form action="/login" method="POST">
+    <!-- 
+        PERBAIKAN:
+        action="/login" → harus pakai url_for('auth.login')
+        karena route login berada di Blueprint "auth".
+    -->
+    <form action="{{ url_for('auth.login') }}" method="POST">
 
         <!-- Input username -->
         <input 
@@ -40,10 +44,14 @@
         <button type="submit">Masuk</button>
     </form>
 
-    <!-- Link menuju halaman register -->
+    <!-- 
+        Link ke halaman register 
+        PERBAIKAN:
+        href="/register" → harus url_for('auth.register')
+    -->
     <p>
         Belum punya akun? 
-        <a href="/register">Daftar disini</a>
+        <a href="{{ url_for('auth.register') }}">Daftar disini</a>
     </p>
 </div>
 
