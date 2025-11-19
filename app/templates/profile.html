@@ -1,110 +1,107 @@
-<!DOCTYPE html>  
-<html lang="id">  
-<head>  
-    <meta charset="UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>Profil Pengguna - BAGUS MEDIA SERVER</title>  
-  
-    <!-- CSS -->  
-    <link rel="stylesheet" href="/static/css/neon.css">  
-    <link rel="stylesheet" href="/static/css/profile.css">  
-  
-    <link rel="icon" href="{{ url_for('static', filename='icon/profile.png') }}">  
-</head>  
-<body>  
-  
-<canvas id="neonCanvas"></canvas>  
-  
-<!-- ============================  
-     HEADER  
-=============================== -->  
-<header class="header">  
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Pengguna - BAGUS MEDIA SERVER</title>
 
-    <!--  
-        PERBAIKAN:
-        /home → harus pakai url_for('main.home')
-        karena route home berada pada Blueprint "main"
-    -->
-    <a href="{{ url_for('main.home') }}" class="logo-area">  
-        <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">  
-        <span class="logo-text">Profil</span>  
-    </a>  
-  
-    <div class="header-buttons">  
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/neon.css">
+    <link rel="stylesheet" href="/static/css/profile.css">
 
-        <!--  
-            PERBAIKAN:
-            /edit-profile → url_for('profile.edit_profile')
-            karena route edit ada di Blueprint "profile"
-        -->
-        <a href="{{ url_for('profile.edit_profile') }}" class="btn-edit">Edit Profil</a>  
-        
-        <!--  
-            PERBAIKAN:
-            /logout → url_for('auth.logout')
-            karena logout berada di Blueprint "auth"
-        -->
-        <a href="{{ url_for('auth.logout') }}" class="btn-logout">Logout</a>  
+    <link rel="icon" href="{{ url_for('static', filename='icon/profile.png') }}">
+</head>
+<body>
 
-    </div>  
-</header>  
-  
-<!-- ============================  
-     COVER FOTO  
-=============================== -->  
-<div class="cover-display">  
-    <img id="cover-photo"  
-         src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"  
-         alt="Cover">  
-</div>  
-  
-<!-- ============================  
-     FOTO PROFIL OVERLAP  
-=============================== -->  
-<div class="profile-photo-area">  
-    <img id="profile-photo"  
-         src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"  
-         alt="Foto Profil">  
-</div>  
-  
-<!-- ============================  
-     BADAN PROFIL  
-=============================== -->  
-<main class="profile-body">  
-  
-    <!-- Nama -->  
-    <div class="profile-name" style="text-align:center; margin-top:10px;">  
-        <h2>{{ profile.nama }}</h2>  
-    </div>  
-  
-    <!-- Kolom Informasi -->  
-    <div class="info-box">  
-  
-        <label>Email:</label>  
-        <p>{{ profile.email }}</p>  
-  
-        <label>Jenis Kelamin:</label>  
-        <p>{{ profile.jk or "-" }}</p>  
-  
-        <label>Umur:</label>  
-        <p>{{ profile.umur or "-" }}</p>  
-  
-        <label>Bio / Keterangan:</label>  
-        <p class="bio">{{ profile.bio }}</p>  
-  
-    </div>  
-  
-</main>  
-  
-<!-- ============================  
-     FOOTER  
-=============================== -->  
-<footer>  
-    <p>© {{ current_year }} BAGUS MEDIA SERVER</p>  
-</footer>  
-  
-<script src="/static/Js/neon.js" defer></script>  
-<script src="/static/Js/profile.js" defer></script>  
-  
-</body>  
+<canvas id="neonCanvas"></canvas>
+
+<!-- ============================
+     HEADER
+=============================== -->
+<header class="header">
+
+    <!-- =========================
+         TOMBOL HOME SESUAI ROLE
+    ========================= -->
+    {% if session.role == "root" %}
+        <a href="/admin" class="logo-area">
+            <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
+            <span class="logo-text">Admin</span>
+        </a>
+    {% else %}
+        <a href="{{ url_for('main.home') }}" class="logo-area">
+            <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
+            <span class="logo-text">Home</span>
+        </a>
+    {% endif %}
+
+    <div class="header-buttons">
+
+        <!-- Edit Profil -->
+        <a href="{{ url_for('profile.edit_profile') }}" class="btn-edit">Edit Profil</a>
+
+        <!-- Logout -->
+        <a href="{{ url_for('auth.logout') }}" class="btn-logout">Logout</a>
+
+    </div>
+</header>
+
+<!-- ============================
+     COVER FOTO
+=============================== -->
+<div class="cover-display">
+    <img id="cover-photo"
+         src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
+         alt="Cover">
+</div>
+
+<!-- ============================
+     FOTO PROFIL
+=============================== -->
+<div class="profile-photo-area">
+    <img id="profile-photo"
+         src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
+         alt="Foto Profil">
+</div>
+
+<!-- ============================
+     BADAN PROFIL
+=============================== -->
+<main class="profile-body">
+
+    <!-- Nama -->
+    <div class="profile-name" style="text-align:center; margin-top:10px;">
+        <h2>{{ profile.nama }}</h2>
+    </div>
+
+    <!-- Kolom Informasi -->
+    <div class="info-box">
+
+        <label>Email:</label>
+        <p>{{ profile.email }}</p>
+
+        <label>Jenis Kelamin:</label>
+        <p>{{ profile.jk or "-" }}</p>
+
+        <label>Umur:</label>
+        <p>{{ profile.umur or "-" }}</p>
+
+        <label>Bio / Keterangan:</label>
+        <p class="bio">{{ profile.bio }}</p>
+
+    </div>
+
+</main>
+
+<!-- ============================
+     FOOTER
+=============================== -->
+<footer>
+    <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
+</footer>
+
+<script src="/static/Js/neon.js" defer></script>
+<script src="/static/Js/profile.js" defer></script>
+
+</body>
 </html>
