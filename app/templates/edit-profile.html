@@ -6,7 +6,7 @@
     <title>Edit Profil - BAGUS MEDIA SERVER</title>
 
     <link rel="stylesheet" href="/static/css/neon.css">
-    <link rel="stylesheet" href="/static/css/profile.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
 
     <link rel="icon" href="{{ url_for('static', filename='icon/profile.png') }}">
 </head>
@@ -16,80 +16,74 @@
 
 <header class="header">
     <a href="{{ url_for('profile.profile_page') }}" class="logo-area">
-        <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
+        <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo" alt="logo">
         <span class="logo-text">Kembali</span>
     </a>
 </header>
 
-<!-- ================================
-     FORM EDIT PROFILE
-================================ -->
 <main class="edit-container">
 
     <h2 class="edit-title">Edit Profil</h2>
 
-    <!-- FOTO PROFIL -->
-    <div class="photo-box">
-        <label>Foto Profil</label>
+    <div class="grid">
 
-        <img id="profile-preview"
-             src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
-             class="preview-img">
+        <!-- FOTO KIRI -->
+        <div class="col photo-col">
+            <div class="photo-card">
+                <label class="photo-label">Foto Profil</label>
+                <img id="profile-preview"
+                     src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
+                     class="preview-img" alt="foto profil">
+                <input type="file" id="profile-file" accept="image/*" style="display:none;"
+                       onchange="previewImage(this,'profile-preview'); uploadPhoto(this,'profile')">
+                <button class="btn-upload" onclick="document.getElementById('profile-file').click();">Upload Foto Profil</button>
+            </div>
 
-        <input type="file" id="profile-file" style="display:none;"
-               onchange="previewImage(this, 'profile-preview'); uploadPhoto(this, 'profile');">
+            <div class="photo-card">
+                <label class="photo-label">Foto Cover</label>
+                <img id="cover-preview"
+                     src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
+                     class="preview-img cover-img" alt="cover">
+                <input type="file" id="cover-file" accept="image/*" style="display:none;"
+                       onchange="previewImage(this,'cover-preview'); uploadPhoto(this,'cover')">
+                <button class="btn-upload" onclick="document.getElementById('cover-file').click();">Upload Foto Cover</button>
+            </div>
+        </div>
 
-        <button class="btn-upload" onclick="document.getElementById('profile-file').click();">
-            Upload Foto Profil
-        </button>
+        <!-- FORM KANAN -->
+        <div class="col form-col">
+            <label>Nama</label>
+            <input id="nama" type="text" value="{{ profile.nama }}" placeholder="Nama lengkap">
+
+            <label>Email</label>
+            <input id="email" type="email" value="{{ profile.email }}" placeholder="Email">
+
+            <label>Jenis Kelamin</label>
+            <select id="jk">
+                <option value="">-- pilih --</option>
+                <option value="Laki-laki" {% if profile.jk == 'Laki-laki' %}selected{% endif %}>Laki-laki</option>
+                <option value="Perempuan" {% if profile.jk == 'Perempuan' %}selected{% endif %}>Perempuan</option>
+            </select>
+
+            <label>Umur</label>
+            <input id="umur" type="number" value="{{ profile.umur }}" placeholder="Umur">
+
+            <label>Bio</label>
+            <textarea id="bio" rows="5" placeholder="Tentang kamu...">{{ profile.bio }}</textarea>
+
+            <div class="form-actions">
+                <button class="btn-save" onclick="saveProfile()">Simpan Profil</button>
+                <button class="btn-cancel" onclick="location.href='{{ url_for('profile.profile_page') }}'">Batal</button>
+            </div>
+
+            <div id="msg" class="msg" style="display:none;"></div>
+        </div>
+
     </div>
-
-    <!-- FOTO COVER -->
-    <div class="photo-box">
-        <label>Foto Cover</label>
-
-        <img id="cover-preview"
-             src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
-             class="preview-img cover-img">
-
-        <input type="file" id="cover-file" style="display:none;"
-               onchange="previewImage(this, 'cover-preview'); uploadPhoto(this, 'cover');">
-
-        <button class="btn-upload" onclick="document.getElementById('cover-file').click();">
-            Upload Foto Cover
-        </button>
-    </div>
-
-    <!-- INFORMASI TEXT -->
-    <div class="form-box">
-
-        <label>Nama</label>
-        <input id="nama" value="{{ profile.nama }}" placeholder="Nama lengkap">
-
-        <label>Email</label>
-        <input id="email" value="{{ profile.email }}" placeholder="Email">
-
-        <label>Jenis Kelamin</label>
-        <select id="jk">
-            <option value="">-- pilih --</option>
-            <option value="Laki-laki" {% if profile.jk == 'Laki-laki' %}selected{% endif %}>Laki-laki</option>
-            <option value="Perempuan" {% if profile.jk == 'Perempuan' %}selected{% endif %}>Perempuan</option>
-        </select>
-
-        <label>Umur</label>
-        <input id="umur" value="{{ profile.umur }}" placeholder="Umur">
-
-        <label>Bio</label>
-        <textarea id="bio" placeholder="Tentang kamu...">{{ profile.bio }}</textarea>
-
-    </div>
-
-    <button class="btn-save" onclick="saveProfile()">Simpan Profil</button>
-
 </main>
 
 <script src="/static/Js/neon.js" defer></script>
-<script src="/static/Js/profile.js" defer></script>
+<script src="{{ url_for('static', filename='Js/profile.js') }}" defer></script>
 
 </body>
 </html>
