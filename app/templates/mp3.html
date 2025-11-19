@@ -15,23 +15,39 @@
 </head>
 <body>
 
-    <!-- HEADER -->
+    <canvas id="neonCanvas"></canvas>
+
+    <!-- ============================
+         HEADER DENGAN ROLE CHECK
+    ============================= -->
     <header class="header">
-        <a href="{{ url_for('main.home') }}" class="logo-container" style="text-decoration:none;">
-            <img src="{{ url_for('static', filename='icon/Mp3.png') }}" alt="Logo MP3" class="logo">
-            <h1 style="color:white;">Media MP3</h1>
+
+        <!-- Logo & Judul -->
+        {% if session.role == "root" %}
+            <a href="/admin" class="logo-container" style="text-decoration:none;">
+        {% else %}
+            <a href="{{ url_for('main.home') }}" class="logo-container" style="text-decoration:none;">
+        {% endif %}
+                <img src="{{ url_for('static', filename='icon/Mp3.png') }}" alt="Logo MP3" class="logo">
+                <h1 style="color:white;">Media MP3</h1>
         </a>
 
         <nav class="menu">
             <button id="theme-toggle" class="theme-toggle" title="Ganti Mode">🌙</button>
         </nav>
+
     </header>
 
-    <!-- KONTEN UTAMA -->
+
+    <!-- ============================
+         KONTEN UTAMA
+    ============================= -->
     <main class="main-content">
         <div class="player-container">
 
-            <!-- PEMUTAR MUSIK -->
+            <!-- ============================
+                 PEMUTAR MUSIK
+            ============================= -->
             <div class="music-player">
 
                 <div class="now-playing">
@@ -70,7 +86,10 @@
 
             </div>
 
-            <!-- PLAYLIST -->
+
+            <!-- ============================
+                 PLAYLIST
+            ============================= -->
             <div class="playlist-container">
                 <h3>Daftar Lagu</h3>
 
@@ -89,10 +108,11 @@
         </div>
     </main>
 
+
     <!-- AUDIO PLAYER -->
     <audio id="audio-player"></audio>
 
-    <!-- SCRIPT PLAYER -->
+    <!-- MAIN SCRIPT -->
     <script src="{{ url_for('static', filename='Js/mp3.js') }}"></script>
 
 </body>
