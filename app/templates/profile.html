@@ -8,7 +8,6 @@
     <!-- CSS -->
     <link rel="stylesheet" href="/static/css/neon.css">
     <link rel="stylesheet" href="/static/css/profile.css">
-
     <link rel="icon" href="{{ url_for('static', filename='icon/profile.png') }}">
 </head>
 <body>
@@ -20,32 +19,23 @@
 =============================== -->
 <header class="header">
 
-    <!-- =========================
-         TOMBOL HOME SESUAI ROLE
-    ========================= -->
-    <div class="left-area">
-        {% if session.role == "root" %}
-            <a href="/admin" class="logo-area">
-                <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
-                <span class="logo-text">Admin</span>
-            </a>
-        {% else %}
-            <a href="{{ url_for('main.home') }}" class="logo-area">
-                <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
-                <span class="logo-text">Home</span>
-            </a>
-        {% endif %}
-    </div>
+    {% if session.role == "root" %}
+        <a href="/admin" class="logo-area">
+            <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
+            <span class="logo-text">Admin</span>
+        </a>
+    {% else %}
+        <a href="{{ url_for('main.home') }}" class="logo-area">
+            <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
+            <span class="logo-text">Home</span>
+        </a>
+    {% endif %}
 
     <div class="header-buttons">
-
-        <!-- Edit Profil -->
         <a href="{{ url_for('profile.edit_profile') }}" class="btn-edit">Edit Profil</a>
-
-        <!-- Logout -->
         <a href="{{ url_for('auth.logout') }}" class="btn-logout">Logout</a>
-
     </div>
+
 </header>
 
 <!-- ============================
@@ -53,7 +43,7 @@
 =============================== -->
 <div class="cover-display">
     <img id="cover-photo"
-         src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
+         src="/static/profile/{{ profile.cover if profile.cover else 'cover.png' }}"
          alt="Cover">
 </div>
 
@@ -62,7 +52,7 @@
 =============================== -->
 <div class="profile-photo-area">
     <img id="profile-photo"
-         src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
+         src="/static/profile/{{ profile.foto if profile.foto else 'profile.png' }}"
          alt="Foto Profil">
 </div>
 
@@ -71,16 +61,13 @@
 =============================== -->
 <main class="profile-body">
 
-    <!-- Nama -->
     <div class="profile-name" style="text-align:center; margin-top:10px;">
         <h2>{{ profile.nama }}</h2>
     </div>
 
-    <!-- Kolom Informasi -->
     <div class="info-box">
-
         <label>Email:</label>
-        <p>{{ profile.email }}</p>
+        <p>{{ profile.email or "-" }}</p>
 
         <label>Jenis Kelamin:</label>
         <p>{{ profile.jk or "-" }}</p>
@@ -89,8 +76,7 @@
         <p>{{ profile.umur or "-" }}</p>
 
         <label>Bio / Keterangan:</label>
-        <p class="bio">{{ profile.bio }}</p>
-
+        <p class="bio">{{ profile.bio or "-" }}</p>
     </div>
 
 </main>
