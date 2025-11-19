@@ -5,116 +5,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profil - BAGUS MEDIA SERVER</title>
 
-    <!-- CSS -->
     <link rel="stylesheet" href="/static/css/neon.css">
-    <link rel="stylesheet" href="/static/css/edit-profile.css">
-
-    <!-- Ikon -->
-    <link rel="icon" href="{{ url_for('static', filename='icon/profile.png') }}">
+    <link rel="stylesheet" href="/static/css/profile.css">
 </head>
 <body>
 
-<!-- Background Neon -->
 <canvas id="neonCanvas"></canvas>
 
-<!-- ===============================
-     HEADER
-=============================== -->
 <header class="header">
-    <h1 class="edit-title">Edit Profil</h1>
-
-    <!-- 
-        PERBAIKAN:
-        /profile → harus menggunakan url_for('profile.profile_page')
-        karena route ini berada dalam Blueprint "profile".
-    -->
-    <a href="{{ url_for('profile.profile_page') }}" class="btn-back">⬅ Kembali</a>
+    {% if session.role == "root" %}
+    <a href="/admin" class="logo-area">
+        <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
+        <span class="logo-text">Admin</span>
+    </a>
+    {% else %}
+    <a href="{{ url_for('main.home') }}" class="logo-area">
+        <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
+        <span class="logo-text">Home</span>
+    </a>
+    {% endif %}
 </header>
 
-<!-- ===============================
-     COVER FOTO
-=============================== -->
-<div class="cover-area">
-    <img id="cover-photo"
-         src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
-         alt="Foto Cover">
+<main class="edit-body">
 
-    <!-- Input upload disembunyikan, dibuka via JS -->
-    <input id="cover-input" type="file" accept="image/*" style="display:none;">
-</div>
+    <h2>Edit Profil</h2>
 
-<!-- ===============================
-     FOTO PROFIL
-=============================== -->
-<div class="profile-photo-area">
-    <img id="profile-photo"
-         src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
-         alt="Foto Profil">
+    <div class="edit-box">
 
-    <!-- Input upload disembunyikan -->
-    <input id="photo-input" type="file" accept="image/*" style="display:none;">
-</div>
+        <!-- ========================
+             FORM PROFIL
+        ======================== -->
+        <label>Nama:</label>
+        <input id="nama" value="{{ profile.nama }}" disabled>
 
-<!-- ===============================
-     FORM EDIT PROFIL
-=============================== -->
-<main class="edit-box">
+        <label>Email:</label>
+        <input id="email" value="{{ profile.email }}">
 
-    <label>Nama Lengkap:</label>
-    <input id="nama" type="text" value="{{ profile.nama }}">
+        <label>Jenis Kelamin:</label>
+        <select id="jk">
+            <option value="">-</option>
+            <option value="Laki-Laki" {% if profile.jk == "Laki-Laki" %}selected{% endif %}>Laki-Laki</option>
+            <option value="Perempuan" {% if profile.jk == "Perempuan" %}selected{% endif %}>Perempuan</option>
+        </select>
 
-    <label>Email:</label>
-    <input id="email" type="email" value="{{ profile.email }}">
+        <label>Umur:</label>
+        <input id="umur" type="number" value="{{ profile.umur }}">
 
-    <label>Jenis Kelamin:</label>
-    <select id="jk">
-        <option value="">- Pilih -</option>
-        <option value="Laki-laki" {% if profile.jk == "Laki-laki" %}selected{% endif %}>Laki-laki</option>
-        <option value="Perempuan" {% if profile.jk == "Perempuan" %}selected{% endif %}>Perempuan</option>
-    </select>
+        <label>Bio / Keterangan:</label>
+        <textarea id="bio">{{ profile.bio }}</textarea>
 
-    <label>Umur:</label>
-    <input id="umur" type="number" value="{{ profile.umur }}">
+        <button id="save-btn" class="save-button">Simpan Profil</button>
+    </div>
 
-    <label>Bio / Keterangan:</label>
-    <textarea id="bio">{{ profile.bio }}</textarea>
 
-    <!-- 
-        Tombol simpan akan menggunakan JS (fetch)
-        ke endpoint /api/save-profile (Blueprint profile)
-    -->
-    <button id="save-btn" class="save-btn">Simpan Perubahan</button>
+    <!-- ================================
+         UPLOAD FOTO PROFIL & COVER
+    ================================= -->
+    <div class="upload-section">
 
-    <!-- ===============================
-         TOMBOL GANTI PASSWORD
-    ================================ -->
+        <div class="upload-card">
+            <h3>Foto Profil</h3>
+            <img src="/static/profile/{{ profile.foto }}" class="preview-img">
 
-    <!--
-        PERBAIKAN:
-        /change-password → harus pakai url_for('auth.change_password')
-        Jika route change password ada di Blueprint auth.
-        
-        Jika tidak punya route change-password di backend,
-        biarkan tetap hardcode.
-        
-        SEMENTARA aku buat versi aman:
-        Tetap link langsung tanpa url_for supaya tidak error.
-    -->
+            <input type="file" id="upload-foto" accept="image/*">
+            <button onclick="uploadPhoto('profile')">Upload</button>
+        </div>
 
-    <a href="/change-password" class="change-pass-btn">Ganti Password</a>
+        <div class="upload-card">
+            <h3>Foto Cover</h3>
+            <img src="/static/profile/{{ profile.cover }}" class="preview-img">
+
+            <input type="file" id="upload-cover" accept="image/*">
+            <button onclick="uploadPhoto('cover')">Upload</button>
+        </div>
+
+    </div>
 
 </main>
 
-<!-- ===============================
-     FOOTER
-=============================== -->
-<footer>
-    <p>© {{ current_year }} BAGUS MEDIA SERVER di buat karena kegabutan</p>
-</footer>
-
-<!-- Script -->
 <script src="/static/Js/neon.js" defer></script>
-<script src="/static/Js/edit-profile.js" defer></script>
+
+<script>
+// ===================================
+// SIMPAN PROFIL
+// ===================================
+document.getElementById("save-btn").onclick = async () => {
+    const data = {
+        email: document.getElementById("email").value,
+        jk: document.getElementById("jk").value,
+        umur: document.getElementById("umur").value,
+        bio: document.getElementById("bio").value
+    };
+
+    let res = await fetch("/api/save-profile", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    let out = await res.json();
+    if (out.status === "success") {
+        alert("Profil berhasil disimpan!");
+    }
+};
+
+
+// ===================================
+// UPLOAD FOTO PROFIL / COVER
+// ===================================
+async function uploadPhoto(type) {
+    const fileInput = type === "profile"
+        ? document.getElementById("upload-foto")
+        : document.getElementById("upload-cover");
+
+    if (fileInput.files.length === 0) {
+        alert("Pilih foto dulu!");
+        return;
+    }
+
+    let form = new FormData();
+    form.append("photo", fileInput.files[0]);
+    form.append("type", type);
+
+    let res = await fetch("/api/upload-photo", {
+        method: "POST",
+        body: form
+    });
+
+    let out = await res.json();
+    if (out.status === "success") {
+        alert("Foto berhasil diupload!");
+        location.reload();
+    }
+}
+</script>
 
 </body>
 </html>
