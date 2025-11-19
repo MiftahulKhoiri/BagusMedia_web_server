@@ -3,65 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - BAGUS MEDIA SERVER</title>
+    <title>ADMIN TERMINAL - BAGUS MEDIA SERVER</title>
 
-    <!-- Admin CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
-
-    <!-- Ikon -->
-    <link rel="icon" href="{{ url_for('static', filename='icon/profile.png') }}">
+    <link rel="stylesheet" href="/static/css/admin-hacker.css">
 </head>
 <body>
 
-<!-- ANIMASI ATOM BACKGROUND -->
-<div class="atom-bg">
-    <div class="atom">
-        <div class="nucleus"></div>
-        <div class="orbit orbit1"><div class="electron"></div></div>
-        <div class="orbit orbit2"><div class="electron"></div></div>
-        <div class="orbit orbit3"><div class="electron"></div></div>
-    </div>
-</div>
+<canvas id="matrixCanvas"></canvas>
 
-<header>
-    ADMIN DASHBOARD — BAGUS MEDIA SERVER
-    <div class="header-buttons">
-        <a href="/home" class="btn small">🏠 Home</a>
-        <a href="/logout" class="btn-danger small">Logout</a>
-    </div>
-</header>
-
-<div class="container">
+<div class="terminal">
+    <h1 class="title">▌ ADMIN TERMINAL — BAGUS MEDIA SERVER ▌</h1>
 
     <!-- SYSTEM INFO -->
-    <div class="section-title">Informasi Sistem</div>
-    <div class="grid-3">
-        <div class="card">
-            <h3>Server</h3>
-            <p><b>OS:</b> {{ info.os }} ({{ info.os_version }})</p>
-            <p><b>Python:</b> {{ info.python }}</p>
-            <p><b>IP Server:</b> {{ info.ip }}</p>
-            <p><b>Uptime:</b> {{ info.uptime }}</p>
-        </div>
-
-        <div class="card">
-            <h3>CPU & RAM</h3>
-            <p><b>CPU:</b> {{ info.cpu }} core</p>
-            <p><b>RAM Total:</b> {{ info.ram_total }} GB</p>
-            <p><b>RAM Digunakan:</b> {{ info.ram_used }} GB</p>
-        </div>
-
-        <div class="card">
-            <h3>Penyimpanan</h3>
-            <p><b>Total Disk:</b> {{ info.disk_total }} GB</p>
-            <p><b>Dipakai:</b> {{ info.disk_used }} GB</p>
+    <div class="section">
+        <div class="section-title">[ SYSTEM INFO ]</div>
+        <div class="info-box">
+            <p>OS: <span>{{ info.os }} {{ info.os_version }}</span></p>
+            <p>Python: <span>{{ info.python }}</span></p>
+            <p>IP Server: <span>{{ info.ip }}</span></p>
+            <p>Uptime: <span>{{ info.uptime }}</span></p>
+            <p>CPU Core: <span>{{ info.cpu }}</span></p>
+            <p>RAM: <span>{{ info.ram_used }} / {{ info.ram_total }} GB</span></p>
+            <p>Disk: <span>{{ info.disk_used }} / {{ info.disk_total }} GB</span></p>
         </div>
     </div>
 
     <!-- USER MANAGEMENT -->
-    <div class="section-title">Manajemen Pengguna</div>
-    <div class="card">
-        <table>
+    <div class="section">
+        <div class="section-title">[ USER MANAGEMENT ]</div>
+
+        <table class="user-table">
             <tr>
                 <th>ID</th>
                 <th>Username</th>
@@ -76,11 +47,11 @@
                 <td>{{ u[2] }}</td>
                 <td>
                     {% if u[1] != "root" %}
-                        <button class="btn-warning" onclick="changeRole({{ u[0] }}, 'root')">Jadikan Root</button>
-                        <button class="btn" onclick="changeRole({{ u[0] }}, 'user')">Jadikan User</button>
-                        <button class="btn-danger" onclick="deleteUser({{ u[0] }})">Hapus</button>
+                        <button class="btn warn" onclick="changeRole({{ u[0] }}, 'root')">Set Root</button>
+                        <button class="btn" onclick="changeRole({{ u[0] }}, 'user')">Set User</button>
+                        <button class="btn danger" onclick="deleteUser({{ u[0] }})">Hapus</button>
                     {% else %}
-                        <i>(tidak bisa diubah)</i>
+                        <span class="locked">Locked</span>
                     {% endif %}
                 </td>
             </tr>
@@ -89,37 +60,21 @@
     </div>
 
     <!-- ADMIN TOOLS -->
-    <div class="section-title">Tools Admin</div>
-    <div class="grid-3">
+    <div class="section">
+        <div class="section-title">[ ADMIN TOOLS ]</div>
 
-        <div class="card">
-            <h3>File Manager</h3>
-            <p>Akses file MP3, Video, Upload, dan kelola semuanya.</p>
-            <button class="btn" onclick="location.href='/filemanager'">Buka File Manager</button>
+        <div class="tools">
+            <button class="btn tool" onclick="location.href='/filemanager'">File Manager</button>
+            <button class="btn tool" onclick="location.href='/update'">System Update</button>
+            <button class="btn danger tool">Restart System</button>
         </div>
-
-        <div class="card">
-            <h3>System Update</h3>
-            <p>Cek update & jalankan Git Pull.</p>
-            <button class="btn" onclick="location.href='/update'">Buka Update</button>
-        </div>
-
-        <div class="card">
-            <h3>Restart System</h3>
-            <p>Restart server dengan cepat.</p>
-            <button class="btn-danger">Restart (Coming soon)</button>
-        </div>
-
     </div>
+
+    <footer class="footer">© {{ current_year }} BAGUS MEDIA SERVER • TERMINAL MODE</footer>
 
 </div>
 
-<footer>
-    © {{ current_year }} BAGUS MEDIA SERVER — Admin Panel
-</footer>
-
-<!-- Admin Script -->
-<script src="{{ url_for('static', filename='Js/admin.js') }}" defer></script>
+<script src="/static/Js/admin-hacker.js"></script>
 
 </body>
 </html>
