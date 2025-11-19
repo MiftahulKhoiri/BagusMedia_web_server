@@ -5,112 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - BAGUS MEDIA SERVER</title>
 
-    <style>
-        body {
-            margin: 0;
-            background: #f4f7fa;
-            font-family: Arial, sans-serif;
-        }
+    <!-- Admin CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 
-        header {
-            background: #1976d2;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        .container {
-            padding: 20px;
-        }
-
-        .section-title {
-            margin: 25px 0 10px;
-            font-size: 21px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        /* Cards */
-        .card {
-            background: white;
-            padding: 18px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-        }
-
-        /* Table Users */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px;
-        }
-
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-
-        th {
-            background: #eeeeee;
-            font-weight: bold;
-        }
-
-        tr:hover {
-            background: #f0f7ff;
-        }
-
-        .btn {
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            background: #1976d2;
-            color: white;
-            border: none;
-            transition: .2s;
-        }
-
-        .btn:hover {
-            background: #1259a5;
-        }
-
-        .btn-danger {
-            background: #d32f2f;
-        }
-
-        .btn-danger:hover {
-            background: #a32222;
-        }
-
-        .btn-warning {
-            background: #f9a825;
-        }
-
-        .btn-warning:hover {
-            background: #c68400;
-        }
-
-        footer {
-            text-align: center;
-            padding: 15px;
-            margin-top: 20px;
-            color: #666;
-        }
-    </style>
+    <!-- Ikon -->
+    <link rel="icon" href="{{ url_for('static', filename='icon/profile.png') }}">
 </head>
 <body>
 
-<header>ADMIN DASHBOARD - BAGUS MEDIA SERVER</header>
+<header>
+    ADMIN DASHBOARD — BAGUS MEDIA SERVER
+    <div class="header-buttons">
+        <a href="/home" class="btn small">🏠 Home</a>
+        <a href="/logout" class="btn-danger small">Logout</a>
+    </div>
+</header>
 
 <div class="container">
 
@@ -138,7 +47,6 @@
             <p><b>Dipakai:</b> {{ info.disk_used }} GB</p>
         </div>
     </div>
-
 
     <!-- USER MANAGEMENT -->
     <div class="section-title">Manajemen Pengguna</div>
@@ -170,7 +78,6 @@
         </table>
     </div>
 
-
     <!-- ADMIN TOOLS -->
     <div class="section-title">Tools Admin</div>
     <div class="grid-3">
@@ -197,37 +104,12 @@
 
 </div>
 
-<footer>© {{ current_year }} BAGUS MEDIA SERVER — Admin Panel</footer>
+<footer>
+    © {{ current_year }} BAGUS MEDIA SERVER — Admin Panel
+</footer>
 
-<script>
-function changeRole(id, role) {
-    fetch("/api/change-role", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({user_id: id, role: role})
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.error) alert(data.error);
-        else location.reload();
-    });
-}
-
-function deleteUser(id) {
-    if (!confirm("Yakin ingin menghapus user ini?")) return;
-
-    fetch("/api/delete-user", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({user_id: id})
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.error) alert(data.error);
-        else location.reload();
-    });
-}
-</script>
+<!-- Admin Script -->
+<script src="{{ url_for('static', filename='Js/admin.js') }}" defer></script>
 
 </body>
 </html>
