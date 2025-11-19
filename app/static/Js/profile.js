@@ -1,63 +1,93 @@
-document.addEventListener("DOMContentLoaded", () => {
+// ================================
+//  UTIL: POPUP NOTIF
+// ================================
+function notif(msg, type = "success") {
+    alert((type === "error" ? "⚠ " : "✔ ") + msg);
+}
 
-    const coverPhoto = document.getElementById("cover-photo");
-    const coverInput = document.getElementById("cover-input");
 
-    const profilePhoto = document.getElementById("profile-photo");
-    const profileInput = document.getElementById("photo-input");
+// ================================
+//  PREVIEW FOTO PROFIL / COVER
+// ================================
+function previewImage(input, targetId) {
+    const file = input.files[0];
+    if (!file) return;
 
-    /* ======================================
-       GANTI COVER FOTO LANGSUNG DI PROFIL
-    ====================================== */
-    coverPhoto.addEventListener("click", () => coverInput.click());
+    // Validasi file
+    if (!file.type.startsWith("image/")) {
+        notif("Hanya file gambar yang diperbolehkan!", "error");
+        return;
+    }
 
-    coverInput.addEventListener("change", async () => {
-        const file = coverInput.files[0];
-        if (!file) return;
+    const img = document.getElementById(targetId);
+    img.src = URL.createObjectURL(file);
+    img.style.opacity = "0.5";
 
-        const fd = new FormData();
-        fd.append("photo", file);
-        fd.append("type", "cover");
+    setTimeout(() => {
+        img.style.opacity = "1";
+    }, 150);
+}
 
+
+// ================================
+//  UPLOAD FOTO (PROFILE / COVER)
+// ================================
+async function uploadPhoto(input, type) {
+    const file = input.files[0];
+    if (!file) return;
+
+    let form = new FormData();
+    form.append("photo", file);
+    form.append("type", type);
+
+    try {
         const res = await fetch("/api/upload-photo", {
             method: "POST",
-            body: fd
+            body: form
+        });
+
+        const data = await res.json();
+
+        if (data.status === "success") {
+            notif("Foto berhasil diperbarui!");
+        } else {
+            notif("Gagal upload foto!", "error");
+        }
+
+    } catch (err) {
+        notif("Kesalahan koneksi!", "error");
+    }
+}
+
+
+// ================================
+//  SIMPAN DATA PROFIL
+// ================================
+async function saveProfile() {
+    const data = {
+        nama: document.getElementById("nama").value,
+        email: document.getElementById("email").value,
+        jk: document.getElementById("jk").value,
+        umur: document.getElementById("umur").value,
+        bio: document.getElementById("bio").value
+    };
+
+    try {
+        const res = await fetch("/api/save-profile", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
         });
 
         const result = await res.json();
+
         if (result.status === "success") {
-            coverPhoto.src = `/static/profile/${result.foto}?t=${Date.now()}`;
-            alert("Cover berhasil diperbarui!");
+            notif("Profil berhasil disimpan!");
         } else {
-            alert("Gagal upload cover!");
+            notif("Gagal menyimpan profil!", "error");
         }
-    });
 
-    /* ======================================
-       GANTI FOTO PROFIL LANGSUNG DI PROFIL
-    ====================================== */
-    profilePhoto.addEventListener("click", () => profileInput.click());
-
-    profileInput.addEventListener("change", async () => {
-        const file = profileInput.files[0];
-        if (!file) return;
-
-        const fd = new FormData();
-        fd.append("photo", file);
-        fd.append("type", "profile");
-
-        const res = await fetch("/api/upload-photo", {
-            method: "POST",
-            body: fd
-        });
-
-        const result = await res.json();
-        if (result.status === "success") {
-            profilePhoto.src = `/static/profile/${result.foto}?t=${Date.now()}`;
-            alert("Foto profil berhasil diperbarui!");
-        } else {
-            alert("Gagal upload foto profil!");
-        }
-    });
-
-});
+    } catch (err) {
+        notif("Kesalahan koneksi!", "error");
+    }
+}
