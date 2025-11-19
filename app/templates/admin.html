@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - BAGUS MEDIA SERVER</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #f4f7fa;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background: #1976d2;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .section-title {
+            margin: 25px 0 10px;
+            font-size: 21px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        /* Table Users */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #eeeeee;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: #f0f7ff;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #1976d2;
+            color: white;
+            border: none;
+            transition: .2s;
+        }
+
+        .btn:hover {
+            background: #1259a5;
+        }
+
+        .btn-danger {
+            background: #d32f2f;
+        }
+
+        .btn-danger:hover {
+            background: #a32222;
+        }
+
+        .btn-warning {
+            background: #f9a825;
+        }
+
+        .btn-warning:hover {
+            background: #c68400;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<header>ADMIN DASHBOARD - BAGUS MEDIA SERVER</header>
+
+<div class="container">
+
+    <!-- SYSTEM INFO -->
+    <div class="section-title">Informasi Sistem</div>
+    <div class="grid-3">
+        <div class="card">
+            <h3>Server</h3>
+            <p><b>OS:</b> {{ info.os }} ({{ info.os_version }})</p>
+            <p><b>Python:</b> {{ info.python }}</p>
+            <p><b>IP Server:</b> {{ info.ip }}</p>
+            <p><b>Uptime:</b> {{ info.uptime }}</p>
+        </div>
+
+        <div class="card">
+            <h3>CPU & RAM</h3>
+            <p><b>CPU:</b> {{ info.cpu }} core</p>
+            <p><b>RAM Total:</b> {{ info.ram_total }} GB</p>
+            <p><b>RAM Digunakan:</b> {{ info.ram_used }} GB</p>
+        </div>
+
+        <div class="card">
+            <h3>Penyimpanan</h3>
+            <p><b>Total Disk:</b> {{ info.disk_total }} GB</p>
+            <p><b>Dipakai:</b> {{ info.disk_used }} GB</p>
+        </div>
+    </div>
+
+
+    <!-- USER MANAGEMENT -->
+    <div class="section-title">Manajemen Pengguna</div>
+    <div class="card">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Aksi</th>
+            </tr>
+
+            {% for u in users %}
+            <tr>
+                <td>{{ u[0] }}</td>
+                <td>{{ u[1] }}</td>
+                <td>{{ u[2] }}</td>
+                <td>
+                    {% if u[1] != "root" %}
+                        <button class="btn-warning" onclick="changeRole({{ u[0] }}, 'root')">Jadikan Root</button>
+                        <button class="btn" onclick="changeRole({{ u[0] }}, 'user')">Jadikan User</button>
+                        <button class="btn-danger" onclick="deleteUser({{ u[0] }})">Hapus</button>
+                    {% else %}
+                        <i>(tidak bisa diubah)</i>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+
+    <!-- ADMIN TOOLS -->
+    <div class="section-title">Tools Admin</div>
+    <div class="grid-3">
+
+        <div class="card">
+            <h3>File Manager</h3>
+            <p>Akses file MP3, Video, Upload, dan kelola semuanya.</p>
+            <button class="btn" onclick="location.href='/filemanager'">Buka File Manager</button>
+        </div>
+
+        <div class="card">
+            <h3>System Update</h3>
+            <p>Cek update & jalankan Git Pull.</p>
+            <button class="btn" onclick="location.href='/update'">Buka Update</button>
+        </div>
+
+        <div class="card">
+            <h3>Restart System</h3>
+            <p>Restart server dengan cepat.</p>
+            <button class="btn-danger">Restart (Coming soon)</button>
+        </div>
+
+    </div>
+
+</div>
+
+<footer>© {{ current_year }} BAGUS MEDIA SERVER — Admin Panel</footer>
+
+<script>
+function changeRole(id, role) {
+    fetch("/api/change-role", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({user_id: id, role: role})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.error) alert(data.error);
+        else location.reload();
+    });
+}
+
+function deleteUser(id) {
+    if (!confirm("Yakin ingin menghapus user ini?")) return;
+
+    fetch("/api/delete-user", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({user_id: id})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.error) alert(data.error);
+        else location.reload();
+    });
+}
+</script>
+
+</body>
+</html>
