@@ -39,3 +39,32 @@ function deleteUser(id) {
         }
     });
 }
+
+// UPDATE REALTIME SYSTEM MONITOR
+async function updateMonitor() {
+    try {
+        const res = await fetch("/api/monitor");
+        const data = await res.json();
+
+        // CPU
+        document.getElementById("cpu-bar").style.width = data.cpu + "%";
+        document.getElementById("cpu-text").textContent = data.cpu + "%";
+
+        // RAM
+        document.getElementById("ram-bar").style.width = data.ram_percent + "%";
+        document.getElementById("ram-text").textContent =
+            `${data.ram_used} / ${data.ram_total} GB (${data.ram_percent}%)`;
+
+        // DISK
+        document.getElementById("disk-bar").style.width = data.disk_percent + "%";
+        document.getElementById("disk-text").textContent =
+            `${data.disk_used} / ${data.disk_total} GB (${data.disk_percent}%)`;
+
+    } catch (err) {
+        console.log("Monitor error:", err);
+    }
+}
+
+// refresh tiap 1 detik
+setInterval(updateMonitor, 1000);
+updateMonitor();
