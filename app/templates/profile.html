@@ -23,17 +23,19 @@
     <!-- =========================
          TOMBOL HOME SESUAI ROLE
     ========================= -->
-    {% if session.role == "root" %}
-        <a href="/admin" class="logo-area">
-            <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
-            <span class="logo-text">Admin</span>
-        </a>
-    {% else %}
-        <a href="{{ url_for('main.home') }}" class="logo-area">
-            <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
-            <span class="logo-text">Home</span>
-        </a>
-    {% endif %}
+    <div class="left-area">
+        {% if session.role == "root" %}
+            <a href="/admin" class="logo-area">
+                <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
+                <span class="logo-text">Admin</span>
+            </a>
+        {% else %}
+            <a href="{{ url_for('main.home') }}" class="logo-area">
+                <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
+                <span class="logo-text">Home</span>
+            </a>
+        {% endif %}
+    </div>
 
     <div class="header-buttons">
 
