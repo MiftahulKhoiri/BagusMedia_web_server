@@ -1,90 +1,80 @@
-document.addEventListener("DOMContentLoaded", () => {
+// profile.js - preview, upload photo, save profile
 
-    const coverPhoto = document.getElementById("cover-photo");
-    const coverInput = document.getElementById("cover-input");
+function showMsg(text, timeout=3000){
+    const el = document.getElementById('msg');
+    if(!el) return;
+    el.style.display = 'block';
+    el.textContent = text;
+    setTimeout(()=> { el.style.display='none'; }, timeout);
+}
 
-    const profilePhoto = document.getElementById("profile-photo");
-    const profileInput = document.getElementById("photo-input");
+function previewImage(input, previewId){
+    if(!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    const url = URL.createObjectURL(file);
+    const img = document.getElementById(previewId);
+    if(img) img.src = url;
+}
 
-    const saveBtn = document.getElementById("save-btn");
+// Upload photo to server via /api/upload-photo
+async function uploadPhoto(inputElem, type){
+    if(!inputElem.files || !inputElem.files[0]) return;
+    const file = inputElem.files[0];
+    const fd = new FormData();
+    fd.append('photo', file);
+    fd.append('type', type);
 
-    /* ===============================
-       GANTI COVER
-    =============================== */
-    coverPhoto.addEventListener("click", () => coverInput.click());
+    showMsg('Uploading ' + type + ' ...');
 
-    coverInput.addEventListener("change", async () => {
-        const file = coverInput.files[0];
-        if (!file) return;
+    try{
+        const res = await fetch('/api/upload-photo', { method:'POST', body: fd });
+        const data = await res.json();
 
-        const fd = new FormData();
-        fd.append("photo", file);
-        fd.append("type", "cover");
-
-        const res = await fetch("/api/upload-photo", { method: "POST", body: fd });
-        const result = await res.json();
-
-        if (result.status === "success") {
-            coverPhoto.src = `/static/profile/${result.foto}?t=${Date.now()}`;
+        if(data.status && data.status === 'success'){
+            showMsg('Upload sukses!');
+            // update preview already done by previewImage
+            // optionally update server-side profile.json is already handled by backend
         } else {
-            alert("Gagal upload cover!");
+            showMsg('Upload gagal: ' + (data.message || JSON.stringify(data)));
         }
-    });
+    }catch(err){
+        showMsg('Upload error: ' + err.message);
+    }
+}
 
-    /* ===============================
-       GANTI FOTO PROFIL
-    =============================== */
-    profilePhoto.addEventListener("click", () => profileInput.click());
+// Save profile (name/email/jk/umur/bio) to /api/save-profile
+async function saveProfile(){
+    const nama = document.getElementById('nama').value || '';
+    const email = document.getElementById('email').value || '';
+    const jk = document.getElementById('jk').value || '';
+    const umur = document.getElementById('umur').value || '';
+    const bio = document.getElementById('bio').value || '';
 
-    profileInput.addEventListener("change", async () => {
-        const file = profileInput.files[0];
-        if (!file) return;
+    // basic validation
+    if(nama.trim() === ''){
+        showMsg('Nama tidak boleh kosong');
+        return;
+    }
 
-        const fd = new FormData();
-        fd.append("photo", file);
-        fd.append("type", "profile");
+    const payload = { nama, email, jk, umur, bio };
 
-        const res = await fetch("/api/upload-photo", { method: "POST", body: fd });
-        const result = await res.json();
+    showMsg('Menyimpan profil ...');
 
-        if (result.status === "success") {
-            profilePhoto.src = `/static/profile/${result.foto}?t=${Date.now()}`;
-        } else {
-            alert("Gagal upload foto profil!");
-        }
-    });
-
-    /* ===============================
-       SIMPAN PROFIL TANPA HILANG FOTO
-    =============================== */
-    saveBtn.addEventListener("click", async () => {
-
-        const data = {
-            nama: document.getElementById("nama").value,
-            email: document.getElementById("email").value,
-            jk: document.getElementById("jk").value,
-            umur: document.getElementById("umur").value,
-            bio: document.getElementById("bio").value,
-
-            // simpan nama file foto terbaru
-            foto: profilePhoto.src.split("/").pop().split("?")[0],
-            cover: coverPhoto.src.split("/").pop().split("?")[0]
-        };
-
-        const res = await fetch("/api/save-profile", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
+    try{
+        const res = await fetch('/api/save-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
-
-        const result = await res.json();
-
-        if (result.status === "success") {
-            alert("Profil berhasil diperbarui!");
-            window.location.href = "/profile";
+        const data = await res.json();
+        if(data.status === 'success'){
+            showMsg('Profil tersimpan');
+            // redirect to profile page after short delay
+            setTimeout(()=> location.href = '{{ url_for("profile.profile_page") }}'.replace(/^{{\s*url_for\(|\)\s*}}$/g,''), 900);
         } else {
-            alert("Gagal menyimpan profil!");
+            showMsg('Simpan gagal');
         }
-    });
-
-});
+    }catch(err){
+        showMsg('Error: ' + err.message);
+    }
+}
