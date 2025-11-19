@@ -27,7 +27,6 @@ def register():
             conn = sqlite3.connect(app.config["DATABASE"])
             cursor = conn.cursor()
 
-            # Tambahkan role (default user)
             cursor.execute("""
                 INSERT INTO users (username, password, role, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?)
@@ -64,15 +63,21 @@ def login():
 
         user_id, stored_pass, role = user
 
-        # Verifikasi password
         if not verify_password(stored_pass, password):
             return "Password salah!"
 
-        # Simpan ke session
+        # Simpan session
         session["user_id"] = user_id
         session["username"] = username
-        session["role"] = role  # 🔥 role dimasukkan ke session
+        session["role"] = role  # <== penting
 
+        # ======================================
+        # 🔥 ROOT = MASUK ADMIN DASHBOARD
+        # ======================================
+        if role == "root":
+            return redirect("/admin")
+
+        # User biasa ke /home
         return redirect("/home")
 
     return render_template("login.html")
@@ -83,8 +88,8 @@ def login():
 # =====================================================
 @auth.route("/logout")
 def logout():
-    session.clear()  # role ikut terhapus
-    return redirect("/")
+    session.clear()
+    return redirect("/")  # kembali ke splash
 
 
 # =====================================================
@@ -127,17 +132,16 @@ def change_password():
 
     stored_password = row[0]
 
-    # Cek password lama
     if not verify_password(stored_password, old_pass):
         conn.close()
         return jsonify({"status": "error", "message": "Password lama salah!"})
 
-    # Simpan password baru
     new_hashed = hash_password(new_pass)
     cursor.execute(
         "UPDATE users SET password=?, updated_at=? WHERE id=?",
         (new_hashed, datetime.utcnow().isoformat(), user_id)
     )
+
     conn.commit()
     conn.close()
 
