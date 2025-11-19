@@ -1,0 +1,120 @@
+/* ================================
+   ADMIN DASHBOARD - BAGUS SERVER
+================================== */
+
+body {
+    margin: 0;
+    background: #eef1f5;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* HEADER */
+header {
+    background: linear-gradient(90deg, #1976d2, #0d47a1);
+    color: white;
+    padding: 25px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+}
+
+/* MAIN CONTAINER */
+.container {
+    padding: 25px;
+}
+
+/* SECTION TITLE */
+.section-title {
+    margin: 25px 0 15px;
+    font-size: 22px;
+    font-weight: 600;
+    color: #222;
+    text-transform: uppercase;
+}
+
+/* CARDS */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+    transition: .2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+/* GRID 3 */
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 25px;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+
+th, td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+    background: #f5f5f5;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #444;
+}
+
+tr:hover td {
+    background: #f0f7ff;
+}
+
+/* BUTTONS */
+.btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    background: #1976d2;
+    color: white;
+    transition: 0.25s;
+}
+
+.btn:hover {
+    background: #1259a5;
+}
+
+.btn-danger {
+    background: #d32f2f;
+}
+
+.btn-danger:hover {
+    background: #a32222;
+}
+
+.btn-warning {
+    background: #ffb300;
+    color: #000;
+}
+
+.btn-warning:hover {
+    background: #d19000;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 18px;
+    margin-top: 40px;
+    color: #666;
+    letter-spacing: .5px;
+}
