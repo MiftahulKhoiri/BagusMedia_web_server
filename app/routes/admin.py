@@ -146,3 +146,21 @@ def delete_user():
     conn.close()
 
     return jsonify({"status": "ok"})
+
+# =====================================================
+# API: REAL-TIME SYSTEM MONITOR
+# =====================================================
+@admin.route("/api/monitor")
+def api_monitor():
+    mem = psutil.virtual_memory()
+    disk = psutil.disk_usage('/')
+
+    return {
+        "cpu": psutil.cpu_percent(),
+        "ram_used": round(mem.used / (1024**3), 2),
+        "ram_total": round(mem.total / (1024**3), 2),
+        "ram_percent": mem.percent,
+        "disk_used": round(disk.used / (1024**3), 2),
+        "disk_total": round(disk.total / (1024**3), 2),
+        "disk_percent": disk.percent,
+    }
