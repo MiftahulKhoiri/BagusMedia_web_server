@@ -1,100 +1,109 @@
 # app/routes/update.py
+
 import subprocess
 from flask import Blueprint, render_template, jsonify, current_app
 
+# Import proteksi role root
+from .utils import require_root
+
+
 # ============================================
-# BLUEPRINT UPDATE (CEK UPDATE & WEBSOCKET)
+# BLUEPRINT UPDATE
 # ============================================
 update_bp = Blueprint("update_bp", __name__)
 
 
 # ============================================
-# HALAMAN UPDATE
+# HALAMAN UPDATE (HANYA ROOT)
 # ============================================
 @update_bp.route("/update")
 def update():
+    # Proteksi hanya root yang boleh membuka
     check = require_root()
-    if check: return check
-    """
-    Tampilkan halaman update.html.
-    Halaman ini biasanya berisi tombol untuk cek update dan menjalankan update via websocket.
-    """
+    if check:
+        return check
+
     return render_template("update.html")
 
 
 # ============================================
-# API CHECK UPDATE
+# API : CEK UPDATE
 # ============================================
 @update_bp.route("/api/check-update")
 def check_update():
     """
-    Mengecek apakah ada update terbaru di repository git.
-    - Menjalankan "git fetch"
-    - Menjalankan "git status -uno"
-    - Jika status stdout mengandung kata 'behind' -> ada update
+    Cek apakah server tertinggal dari GitHub.
+    - git fetch → ambil update
+    - git status -uno → cek apakah "behind"
     """
     try:
-        BASE_DIR = current_app.config["PROJECT_ROOT"]
+        base_dir = current_app.config["PROJECT_ROOT"]
 
-        # Git fetch - mengambil info update terbaru
-        subprocess.run(["git", "fetch"], cwd=BASE_DIR)
+        # Ambil update terbaru dari remote
+        subprocess.run(["git", "fetch"], cwd=base_dir)
 
-        # Git status -uno - cek status branch lokal terhadap remote
+        # Cek status branch
         status = subprocess.run(
             ["git", "status", "-uno"],
-            cwd=BASE_DIR,
+            cwd=base_dir,
             capture_output=True,
             text=True
         )
 
         update_available = "behind" in status.stdout.lower()
+
         return jsonify({
             "update_available": update_available,
             "output": status.stdout
         })
+
     except Exception as e:
-        return jsonify({"update_available": False, "error": str(e)})
+        return jsonify({
+            "update_available": False,
+            "error": str(e)
+        })
 
 
 # ============================================
-# WEBSOCKET UNTUK UPDATE
+# WEBSOCKET UPDATE REALTIME
 # ============================================
 def register_ws(sock):
     """
-    Fungsi ini didaftarkan di app.py untuk membuat route websocket:
-    @sock.route("/ws/update")
-    Kenapa pakai fungsi? Karena Blueprint bawaan Flask tidak mendukung websocket dari Flask-Sock.
+    Websocket tidak bisa masuk blueprint default,
+    jadi kita daftar websocket manual di app.py.
+
+    Cara pemanggilan di app.py:
+        register_ws(sock)
     """
 
     @sock.route("/ws/update")
     def ws_update(ws):
-        """
-        WebSocket yang menjalankan 'git pull' dan mengirim outputnya ke client secara realtime.
-        - Mengirim pesan awal
-        - Menjalankan git pull via subprocess.Popen
-        - Mengirim setiap baris output secara streaming
-        """
-        BASE_DIR = current_app.config["PROJECT_ROOT"]
+        base_dir = current_app.config["PROJECT_ROOT"]
 
-        def send(msg):
+        # Fungsi aman untuk mengirim pesan
+        def safe_send(msg):
             try:
                 ws.send(msg)
             except:
-                pass  # Supaya tidak error kalau websocket tertutup mendadak
+                pass  # WebSocket tertutup → biarkan tanpa error
 
-        send("[INFO] Memulai update...\n")
+        safe_send("[INFO] Memulai update...\n")
 
-        # Proses git pull
-        p = subprocess.Popen(
-            ["git", "pull"],
-            cwd=BASE_DIR,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True
-        )
+        try:
+            # Jalankan git pull
+            process = subprocess.Popen(
+                ["git", "pull"],
+                cwd=base_dir,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True
+            )
 
-        # Kirim setiap baris output ke websocket
-        for line in p.stdout:
-            send(line.strip())
+            # Kirim output baris demi baris
+            for line in process.stdout:
+                safe_send(line.strip())
 
-        send("[DONE]")
+        except Exception as e:
+            safe_send(f"[ERROR] {e}")
+
+        safe_send("[DONE]")
