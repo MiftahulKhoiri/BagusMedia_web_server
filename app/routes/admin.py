@@ -1,7 +1,7 @@
 # app/routes/admin.py
 
 from flask import Blueprint, render_template, current_app, jsonify, request
-import sqlite3, platform, psutil, socket
+import sqlite3, platform, psutil, socket, time
 from datetime import datetime
 
 from .utils import require_root  # proteksi root
@@ -10,18 +10,20 @@ admin = Blueprint("admin", __name__)
 
 
 # =====================================================
-# SAFE GET UPTIME (Termux tidak bisa akses boot_time)
+# SAFE UPTIME (Android / Termux tidak izinkan boot_time)
 # =====================================================
 def safe_uptime():
     try:
-        boot = psutil.boot_time()  # bisa error di Android
+        boot = psutil.boot_time()
         return str(datetime.now() - datetime.fromtimestamp(boot)).split('.')[0]
     except Exception:
-        return "Tidak dapat membaca (dibatasi Android)"
+        # fallback manual uptime
+        uptime_seconds = time.time() - psutil.Process().create_time()
+        return time.strftime("%H:%M:%S", time.gmtime(uptime_seconds))
 
 
 # =====================================================
-# HALAMAN DASHBOARD ADMIN
+# HALAMAN ADMIN (Terminal Hacker Mode)
 # =====================================================
 @admin.route("/admin")
 def admin_dashboard():
@@ -29,40 +31,42 @@ def admin_dashboard():
     if check:
         return check
 
-    # ------------------------
-    # Info sistem
-    # ------------------------
+    # ---- System Info (safe untuk Android) ----
+    try:
+        mem = psutil.virtual_memory()
+        ram_total = round(mem.total / (1024**3), 2)
+        ram_used = round(mem.used / (1024**3), 2)
+    except Exception:
+        ram_total = "N/A"
+        ram_used = "N/A"
+
     try:
         disk = psutil.disk_usage('/')
-        ram = psutil.virtual_memory()
+        disk_total = round(disk.total / (1024**3), 2)
+        disk_used = round(disk.used / (1024**3), 2)
     except Exception:
-        # fallback untuk Android permission
-        disk = ram = None
+        disk_total = "N/A"
+        disk_used = "N/A"
 
     info = {
         "os": platform.system(),
         "os_version": platform.release(),
         "python": platform.python_version(),
         "cpu": psutil.cpu_count(logical=True),
-
-        "ram_total": round(ram.total / (1024**3), 2) if ram else "N/A",
-        "ram_used": round(ram.used / (1024**3), 2) if ram else "N/A",
-
-        "disk_total": round(disk.total / (1024**3), 2) if disk else "N/A",
-        "disk_used": round(disk.used / (1024**3), 2) if disk else "N/A",
-
+        "ram_total": ram_total,
+        "ram_used": ram_used,
+        "disk_total": disk_total,
+        "disk_used": disk_used,
         "uptime": safe_uptime()
     }
 
-    # IP Address
+    # ---- IP ----
     try:
         info["ip"] = socket.gethostbyname(socket.gethostname())
     except:
         info["ip"] = "Tidak diketahui"
 
-    # ------------------------
-    # List semua user
-    # ------------------------
+    # ---- User List ----
     conn = sqlite3.connect(current_app.config["DATABASE"])
     cursor = conn.cursor()
     cursor.execute("SELECT id, username, role FROM users ORDER BY id ASC")
@@ -78,7 +82,7 @@ def admin_dashboard():
 
 
 # =====================================================
-# API GANTI ROLE USER
+# API GANTI ROLE
 # =====================================================
 @admin.route("/api/change-role", methods=["POST"])
 def change_role():
@@ -97,14 +101,13 @@ def change_role():
     cursor = conn.cursor()
 
     cursor.execute("SELECT username FROM users WHERE id=?", (user_id,))
-    row = cursor.fetchone()
+    user = cursor.fetchone()
 
-    if not row:
+    if not user:
         return jsonify({"error": "User tidak ditemukan!"}), 404
 
-    username = row[0]
+    username = user[0]
 
-    # Cegah root diubah
     if username == "root":
         return jsonify({"error": "User root tidak boleh diubah!"}), 403
 
@@ -131,12 +134,12 @@ def delete_user():
     cursor = conn.cursor()
 
     cursor.execute("SELECT username FROM users WHERE id=?", (user_id,))
-    row = cursor.fetchone()
+    user = cursor.fetchone()
 
-    if not row:
+    if not user:
         return jsonify({"error": "User tidak ditemukan!"}), 404
 
-    username = row[0]
+    username = user[0]
 
     if username == "root":
         return jsonify({"error": "Root tidak boleh dihapus!"}), 403
@@ -147,20 +150,40 @@ def delete_user():
 
     return jsonify({"status": "ok"})
 
+
 # =====================================================
-# API: REAL-TIME SYSTEM MONITOR
+# API REAL-TIME MONITOR
 # =====================================================
 @admin.route("/api/monitor")
 def api_monitor():
-    mem = psutil.virtual_memory()
-    disk = psutil.disk_usage('/')
+    try:
+        cpu = psutil.cpu_percent()
+    except:
+        cpu = 0
 
-    return {
-        "cpu": psutil.cpu_percent(),
-        "ram_used": round(mem.used / (1024**3), 2),
-        "ram_total": round(mem.total / (1024**3), 2),
-        "ram_percent": mem.percent,
-        "disk_used": round(disk.used / (1024**3), 2),
-        "disk_total": round(disk.total / (1024**3), 2),
-        "disk_percent": disk.percent,
-    }
+    try:
+        mem = psutil.virtual_memory()
+        ram_used = round(mem.used / (1024**3), 2)
+        ram_total = round(mem.total / (1024**3), 2)
+        ram_percent = mem.percent
+    except:
+        ram_used = ram_total = ram_percent = "N/A"
+
+    try:
+        disk = psutil.disk_usage('/')
+        disk_used = round(disk.used / (1024**3), 2)
+        disk_total = round(disk.total / (1024**3), 2)
+        disk_percent = disk.percent
+    except:
+        disk_used = disk_total = disk_percent = "N/A"
+
+    return jsonify({
+        "cpu": cpu,
+        "ram_used": ram_used,
+        "ram_total": ram_total,
+        "ram_percent": ram_percent,
+        "disk_used": disk_used,
+        "disk_total": disk_total,
+        "disk_percent": disk_percent,
+        "uptime": safe_uptime()
+    })
