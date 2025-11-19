@@ -9,15 +9,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/video.css') }}">
     <link rel="stylesheet" href="/static/css/neon.css">
 
+    <!-- Ikon -->
     <link rel="icon" href="{{ url_for('static', filename='icon/Video.png') }}">
 </head>
 <body>
 
-    <!-- BACKGROUND NEON -->
+    <!-- Background Neon -->
     <canvas id="neonCanvas"></canvas>
 
     <!-- ================================
-         HEADER + ROLE AUTO DIRECT
+         HEADER + ROLE NAVIGASI
     ================================= -->
     <header class="header">
 
@@ -26,16 +27,14 @@
         {% else %}
             <a href="{{ url_for('main.home') }}" class="logo-container" style="text-decoration:none;">
         {% endif %}
-
-                <img src="{{ url_for('static', filename='icon/Video.png') }}" 
-                    alt="Logo Video" class="logo">
+                <img src="{{ url_for('static', filename='icon/Video.png') }}" alt="Logo Video" class="logo">
                 <h1 style="color:white;">Pemutar Video</h1>
             </a>
 
     </header>
 
     <!-- ================================
-         VIDEO PLAYER FULL
+         VIDEO PLAYER BESAR
     ================================= -->
     <section class="video-player-full">
         <div class="video-container">
@@ -46,7 +45,7 @@
     </section>
 
     <!-- ================================
-         PANEL PLAYER
+         KONTROL PLAYER
     ================================= -->
     <main class="main-content">
 
@@ -82,7 +81,7 @@
         </div>
 
         <!-- ================================
-             PLAYLIST VIDEO
+             DAFTAR VIDEO
         ================================= -->
         <div class="playlist-container">
             <h3>Daftar Video</h3>
@@ -102,7 +101,7 @@
 
     </main>
 
-    <!-- SCRIPTS -->
+    <!-- Script Player -->
     <script src="{{ url_for('static', filename='Js/video.js') }}"></script>
     <script src="/static/Js/neon.js" defer></script>
 
