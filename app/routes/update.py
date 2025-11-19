@@ -13,6 +13,8 @@ update_bp = Blueprint("update_bp", __name__)
 # ============================================
 @update_bp.route("/update")
 def update():
+    check = require_root()
+    if check: return check
     """
     Tampilkan halaman update.html.
     Halaman ini biasanya berisi tombol untuk cek update dan menjalankan update via websocket.
