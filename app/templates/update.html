@@ -22,7 +22,14 @@
             "/" → harus url_for('main.home')
             karena home ada pada Blueprint "main"
         -->
-        <a href="{{ url_for('main.home') }}" class="menu-item">🏠 Home</a>
+            <!-- =========================
+         TOMBOL HOME SESUAI ROLE
+       ========================= -->
+    {% if session.role == "root" %}
+        <a href="/admin" class="btn-home">🏠 Admin</a>
+    {% else %}
+        <a href="{{ url_for('main.home') }}" class="btn-home">🏠 Home</a>
+    {% endif %}
 
     </nav>
 </header>
