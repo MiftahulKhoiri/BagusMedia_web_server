@@ -35,15 +35,15 @@
     </div>
 
     <!-- ============================
-     REALTIME CHART LEVEL 2
-============================ -->
-<div class="section">
-    <div class="section-title">[ REALTIME PERFORMANCE GRAPH ]</div>
+         REALTIME CHART LEVEL 2
+    ============================ -->
+    <div class="section">
+        <div class="section-title">[ REALTIME PERFORMANCE GRAPH ]</div>
 
-    <canvas id="cpuChart" class="chart"></canvas>
-    <canvas id="ramChart" class="chart"></canvas>
-    <canvas id="diskChart" class="chart"></canvas>
-</div>
+        <canvas id="cpuChart" class="chart"></canvas>
+        <canvas id="ramChart" class="chart"></canvas>
+        <canvas id="diskChart" class="chart"></canvas>
+    </div>
 
     <!-- ============================
          USER MANAGEMENT
@@ -95,27 +95,27 @@
 </div>
 
 <!-- =======================================
-     SCRIPT REALTIME MONITOR + MATRIX
+     MATRIX BG EFFECT
 ======================================= -->
 <script src="/static/Js/admin-hacker.js"></script>
 
+<!-- =======================================
+     REALTIME MONITOR BAR
+======================================= -->
 <script>
-/* =============================
-   REALTIME SYSTEM MONITOR
-============================= */
 async function updateMonitor() {
     try {
         let res = await fetch("/api/monitor");
         let d = await res.json();
 
-        document.getElementById("cpu-val").innerText = d.cpu + "%";
-        document.getElementById("cpu-bar").style.width = d.cpu + "%";
+        cpu-val.innerText = d.cpu + "%";
+        cpu-bar.style.width = d.cpu + "%";
 
-        document.getElementById("ram-val").innerText = d.ram_percent + "%";
-        document.getElementById("ram-bar").style.width = d.ram_percent + "%";
+        ram-val.innerText = d.ram_percent + "%";
+        ram-bar.style.width = d.ram_percent + "%";
 
-        document.getElementById("disk-val").innerText = d.disk_percent + "%";
-        document.getElementById("disk-bar").style.width = d.disk_percent + "%";
+        disk-val.innerText = d.disk_percent + "%";
+        disk-bar.style.width = d.disk_percent + "%";
     } catch (e) {
         console.log("Monitor error:", e);
     }
@@ -125,73 +125,56 @@ setInterval(updateMonitor, 1000);
 updateMonitor();
 </script>
 
+<!-- =======================================
+     REALTIME CHART
+======================================= -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-let cpuData = [];
-let ramData = [];
-let diskData = [];
-let labels = [];
+let cpuData = [], ramData = [], diskData = [], labels = [];
 
-// ========= INIT CHART =========
-function createChart(id, label, borderColor) {
+function createChart(id, label, color) {
     return new Chart(document.getElementById(id), {
         type: "line",
         data: {
-            labels: labels,
-            datasets: [{
-                label: label,
+            labels, datasets: [{
+                label,
                 data: [],
-                borderColor: borderColor,
+                borderColor: color,
                 borderWidth: 2,
-                tension: 0.2
+                tension: 0.3
             }]
         },
         options: {
             animation: false,
-            scales: {
-                y: { min: 0, max: 100 }
-            }
+            scales: { y: { min: 0, max: 100 } }
         }
     });
 }
 
-let cpuChart = createChart("cpuChart", "CPU %", "#0f0");
-let ramChart = createChart("ramChart", "RAM %", "#3f0");
-let diskChart = createChart("diskChart", "Disk %", "#6f0");
+let cpuChart = createChart("cpuChart", "CPU %", "#00ff00");
+let ramChart = createChart("ramChart", "RAM %", "#33ff55");
+let diskChart = createChart("diskChart", "Disk %", "#66ff88");
 
-// ========= UPDATE CHART =========
 async function updateRealtimeCharts() {
     const res = await fetch("/api/monitor");
     const d = await res.json();
+    const t = new Date().toLocaleTimeString();
 
-    const time = new Date().toLocaleTimeString();
-
-    labels.push(time);
-    if (labels.length > 20) labels.shift();
-
-    cpuData.push(d.cpu);
-    ramData.push(d.ram_percent);
-    diskData.push(d.disk_percent);
-
-    if (cpuData.length > 20) cpuData.shift();
-    if (ramData.length > 20) ramData.shift();
-    if (diskData.length > 20) diskData.shift();
+    labels.push(t); if (labels.length > 20) labels.shift();
+    cpuData.push(d.cpu); if (cpuData.length > 20) cpuData.shift();
+    ramData.push(d.ram_percent); if (ramData.length > 20) ramData.shift();
+    diskData.push(d.disk_percent); if (diskData.length > 20) diskData.shift();
 
     cpuChart.data.datasets[0].data = cpuData;
-    cpuChart.update();
-
     ramChart.data.datasets[0].data = ramData;
-    ramChart.update();
-
     diskChart.data.datasets[0].data = diskData;
-    diskChart.update();
 
-    // Alarm CPU > 90%
+    cpuChart.update(); ramChart.update(); diskChart.update();
+
     if (d.cpu > 90) {
         document.body.style.background = "#300";
-        console.log("⚠ CPU WARNING!");
-        new Audio("/static/sound/beep.mp3").play().catch(()=>{});
+        try { new Audio("/static/sound/beep.mp3").play(); } catch {}
     } else {
         document.body.style.background = "";
     }
