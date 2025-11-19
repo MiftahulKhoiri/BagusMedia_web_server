@@ -5,30 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pemutar Video - BAGUS MEDIA SERVER</title>
 
+    <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/video.css') }}">
     <link rel="stylesheet" href="/static/css/neon.css">
+
+    <link rel="icon" href="{{ url_for('static', filename='icon/Video.png') }}">
 </head>
 <body>
 
-    <!-- HEADER -->
-    <header>
-        <a href="{{ url_for('main.home') }}" class="logo-container" style="text-decoration:none;">
-            <img src="{{ url_for('static', filename='icon/Video.png') }}" 
-                 alt="Logo Video" class="logo">
-            <h1 style="color:white;">Pemutar Video</h1>
-        </a>
+    <!-- BACKGROUND NEON -->
+    <canvas id="neonCanvas"></canvas>
+
+    <!-- ================================
+         HEADER + ROLE AUTO DIRECT
+    ================================= -->
+    <header class="header">
+
+        {% if session.role == "root" %}
+            <a href="/admin" class="logo-container" style="text-decoration:none;">
+        {% else %}
+            <a href="{{ url_for('main.home') }}" class="logo-container" style="text-decoration:none;">
+        {% endif %}
+
+                <img src="{{ url_for('static', filename='icon/Video.png') }}" 
+                    alt="Logo Video" class="logo">
+                <h1 style="color:white;">Pemutar Video</h1>
+            </a>
+
     </header>
 
-    <!-- VIDEO PLAYER -->
+    <!-- ================================
+         VIDEO PLAYER FULL
+    ================================= -->
     <section class="video-player-full">
         <div class="video-container">
             <video id="video-player" controls preload="metadata">
-                Your browser does not support the video tag.
+                Browser anda tidak mendukung video tag.
             </video>
         </div>
     </section>
 
-    <!-- MAIN PANEL -->
+    <!-- ================================
+         PANEL PLAYER
+    ================================= -->
     <main class="main-content">
 
         <div class="player-panel">
@@ -62,14 +81,16 @@
 
         </div>
 
-        <!-- PLAYLIST VIDEO -->
+        <!-- ================================
+             PLAYLIST VIDEO
+        ================================= -->
         <div class="playlist-container">
             <h3>Daftar Video</h3>
 
             <div class="playlist" id="playlist">
                 {% for file in video_files %}
                 <div class="playlist-item"
-                     data-src="{{ url_for('media.serve_media', folder='video', filename=file) }}">
+                    data-src="{{ url_for('media.serve_media', folder='video', filename=file) }}">
 
                     <span class="video-name">{{ file }}</span>
                     <button class="play-track">▶</button>
