@@ -1,152 +1,169 @@
-# app/routes/profile.py
 import os
-import json
-import time
-from flask import Blueprint, render_template, request, jsonify, current_app
+import sqlite3
+from datetime import datetime
+from flask import (
+    Blueprint, render_template, request, jsonify,
+    current_app, session, redirect, url_for
+)
 from werkzeug.utils import secure_filename
 
-# ============================================
-# BLUEPRINT PROFILE (TAMPILAN & UPLOAD FOTO)
-# ============================================
 profile = Blueprint("profile", __name__)
 
 
-# ============================================
-# HALAMAN PROFIL
-# ============================================
+# ============================================================
+# 1. HALAMAN PROFIL — DATA DIAMBIL DARI DATABASE
+# ============================================================
 @profile.route("/profile")
 def profile_page():
-    """
-    Tampilkan halaman profile.
-    - Memeriksa apakah file PROFILE_FILE ada
-    - Jika ada -> load JSON
-    - Jika tidak -> buat dict kosong dengan field default
-    """
-    if os.path.exists(current_app.config["PROFILE_FILE"]):
-        with open(current_app.config["PROFILE_FILE"], "r", encoding="utf-8") as f:
-            profile_data = json.load(f)
-    else:
-        profile_data = {
-            "nama": "", "email": "", "jk": "",
-            "umur": "", "bio": "",
-            "foto": "", "cover": ""
-        }
 
-    current_year = __import__("datetime").datetime.now().year
-    return render_template("profile.html", profile=profile_data, current_year=current_year)
+    # pastikan sudah login
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+
+    user_id = session["user_id"]
+
+    conn = sqlite3.connect(current_app.config["DATABASE"])
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT username, email, jk, umur, bio, foto, cover
+        FROM users WHERE id=?
+    """, (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+
+    if not row:
+        return "Profil tidak ditemukan!", 404
+
+    profile_data = {
+        "nama": row[0],
+        "email": row[1] or "",
+        "jk": row[2] or "",
+        "umur": row[3] or "",
+        "bio": row[4] or "",
+        "foto": row[5] or "profile.png",
+        "cover": row[6] or "cover.png"
+    }
+
+    return render_template(
+        "profile.html",
+        profile=profile_data,
+        current_year=datetime.now().year
+    )
 
 
-# ============================================
-# EDIT PROFIL PAGE
-# ============================================
+# ============================================================
+# 2. HALAMAN EDIT PROFIL — DATA DIAMBIL DARI DATABASE
+# ============================================================
 @profile.route("/edit-profile")
 def edit_profile():
-    """
-    Tampilkan halaman edit-profile.html dengan data profile saat ini (jika ada).
-    """
-    if os.path.exists(current_app.config["PROFILE_FILE"]):
-        with open(current_app.config["PROFILE_FILE"], "r", encoding="utf-8") as f:
-            profile_data = json.load(f)
-    else:
-        profile_data = {
-            "nama": "", "email": "", "jk": "",
-            "umur": "", "bio": "",
-            "foto": "", "cover": ""
-        }
+
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+
+    user_id = session["user_id"]
+
+    conn = sqlite3.connect(current_app.config["DATABASE"])
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT username, email, jk, umur, bio, foto, cover
+        FROM users WHERE id=?
+    """, (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+
+    if not row:
+        return "Error: Tidak ada data profil!", 404
+
+    profile_data = {
+        "nama": row[0],
+        "email": row[1] or "",
+        "jk": row[2] or "",
+        "umur": row[3] or "",
+        "bio": row[4] or "",
+        "foto": row[5] or "profile.png",
+        "cover": row[6] or "cover.png"
+    }
 
     return render_template("edit-profile.html", profile=profile_data)
 
 
-# ============================================
-# SIMPAN PROFIL (NAMA, EMAIL, DLL)
-# ============================================
+# ============================================================
+# 3. SIMPAN PROFIL KE DATABASE
+# ============================================================
 @profile.route("/api/save-profile", methods=["POST"])
 def save_profile():
-    """
-    Simpan data profil (nama, email, jk, umur, bio)
-    - Menggabungkan data baru dengan data lama untuk menjaga foto/cover tetap utuh
-    - Menyimpan ke PROFILE_FILE (JSON)
-    """
+    if "user_id" not in session:
+        return jsonify({"status": "error", "message": "Not logged in"}), 403
+
+    user_id = session["user_id"]
     data = request.json
 
-    # Ambil data lama agar foto & cover tetap ada jika tidak dikirim ulang
-    if os.path.exists(current_app.config["PROFILE_FILE"]):
-        with open(current_app.config["PROFILE_FILE"], "r", encoding="utf-8") as f:
-            old = json.load(f)
-    else:
-        old = {}
+    conn = sqlite3.connect(current_app.config["DATABASE"])
+    cursor = conn.cursor()
 
-    merged = {
-        "nama": data.get("nama", old.get("nama", "")),
-        "email": data.get("email", old.get("email", "")),
-        "jk": data.get("jk", old.get("jk", "")),
-        "umur": data.get("umur", old.get("umur", "")),
-        "bio": data.get("bio", old.get("bio", "")),
-        "foto": old.get("foto", ""),
-        "cover": old.get("cover", "")
-    }
+    cursor.execute("""
+        UPDATE users
+        SET email=?, jk=?, umur=?, bio=?, updated_at=?
+        WHERE id=?
+    """, (
+        data.get("email", ""),
+        data.get("jk", ""),
+        data.get("umur", ""),
+        data.get("bio", ""),
+        datetime.utcnow().isoformat(),
+        user_id
+    ))
 
-    # Tulis file JSON
-    with open(current_app.config["PROFILE_FILE"], "w", encoding="utf-8") as f:
-        json.dump(merged, f, indent=4, ensure_ascii=False)
+    conn.commit()
+    conn.close()
 
     return jsonify({"status": "success"})
 
 
-# ============================================
-# UPLOAD FOTO PROFIL & COVER
-# ============================================
+# ============================================================
+# 4. UPLOAD FOTO PROFIL / COVER — SIMPAN KE DATABASE
+# ============================================================
 @profile.route("/api/upload-photo", methods=["POST"])
 def upload_photo():
-    """
-    Terima upload foto (profile atau cover).
-    - Form field: 'photo' (file), 'type' ("profile" atau "cover")
-    - Menyimpan file ke folder static/profile/
-    - Menghapus file lama selain default
-    - Mengupdate PROFILE_FILE dengan nama file baru
-    """
+
+    if "user_id" not in session:
+        return jsonify({"status": "error", "message": "Not logged in"}), 403
+
+    user_id = session["user_id"]
+
     if "photo" not in request.files:
-        return jsonify({"status": "error", "message": "Foto tidak ditemukan"}), 400
+        return jsonify({"status": "error", "message": "No file"}), 400
 
     file = request.files["photo"]
-    upload_type = request.form.get("type")  # "profile" atau "cover"
+    upload_type = request.form.get("type")  # profile / cover
 
     if upload_type not in ["profile", "cover"]:
-        return jsonify({"status": "error", "message": "Tipe upload tidak valid"}), 400
+        return jsonify({"status": "error", "message": "Invalid type"}), 400
 
-    # Buat nama file aman dengan timestamp agar unik
-    filename = secure_filename(str(int(time.time())) + "_" + file.filename)
+    # simpan file
+    filename = secure_filename(f"{user_id}_{upload_type}_{int(datetime.now().timestamp())}_{file.filename}")
 
     foto_folder = os.path.join(current_app.static_folder, "profile")
     os.makedirs(foto_folder, exist_ok=True)
 
-    new_path = os.path.join(foto_folder, filename)
-    file.save(new_path)
+    file_path = os.path.join(foto_folder, filename)
+    file.save(file_path)
 
-    # Ambil JSON lama
-    if os.path.exists(current_app.config["PROFILE_FILE"]):
-        with open(current_app.config["PROFILE_FILE"], "r", encoding="utf-8") as f:
-            profile_data = json.load(f)
-    else:
-        profile_data = {}
+    # update database
+    column_name = "foto" if upload_type == "profile" else "cover"
 
-    key = "foto" if upload_type == "profile" else "cover"
-    old = profile_data.get(key, "")
+    conn = sqlite3.connect(current_app.config["DATABASE"])
+    cursor = conn.cursor()
 
-    # Hapus file lama jika bukan file default
-    if old not in ["", "profile.png", "cover.png"]:
-        old_path = os.path.join(foto_folder, old)
-        if os.path.exists(old_path):
-            try:
-                os.remove(old_path)
-            except Exception:
-                # Jika gagal hapus, tetap lanjut (jangan crash)
-                pass
+    cursor.execute(f"""
+        UPDATE users
+        SET {column_name}=?, updated_at=?
+        WHERE id=?
+    """, (filename, datetime.utcnow().isoformat(), user_id))
 
-    # Update profile JSON
-    profile_data[key] = filename
+    conn.commit()
+    conn.close()
 
-    with open(current_app.config["PROFILE_FILE"], "w", encoding="utf-8") as f:
-        json.dump(profile_data, f, indent=4, ensure_ascii=False)
-
-    return jsonify({"status": "success", "foto": filename})
+    return jsonify({"status": "success", "filename": filename})
