@@ -10,27 +10,48 @@ admin = Blueprint("admin", __name__)
 
 
 # =====================================================
+# SAFE GET UPTIME (Termux tidak bisa akses boot_time)
+# =====================================================
+def safe_uptime():
+    try:
+        boot = psutil.boot_time()  # bisa error di Android
+        return str(datetime.now() - datetime.fromtimestamp(boot)).split('.')[0]
+    except Exception:
+        return "Tidak dapat membaca (dibatasi Android)"
+
+
+# =====================================================
 # HALAMAN DASHBOARD ADMIN
 # =====================================================
 @admin.route("/admin")
 def admin_dashboard():
     check = require_root()
-    if check: 
+    if check:
         return check
 
     # ------------------------
     # Info sistem
     # ------------------------
+    try:
+        disk = psutil.disk_usage('/')
+        ram = psutil.virtual_memory()
+    except Exception:
+        # fallback untuk Android permission
+        disk = ram = None
+
     info = {
         "os": platform.system(),
         "os_version": platform.release(),
         "python": platform.python_version(),
-        "cpu": psutil.cpu_count(),
-        "ram_total": round(psutil.virtual_memory().total / (1024**3), 2),
-        "ram_used": round(psutil.virtual_memory().used / (1024**3), 2),
-        "disk_total": round(psutil.disk_usage('/').total / (1024**3), 2),
-        "disk_used": round(psutil.disk_usage('/').used / (1024**3), 2),
-        "uptime": str(datetime.now() - datetime.fromtimestamp(psutil.boot_time())).split('.')[0]
+        "cpu": psutil.cpu_count(logical=True),
+
+        "ram_total": round(ram.total / (1024**3), 2) if ram else "N/A",
+        "ram_used": round(ram.used / (1024**3), 2) if ram else "N/A",
+
+        "disk_total": round(disk.total / (1024**3), 2) if disk else "N/A",
+        "disk_used": round(disk.used / (1024**3), 2) if disk else "N/A",
+
+        "uptime": safe_uptime()
     }
 
     # IP Address
@@ -65,21 +86,27 @@ def change_role():
     if check:
         return check
 
-    data = request.json
+    data = request.json or {}
     user_id = data.get("user_id")
     new_role = data.get("role")
 
     if new_role not in ["user", "root"]:
-        return jsonify({"error": "Role tidak valid"}), 400
+        return jsonify({"error": "Role tidak valid!"}), 400
 
     conn = sqlite3.connect(current_app.config["DATABASE"])
     cursor = conn.cursor()
 
-    # Cegah root menghapus dirinya sendiri
     cursor.execute("SELECT username FROM users WHERE id=?", (user_id,))
-    username = cursor.fetchone()
-    if username and username[0] == "root":
-        return jsonify({"error": "User root tidak boleh diubah"}), 403
+    row = cursor.fetchone()
+
+    if not row:
+        return jsonify({"error": "User tidak ditemukan!"}), 404
+
+    username = row[0]
+
+    # Cegah root diubah
+    if username == "root":
+        return jsonify({"error": "User root tidak boleh diubah!"}), 403
 
     cursor.execute("UPDATE users SET role=? WHERE id=?", (new_role, user_id))
     conn.commit()
@@ -97,20 +124,22 @@ def delete_user():
     if check:
         return check
 
-    data = request.json
+    data = request.json or {}
     user_id = data.get("user_id")
 
     conn = sqlite3.connect(current_app.config["DATABASE"])
     cursor = conn.cursor()
 
     cursor.execute("SELECT username FROM users WHERE id=?", (user_id,))
-    username = cursor.fetchone()
+    row = cursor.fetchone()
 
-    if not username:
-        return jsonify({"error": "User tidak ditemukan"}), 404
+    if not row:
+        return jsonify({"error": "User tidak ditemukan!"}), 404
 
-    if username[0] == "root":
-        return jsonify({"error": "Root tidak boleh dihapus"}), 403
+    username = row[0]
+
+    if username == "root":
+        return jsonify({"error": "Root tidak boleh dihapus!"}), 403
 
     cursor.execute("DELETE FROM users WHERE id=?", (user_id,))
     conn.commit()
