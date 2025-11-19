@@ -1,218 +1,140 @@
-:root{
-  --neon: #00ffcc;
-  --neon2: #39ff14;
-  --bg: #050505;
+/* profile.css - simple responsive layout */
+.edit-container{
+  width: 95%;
+  max-width: 1100px;
+  margin: 28px auto;
+  color: #fff;
 }
 
-*{ box-sizing: border-box; }
-
-body{
-  margin:0;
-  background: var(--bg);
-  font-family: Arial, sans-serif;
-  color:white;
+/* title */
+.edit-title{
+  font-size: 28px;
+  margin-bottom: 16px;
+  color: #00e6ff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
 }
 
-/* ==========================
-   HEADER BARU
-========================== */
-.header {
-    width: 100%;
-    text-align: center;
-    padding: 20px 0;
-    background: rgba(0,0,0,0.55);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+/* grid layout */
+.grid{
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
-/* Judul utama besar */
-.edit-title {
-    margin: 0;
-    font-size: 28px;
-    font-weight: bold;
-    color: var(--neon);
-    text-shadow: 0 0 8px var(--neon);
+/* columns */
+.col{
+  box-sizing: border-box;
 }
 
-/* Tombol Kiri-Kanan */
-.header-buttons {
-    margin-top: 12px;
-    display: flex;
-    justify-content: space-between;   /* Logout kiri — Kembali kanan */
-    padding: 0 20px;
+.photo-col{
+  flex: 0 0 320px;
+  min-width: 260px;
 }
 
-/* Tombol Logout (kiri) */
-.btn-logout {
-    background: red;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-size: 16px;
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
+.form-col{
+  flex: 1;
+  min-width: 260px;
 }
 
-/* Tombol Kembali (kanan) */
-.btn-back {
-    background: var(--neon);
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-size: 16px;
-    color: black;
-    text-decoration: none;
-    font-weight: bold;
+/* photo card */
+.photo-card{
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  text-align: center;
 }
 
-.btn-back:hover,
-.btn-logout:hover {
-    filter: brightness(1.2);
-}
-
-/* ==========================
-   COVER AREA
-========================== */
-.cover-area{
-  width:100%;
-  height:180px;
-  overflow:hidden;
-  position:relative;
-}
-
-.cover-area img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
+.photo-label{
   display:block;
-  filter:brightness(0.9);
+  margin-bottom:8px;
+  color: #bfe6ff;
+  font-weight:600;
 }
 
-/* ==========================
-   FOTO PROFIL — OVERLAP
-========================== */
-.profile-photo-area{
-  width:100%;
-  display:flex;
-  justify-content:center;
-  position:relative;
-  margin-top:-60px;      /* FOTO DIATAS COVER */
-  margin-bottom:20px;
-  z-index:10;
+/* preview images */
+.preview-img{
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid rgba(255,255,255,0.06);
+  margin-bottom: 10px;
+  background: #111;
 }
 
-#profile-photo{
-  width:120px;
-  height:120px;
-  border-radius:50%;
-  border:4px solid var(--neon);
-  object-fit:cover;
-  box-shadow:0 0 14px var(--neon);
-  background:black;
-  cursor:pointer;
+.cover-img{
+  width: 100%;
+  max-width: 280px;
+  height: 110px;
+  object-fit: cover;
 }
 
-/* ==========================
-   FORM AREA
-========================== */
-.edit-box{
-  padding:16px;
+/* upload button */
+.btn-upload{
+  display: inline-block;
+  padding: 8px 12px;
+  background: linear-gradient(180deg,#2d8cff,#1b62c9);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
 }
+.btn-upload:hover{ opacity: 0.95; }
 
-.edit-box label{
-  display:block;
-  margin-top:12px;
-  font-weight:bold;
-  color:var(--neon2);
+/* form inputs */
+label{ display:block; color:#cfe8ff; margin-top:10px; margin-bottom:6px; font-weight:600; }
+input[type="text"], input[type="email"], input[type="number"], select, textarea{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.03);
+  color: #fff;
+  box-sizing: border-box;
+  outline: none;
 }
+textarea{ resize: vertical; min-height: 90px; }
 
-.edit-box input,
-.edit-box select,
-.edit-box textarea{
-  width:100%;
-  padding:10px;
+/* action buttons */
+.form-actions{
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.btn-save{
+  background: linear-gradient(180deg,#00d27a,#01994f);
+  color: #002;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight:700;
+}
+.btn-cancel{
+  background: transparent;
+  color:#fff;
+  padding:10px 14px;
   border-radius:8px;
-  background:rgba(255,255,255,0.1);
-  color:white;
-  border:none;
-  margin-top:4px;
-  font-size:16px;
-}
-
-textarea{
-  height:100px;
-  resize:none;
-}
-
-/* ==========================
-   SAVE BUTTON
-========================== */
-.save-btn{
-  width:100%;
-  padding:14px;
-  background:linear-gradient(90deg,var(--neon),var(--neon2));
-  color:black;
-  font-weight:bold;
-  border:none;
-  border-radius:10px;
-  margin-top:18px;
+  border:1px solid rgba(255,255,255,0.06);
   cursor:pointer;
 }
 
-/* ==========================
-   RESPONSIVE
-========================== */
-@media(max-width:480px){
-  #profile-photo{
-    width:100px;
-    height:100px;
-  }
-  .cover-area{
-    height:150px;
-  }
-  .profile-photo-area{
-    margin-top:-52px;
-  }
+/* message */
+.msg{
+  margin-top: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.6);
+  color: #bfe6a6;
 }
 
-.change-pass-btn {
-    display: block;
-    width: 100%;
-    text-align: center;
-    margin-top: 15px;
-    padding: 12px;
-    border-radius: 10px;
-    background: rgba(0, 255, 170, 0.6);
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    backdrop-filter: blur(5px);
-}
-
-.change-pass-btn:hover {
-    background: rgba(0, 255, 170, 0.9);
-}
-
-/* =========================================
-   🧩 FOOTER — tema hijau stabilo neon
-   ========================================= */
-footer {
-    text-align: center;                     /* teks berada di tengah */
-    padding: 15px;                           /* jarak dalam footer */
-    background-color: rgba(0, 0, 0, 0.65);    /* latar tetap gelap transparan */
-    font-size: 13px;                         /* ukuran teks */
-
-    /* Warna huruf hijau stabilo */
-    color: #39FF14;
-
-    /* Garis tipis neon hijau */
-    border-top: 1px solid rgba(57, 255, 20, 0.7);
-
-    /* Efek blur latar belakang */
-    backdrop-filter: blur(10px);
-
-    position: relative;
-    z-index: 10;
-
-    /* Glow neon hijau halus */
-    text-shadow: 0 0 8px #39FF14;
+/* responsive */
+@media (max-width: 700px){
+  .grid{ flex-direction: column; }
+  .photo-col{ flex-basis: auto; order: -1; }
+  .preview-img{ width: 140px; height:140px; }
 }
