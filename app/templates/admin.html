@@ -127,5 +127,78 @@ updateMonitor();
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script>
+let cpuData = [];
+let ramData = [];
+let diskData = [];
+let labels = [];
+
+// ========= INIT CHART =========
+function createChart(id, label, borderColor) {
+    return new Chart(document.getElementById(id), {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: label,
+                data: [],
+                borderColor: borderColor,
+                borderWidth: 2,
+                tension: 0.2
+            }]
+        },
+        options: {
+            animation: false,
+            scales: {
+                y: { min: 0, max: 100 }
+            }
+        }
+    });
+}
+
+let cpuChart = createChart("cpuChart", "CPU %", "#0f0");
+let ramChart = createChart("ramChart", "RAM %", "#3f0");
+let diskChart = createChart("diskChart", "Disk %", "#6f0");
+
+// ========= UPDATE CHART =========
+async function updateRealtimeCharts() {
+    const res = await fetch("/api/monitor");
+    const d = await res.json();
+
+    const time = new Date().toLocaleTimeString();
+
+    labels.push(time);
+    if (labels.length > 20) labels.shift();
+
+    cpuData.push(d.cpu);
+    ramData.push(d.ram_percent);
+    diskData.push(d.disk_percent);
+
+    if (cpuData.length > 20) cpuData.shift();
+    if (ramData.length > 20) ramData.shift();
+    if (diskData.length > 20) diskData.shift();
+
+    cpuChart.data.datasets[0].data = cpuData;
+    cpuChart.update();
+
+    ramChart.data.datasets[0].data = ramData;
+    ramChart.update();
+
+    diskChart.data.datasets[0].data = diskData;
+    diskChart.update();
+
+    // Alarm CPU > 90%
+    if (d.cpu > 90) {
+        document.body.style.background = "#300";
+        console.log("⚠ CPU WARNING!");
+        new Audio("/static/sound/beep.mp3").play().catch(()=>{});
+    } else {
+        document.body.style.background = "";
+    }
+}
+
+setInterval(updateRealtimeCharts, 1000);
+</script>
+
 </body>
 </html>
