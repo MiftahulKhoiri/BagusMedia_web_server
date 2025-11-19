@@ -7,138 +7,89 @@
 
     <link rel="stylesheet" href="/static/css/neon.css">
     <link rel="stylesheet" href="/static/css/profile.css">
+
+    <link rel="icon" href="{{ url_for('static', filename='icon/profile.png') }}">
 </head>
 <body>
 
 <canvas id="neonCanvas"></canvas>
 
 <header class="header">
-    {% if session.role == "root" %}
-    <a href="/admin" class="logo-area">
+    <a href="{{ url_for('profile.profile_page') }}" class="logo-area">
         <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
-        <span class="logo-text">Admin</span>
+        <span class="logo-text">Kembali</span>
     </a>
-    {% else %}
-    <a href="{{ url_for('main.home') }}" class="logo-area">
-        <img src="{{ url_for('static', filename='icon/profile.png') }}" class="logo">
-        <span class="logo-text">Home</span>
-    </a>
-    {% endif %}
 </header>
 
-<main class="edit-body">
+<!-- ================================
+     FORM EDIT PROFILE
+================================ -->
+<main class="edit-container">
 
-    <h2>Edit Profil</h2>
+    <h2 class="edit-title">Edit Profil</h2>
 
-    <div class="edit-box">
+    <!-- FOTO PROFIL -->
+    <div class="photo-box">
+        <label>Foto Profil</label>
 
-        <!-- ========================
-             FORM PROFIL
-        ======================== -->
-        <label>Nama:</label>
-        <input id="nama" value="{{ profile.nama }}" disabled>
+        <img id="profile-preview"
+             src="{{ url_for('static', filename='profile/' ~ (profile.foto if profile.foto else 'profile.png')) }}"
+             class="preview-img">
 
-        <label>Email:</label>
-        <input id="email" value="{{ profile.email }}">
+        <input type="file" id="profile-file" style="display:none;"
+               onchange="previewImage(this, 'profile-preview'); uploadPhoto(this, 'profile');">
 
-        <label>Jenis Kelamin:</label>
+        <button class="btn-upload" onclick="document.getElementById('profile-file').click();">
+            Upload Foto Profil
+        </button>
+    </div>
+
+    <!-- FOTO COVER -->
+    <div class="photo-box">
+        <label>Foto Cover</label>
+
+        <img id="cover-preview"
+             src="{{ url_for('static', filename='profile/' ~ (profile.cover if profile.cover else 'cover.png')) }}"
+             class="preview-img cover-img">
+
+        <input type="file" id="cover-file" style="display:none;"
+               onchange="previewImage(this, 'cover-preview'); uploadPhoto(this, 'cover');">
+
+        <button class="btn-upload" onclick="document.getElementById('cover-file').click();">
+            Upload Foto Cover
+        </button>
+    </div>
+
+    <!-- INFORMASI TEXT -->
+    <div class="form-box">
+
+        <label>Nama</label>
+        <input id="nama" value="{{ profile.nama }}" placeholder="Nama lengkap">
+
+        <label>Email</label>
+        <input id="email" value="{{ profile.email }}" placeholder="Email">
+
+        <label>Jenis Kelamin</label>
         <select id="jk">
-            <option value="">-</option>
-            <option value="Laki-Laki" {% if profile.jk == "Laki-Laki" %}selected{% endif %}>Laki-Laki</option>
-            <option value="Perempuan" {% if profile.jk == "Perempuan" %}selected{% endif %}>Perempuan</option>
+            <option value="">-- pilih --</option>
+            <option value="Laki-laki" {% if profile.jk == 'Laki-laki' %}selected{% endif %}>Laki-laki</option>
+            <option value="Perempuan" {% if profile.jk == 'Perempuan' %}selected{% endif %}>Perempuan</option>
         </select>
 
-        <label>Umur:</label>
-        <input id="umur" type="number" value="{{ profile.umur }}">
+        <label>Umur</label>
+        <input id="umur" value="{{ profile.umur }}" placeholder="Umur">
 
-        <label>Bio / Keterangan:</label>
-        <textarea id="bio">{{ profile.bio }}</textarea>
-
-        <button id="save-btn" class="save-button">Simpan Profil</button>
-    </div>
-
-
-    <!-- ================================
-         UPLOAD FOTO PROFIL & COVER
-    ================================= -->
-    <div class="upload-section">
-
-        <div class="upload-card">
-            <h3>Foto Profil</h3>
-            <img src="/static/profile/{{ profile.foto }}" class="preview-img">
-
-            <input type="file" id="upload-foto" accept="image/*">
-            <button onclick="uploadPhoto('profile')">Upload</button>
-        </div>
-
-        <div class="upload-card">
-            <h3>Foto Cover</h3>
-            <img src="/static/profile/{{ profile.cover }}" class="preview-img">
-
-            <input type="file" id="upload-cover" accept="image/*">
-            <button onclick="uploadPhoto('cover')">Upload</button>
-        </div>
+        <label>Bio</label>
+        <textarea id="bio" placeholder="Tentang kamu...">{{ profile.bio }}</textarea>
 
     </div>
+
+    <button class="btn-save" onclick="saveProfile()">Simpan Profil</button>
 
 </main>
 
 <script src="/static/Js/neon.js" defer></script>
-
-<script>
-// ===================================
-// SIMPAN PROFIL
-// ===================================
-document.getElementById("save-btn").onclick = async () => {
-    const data = {
-        email: document.getElementById("email").value,
-        jk: document.getElementById("jk").value,
-        umur: document.getElementById("umur").value,
-        bio: document.getElementById("bio").value
-    };
-
-    let res = await fetch("/api/save-profile", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(data)
-    });
-
-    let out = await res.json();
-    if (out.status === "success") {
-        alert("Profil berhasil disimpan!");
-    }
-};
-
-
-// ===================================
-// UPLOAD FOTO PROFIL / COVER
-// ===================================
-async function uploadPhoto(type) {
-    const fileInput = type === "profile"
-        ? document.getElementById("upload-foto")
-        : document.getElementById("upload-cover");
-
-    if (fileInput.files.length === 0) {
-        alert("Pilih foto dulu!");
-        return;
-    }
-
-    let form = new FormData();
-    form.append("photo", fileInput.files[0]);
-    form.append("type", type);
-
-    let res = await fetch("/api/upload-photo", {
-        method: "POST",
-        body: form
-    });
-
-    let out = await res.json();
-    if (out.status === "success") {
-        alert("Foto berhasil diupload!");
-        location.reload();
-    }
-}
-</script>
+<script src="/static/Js/profile.js" defer></script>
 
 </body>
 </html>
