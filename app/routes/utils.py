@@ -16,30 +16,24 @@ ALLOWED_EXTENSIONS = {
 # ============================================
 
 def hash_password(password, salt=None):
-    """
-    Hash password menggunakan SHA-256 + Salt.
-    Format disimpan: <salt_hex>$<hash_hex>
-    """
+    """Generate hash SHA-256 + salt."""
     if salt is None:
         salt = os.urandom(16)
-
     if isinstance(salt, str):
         salt = bytes.fromhex(salt)
 
     hashed = hashlib.sha256(salt + password.encode()).hexdigest()
-    return salt.hex() + "$" + hashed
+    return f"{salt.hex()}${hashed}"
 
 
 def verify_password(stored_password, input_pass):
-    """
-    Verifikasi password berdasarkan salt + hash.
-    """
-    salt_hex, stored_hash = stored_password.split("$")
+    """Cek password input cocok dengan hash yg disimpan."""
+    salt_hex, _ = stored_password.split("$")
     return stored_password == hash_password(input_pass, salt_hex)
 
 
 # ============================================
-# 🎵 CEK EKSTENSI FILE
+# 🎵 CEK EKSTENSI FILE MEDIA
 # ============================================
 
 def allowed_file(filename):
@@ -47,12 +41,9 @@ def allowed_file(filename):
 
 
 def get_media_files(folder, ext_list):
-    """
-    Mengambil semua file media di dalam folder berdasarkan ekstensi.
-    """
+    """Mengambil file media dari folder tertentu."""
     if not os.path.exists(folder):
         return []
-
     try:
         return [
             f for f in os.listdir(folder)
@@ -63,28 +54,29 @@ def get_media_files(folder, ext_list):
 
 
 # ============================================
-# 🔥 ROLE SYSTEM (Root / User)
+# 🔥 ROLE SYSTEM (ROOT / USER)
 # ============================================
 
 def is_root():
-    """Mengembalikan True jika session.role = 'root'."""
+    """True jika user saat ini adalah root."""
     return session.get("role") == "root"
 
 
 def is_user():
-    """Mengembalikan True jika session.role = 'user'."""
+    """True jika user role 'user'."""
     return session.get("role") == "user"
 
 
 def require_root():
     """
-    Proteksi cepat untuk route khusus root.
-    Contoh pakai:
-    
-    @app.route('/admin')
-    def admin():
-        return require_root() or render_template('admin.html')
+    Proteksi untuk halaman khusus root.
+    Jika bukan root → redirect ke /home.
+    Cara pakai:
+
+        check = require_root()
+        if check: return check
+
     """
     if not is_root():
-        return "Akses ditolak! Hanya root yang bisa membuka halaman ini.", 403
+        return redirect("/home")
     return None
