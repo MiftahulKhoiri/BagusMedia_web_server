@@ -6,7 +6,7 @@ from flask_sock import Sock
 
 
 # =====================================================
-#  MEMBUAT DATABASE JIKA BELUM ADA
+# 1. MEMBUAT DATABASE JIKA BELUM ADA
 # =====================================================
 def init_database(db_path):
     conn = sqlite3.connect(db_path)
@@ -27,7 +27,7 @@ def init_database(db_path):
 
 
 # =====================================================
-#  MENAMBAHKAN KOLOM ROLE JIKA BELUM ADA
+# 2. MENAMBAHKAN KOLOM ROLE JIKA BELUM ADA
 # =====================================================
 def ensure_role_column(db_path):
     conn = sqlite3.connect(db_path)
@@ -36,6 +36,7 @@ def ensure_role_column(db_path):
     cursor.execute("PRAGMA table_info(users)")
     columns = [col[1] for col in cursor.fetchall()]
 
+    # Jika kolom role tidak ada → tambahkan
     if "role" not in columns:
         cursor.execute("ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'user'")
         conn.commit()
@@ -44,12 +45,13 @@ def ensure_role_column(db_path):
 
 
 # =====================================================
-#  MEMBUAT USER ROOT JIKA BELUM ADA
+# 3. MEMBUAT USER ROOT JIKA BELUM ADA
 # =====================================================
 def ensure_root_user(db_path):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
+    # Cek apakah root sudah ada
     cursor.execute("SELECT id FROM users WHERE role='root'")
     root = cursor.fetchone()
 
@@ -57,24 +59,32 @@ def ensure_root_user(db_path):
         from app.routes.utils import hash_password
 
         now = datetime.utcnow().isoformat()
+        hashed_pass = hash_password("root123")
+
         cursor.execute("""
             INSERT INTO users (username, password, created_at, updated_at, role)
             VALUES (?, ?, ?, ?, ?)
-        """, ("root", hash_password("root123"), now, now, "root"))
+        """, ("root", hashed_pass, now, now, "root"))
 
         conn.commit()
+        print("== ROOT USER CREATED ==")
+        print("Username: root")
+        print("Password: root123")
+
+    else:
+        print("ROOT user found — skip.")
 
     conn.close()
 
 
 # =====================================================
-#  FUNCTION UTAMA APP
+# 4. FUNCTION UTAMA: CREATE APP
 # =====================================================
 def create_app():
     app = Flask(__name__)
     sock = Sock(app)
 
-    # Lokasi file & root project
+    # Lokasi root project
     base_dir = os.path.abspath(os.path.dirname(__file__))
 
     # ------------------------------------------
@@ -90,7 +100,7 @@ def create_app():
     app.config["MP3_FOLDER"] = os.path.join(base_dir, "mp3")
     app.config["VIDEO_FOLDER"] = os.path.join(base_dir, "video")
 
-    # Auto-buat folder
+    # Auto-buat folder jika belum ada
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
     os.makedirs(app.config["MP3_FOLDER"], exist_ok=True)
     os.makedirs(app.config["VIDEO_FOLDER"], exist_ok=True)
@@ -101,6 +111,7 @@ def create_app():
     db_path = os.path.join(base_dir, "database.db")
     app.config["DATABASE"] = db_path
 
+    # Jalankan fungsi database
     init_database(db_path)
     ensure_role_column(db_path)
     ensure_root_user(db_path)
