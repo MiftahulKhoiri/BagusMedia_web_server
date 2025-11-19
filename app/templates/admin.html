@@ -14,21 +14,29 @@
 <div class="terminal">
     <h1 class="title">▌ BAGUS MEDIA SERVER ▌</h1>
 
-    <!-- SYSTEM INFO -->
+    <!-- ============================
+         REALTIME SYSTEM MONITOR
+    ============================ -->
     <div class="section">
-        <div class="section-title">[ SYSTEM INFO ]</div>
-        <div class="info-box">
-            <p>OS: <span>{{ info.os }} {{ info.os_version }}</span></p>
-            <p>Python: <span>{{ info.python }}</span></p>
-            <p>IP Server: <span>{{ info.ip }}</span></p>
-            <p>Uptime: <span>{{ info.uptime }}</span></p>
-            <p>CPU Core: <span>{{ info.cpu }}</span></p>
-            <p>RAM: <span>{{ info.ram_used }} / {{ info.ram_total }} GB</span></p>
-            <p>Disk: <span>{{ info.disk_used }} / {{ info.disk_total }} GB</span></p>
+        <div class="section-title">[ REALTIME MONITOR ]</div>
+
+        <div class="monitor-box">
+            <p>CPU: <span id="cpu-val">0%</span></p>
+            <div class="bar"><div id="cpu-bar" class="bar-fill"></div></div>
+
+            <p>RAM: <span id="ram-val">0%</span></p>
+            <div class="bar"><div id="ram-bar" class="bar-fill"></div></div>
+
+            <p>DISK: <span id="disk-val">0%</span></p>
+            <div class="bar"><div id="disk-bar" class="bar-fill"></div></div>
+
+            <p>Uptime: <span id="uptime-text">{{ info.uptime }}</span></p>
         </div>
     </div>
 
-    <!-- USER MANAGEMENT -->
+    <!-- ============================
+         USER MANAGEMENT
+    ============================ -->
     <div class="section">
         <div class="section-title">[ USER MANAGEMENT ]</div>
 
@@ -59,23 +67,52 @@
         </table>
     </div>
 
-    <!-- ADMIN TOOLS -->
+    <!-- ============================
+         ADMIN TOOLS
+    ============================ -->
     <div class="section">
         <div class="section-title">[ ADMIN TOOLS ]</div>
 
         <div class="tools">
             <button class="btn tool" onclick="location.href='/filemanager'">File Manager</button>
             <button class="btn tool" onclick="location.href='/update'">System Update</button>
-            <button class="btn tool" onclick="location.href='/about'"> System info </button>
-
+            <button class="btn tool" onclick="location.href='/about'">System Info</button>
         </div>
     </div>
 
     <footer class="footer">© {{ current_year }} BAGUS MEDIA SERVER • TERMINAL MODE</footer>
-
 </div>
 
+<!-- =======================================
+     SCRIPT REALTIME MONITOR + MATRIX
+======================================= -->
 <script src="/static/Js/admin-hacker.js"></script>
+
+<script>
+/* =============================
+   REALTIME SYSTEM MONITOR
+============================= */
+async function updateMonitor() {
+    try {
+        let res = await fetch("/api/monitor");
+        let d = await res.json();
+
+        document.getElementById("cpu-val").innerText = d.cpu + "%";
+        document.getElementById("cpu-bar").style.width = d.cpu + "%";
+
+        document.getElementById("ram-val").innerText = d.ram_percent + "%";
+        document.getElementById("ram-bar").style.width = d.ram_percent + "%";
+
+        document.getElementById("disk-val").innerText = d.disk_percent + "%";
+        document.getElementById("disk-bar").style.width = d.disk_percent + "%";
+    } catch (e) {
+        console.log("Monitor error:", e);
+    }
+}
+
+setInterval(updateMonitor, 1000);
+updateMonitor();
+</script>
 
 </body>
 </html>
