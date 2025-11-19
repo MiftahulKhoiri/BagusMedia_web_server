@@ -6,6 +6,24 @@
   color: #fff;
 }
 
+/* Logo area */
+.logo-area {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--neon);
+}
+.logo-area .logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+}
+.logo-area .logo-text {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--neon2);
+}
+
 /* title */
 .edit-title{
   font-size: 28px;
