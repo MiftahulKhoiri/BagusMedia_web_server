@@ -1,12 +1,12 @@
 /* ===================================
-   GLOBAL STYLE
+   TAMPILAN ASLI — DIPERTAHANKAN
 =================================== */
+
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
     color: white;
     text-align: center;
-    background: transparent;
 }
 
 .header {
@@ -19,12 +19,8 @@ body {
 .title {
     font-size: 28px;
     font-weight: bold;
-    text-shadow: 0 0 10px #0ff;
 }
 
-/* ===================================
-   BUTTON HOME
-=================================== */
 .btn-home {
     padding: 8px 16px;
     background: #0ff;
@@ -39,9 +35,6 @@ body {
     background: #0cc;
 }
 
-/* ===================================
-   CONTAINER & CARD
-=================================== */
 .container {
     width: 90%;
     max-width: 900px;
@@ -50,56 +43,43 @@ body {
 }
 
 .card {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.1);
     margin: 15px 0;
     padding: 20px;
     border-radius: 15px;
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(0, 255, 255, 0.3);
+    border: 1px solid rgba(255,255,255,0.2);
     text-align: left;
-    box-shadow: 0 0 20px rgba(0,255,255,0.2);
 }
 
 .card h2 {
     margin-top: 0;
-    text-shadow: 0 0 6px #0ff;
 }
 
-/* ===================================
-   CODE BLOCK
-=================================== */
 code {
-    background: rgba(0,0,0,0.45);
+    background: rgba(0,0,0,0.4);
     padding: 6px;
     border-radius: 6px;
     display: block;
     word-wrap: break-word;
     margin-top: 5px;
-    border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* ===================================
-   FOOTER
-=================================== */
 footer {
     margin-top: 30px;
     margin-bottom: 20px;
     color: #aaa;
 }
 
-/* ===================================
-   ANIMATION
-=================================== */
+/* ANIMASI ASLI */
 .fade-in {
     opacity: 0;
     transform: translateY(20px);
-    animation: fadeIn 0.7s forwards ease-out;
+    animation: fadeIn 0.7s forwards;
 }
 
 .delay1 { animation-delay: 0.3s; }
 .delay2 { animation-delay: 0.6s; }
-.delay3 { animation-delay: 0.9s; }
-.delay4 { animation-delay: 1.2s; }
 
 @keyframes fadeIn {
     to {
@@ -109,65 +89,42 @@ footer {
 }
 
 /* ===================================
-   REALTIME MONITOR BARS
+   TAMBAHAN MINIMAL UNTUK REALTIME BAR
 =================================== */
+
 .monitor-row {
     display: flex;
     align-items: center;
-    margin: 10px 0;
     gap: 10px;
+    margin: 8px 0;
 }
 
 .monitor-row span {
-    width: 55px;
+    width: 65px;
     font-weight: bold;
-    color: #0ff;
 }
 
 .bar {
     flex: 1;
-    height: 12px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 6px;
+    height: 10px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 5px;
     overflow: hidden;
-    border: 1px solid rgba(0,255,255,0.3);
 }
 
 .fill {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, #0ff, #00ccff);
-    box-shadow: 0 0 10px #0ff;
-    transition: width 0.3s linear;
-}
-
-#cpu-val, #ram-val, #disk-val {
-    width: 50px;
-    text-align: right;
+    background: #0ff;
+    transition: .3s linear;
 }
 
 /* ===================================
-   CHARTS
+   CHART MINIMAL
 =================================== */
+
 canvas {
     width: 100% !important;
-    height: 220px !important;
-    margin-top: 15px;
-    background: rgba(0, 0, 0, 0.35);
-    border-radius: 12px;
-    border: 1px solid rgba(0,255,255,0.3);
-    box-shadow: 0 0 15px rgba(0,255,255,0.1);
-}
-
-/* ===================================
-   RESPONSIVE
-=================================== */
-@media (max-width: 600px) {
-    .monitor-row span {
-        width: 40px;
-    }
-
-    canvas {
-        height: 180px !important;
-    }
+    height: 180px !important;
+    margin-top: 10px;
 }
