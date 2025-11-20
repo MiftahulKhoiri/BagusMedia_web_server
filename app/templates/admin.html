@@ -17,50 +17,6 @@
     <h1 class="title">¤ BAGUS MEDIA SERVER ¤</h1>
 
     <!-- ============================
-         REALTIME MINIMAL TERMINAL
-    ============================ -->
-    <div class="section">
-        <div class="section-title">[ REALTIME MINIMAL TERMINAL ]</div>
-
-        <div class="terminal-monitor">
-            <pre id="term-output" class="term-output">
-Booting monitor...
-            </pre>
-
-            <div class="stat-row">
-                <span>UP</span>
-                <div class="uptime" id="uptime-text">--:--:--</div>
-            </div>
-        </div>
-
-        <div class="term-controls">
-            <button id="term-clear" class="btn small">Clear</button>
-            <label><input id="autoscroll" type="checkbox" checked> Auto-scroll</label>
-        </div>
-
-        <!-- === FIXED MONITOR BARS (Wajib untuk script) === -->
-        <div class="monitor-bars">
-            <div class="bar-item">
-                <span>CPU:</span>
-                <div class="bar"><div id="cpu-bar" class="fill"></div></div>
-                <span id="cpu-val">0%</span>
-            </div>
-
-            <div class="bar-item">
-                <span>RAM:</span>
-                <div class="bar"><div id="ram-bar" class="fill"></div></div>
-                <span id="ram-val">0%</span>
-            </div>
-
-            <div class="bar-item">
-                <span>DISK:</span>
-                <div class="bar"><div id="disk-bar" class="fill"></div></div>
-                <span id="disk-val">0%</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================
          USER MANAGEMENT
     ============================ -->
     <div class="section">
@@ -94,7 +50,7 @@ Booting monitor...
     </div>
 
     <!-- ============================
-         ADMIN TOOLS
+         ADMIN TOOLS (TETAP ADA)
     ============================ -->
     <div class="section">
         <div class="section-title">[ ADMIN TOOLS ]</div>
@@ -109,118 +65,13 @@ Booting monitor...
         </div>
     </div>
 
-    <!-- ============================
-         REALTIME SYSTEM CHARTS
-    ============================ -->
-    <div class="section">
-        <div class="section-title">[ SYSTEM CHARTS ]</div>
-
-        <div class="charts">
-            <canvas id="cpuChart"></canvas>
-            <canvas id="ramChart"></canvas>
-            <canvas id="diskChart"></canvas>
-        </div>
-    </div>
-
-    <footer class="footer">© {{ current_year }} BAGUS MEDIA SERVER • TERMINAL MODE</footer>
+    <footer class="footer">
+        © {{ current_year }} BAGUS MEDIA SERVER • TERMINAL MODE
+    </footer>
 </div>
 
-<!-- =======================================
-     MATRIX BG EFFECT JS
-======================================= -->
+<!-- MATRIX EFFECT -->
 <script src="/static/Js/admin-hacker.js"></script>
 
-<!-- =======================================
-     REALTIME MONITOR BAR
-======================================= -->
-<script>
-async function updateMonitor() {
-    try {
-        let res = await fetch("/api/monitor");
-        let d = await res.json();
-
-        document.getElementById("cpu-val").innerText = d.cpu + "%";
-        document.getElementById("cpu-bar").style.width = d.cpu + "%";
-
-        document.getElementById("ram-val").innerText = d.ram_percent + "%";
-        document.getElementById("ram-bar").style.width = d.ram_percent + "%";
-
-        document.getElementById("disk-val").innerText = d.disk_percent + "%";
-        document.getElementById("disk-bar").style.width = d.disk_percent + "%";
-    } catch (e) {
-        console.log("Monitor error:", e);
-    }
-}
-
-setInterval(updateMonitor, 1000);
-updateMonitor();
-</script>
-
-<!-- =======================================
-     REALTIME CHART
-======================================= -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-let cpuData = [], ramData = [], diskData = [], labels = [];
-
-function createChart(id, label, color) {
-    return new Chart(document.getElementById(id), {
-        type: "line",
-        data: {
-            labels,
-            datasets: [{
-                label,
-                data: [],
-                borderColor: color,
-                borderWidth: 2,
-                tension: 0.3
-            }]
-        },
-        options: {
-            animation: false,
-            scales: { y: { min: 0, max: 100 } }
-        }
-    });
-}
-
-let cpuChart = createChart("cpuChart", "CPU %", "#00ff00");
-let ramChart = createChart("ramChart", "RAM %", "#33ff55");
-let diskChart = createChart("diskChart", "Disk %", "#66ff88");
-
-async function updateRealtimeCharts() {
-    try {
-        const res = await fetch("/api/monitor");
-        const d = await res.json();
-        const t = new Date().toLocaleTimeString();
-
-        labels.push(t); if (labels.length > 20) labels.shift();
-        cpuData.push(d.cpu); if (cpuData.length > 20) cpuData.shift();
-        ramData.push(d.ram_percent); if (ramData.length > 20) ramData.shift();
-        diskData.push(d.disk_percent); if (diskData.length > 20) diskData.shift();
-
-        cpuChart.data.datasets[0].data = cpuData;
-        ramChart.data.datasets[0].data = ramData;
-        diskChart.data.datasets[0].data = diskData;
-
-        cpuChart.update();
-        ramChart.update();
-        diskChart.update();
-
-        if (d.cpu > 90) {
-            document.body.style.background = "#300";
-            try { new Audio("/static/sound/beep.mp3").play(); } catch {}
-        } else {
-            document.body.style.background = "";
-        }
-    } catch (e) {
-        console.log("Chart error:", e);
-    }
-}
-
-setInterval(updateRealtimeCharts, 1000);
-</script>
-
-<script src="/static/Js/admin-monitor-minimal.js" defer></script>
 </body>
 </html>
