@@ -4,7 +4,7 @@ import shutil
 from flask import Blueprint, render_template, request, jsonify, redirect, session, current_app
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
-from .utils import allowed_file, get_media_files
+from .utils import allowed_file, get_media_files,require_root
 
 # =====================================================
 # BLUEPRINT MEDIA
