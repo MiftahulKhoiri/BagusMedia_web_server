@@ -213,3 +213,71 @@ body {
         gap: 20px;
     }
 }
+
+/* ==============================
+   PLAYLIST CARD STYLING
+============================== */
+
+.playlist-container {
+    padding: 10px;
+}
+
+.playlist {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.playlist-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: rgba(0, 255, 100, 0.07);
+    border: 1px solid #00ff88;
+    border-radius: 10px;
+    box-shadow: 0 0 8px #00ff88 inset;
+    transition: 0.2s;
+}
+
+.playlist-item:hover {
+    background: rgba(0, 255, 100, 0.18);
+    transform: scale(1.03);
+}
+
+.track-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ccffcc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.track-name::before {
+    content: "🎵";
+    font-size: 20px;
+}
+
+.play-track {
+    padding: 8px 12px;
+    background: #00cc44;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.play-track:hover {
+    background: #00ff55;
+    transform: scale(1.2);
+}
+
+/* Highlight track yang sedang diputar */
+.playing {
+    border-color: #00ffcc;
+    box-shadow: 0 0 12px #00ffcc;
+    background: rgba(0, 255, 255, 0.20);
+}
