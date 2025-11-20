@@ -32,6 +32,10 @@ function playTrack(index) {
     audio.play();
     updateNowPlaying();
     visualizer.classList.add('active');
+
+    // === Memanggil mini player ===
+    const trackName = playlistItems[currentIndex].querySelector('.track-name').textContent;
+    onTrackPlay(trackName);
 }
 
 // Update judul lagu
