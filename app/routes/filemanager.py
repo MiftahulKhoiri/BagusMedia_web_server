@@ -111,16 +111,44 @@ def api_files():
         folder = current_app.config.get(ALLOWED_FOLDERS.get(t))
         if not folder:
             continue
+
         try:
             for fn in sorted(os.listdir(folder)):
-                if fn.startswith("."):  # skip hidden files
+                if fn.startswith("."):  # skip hidden files / .xxx
                     continue
+
+                full_path = os.path.join(folder, fn)
+
+                # ============================
+                # JIKA INI FOLDER
+                # ============================
+                if os.path.isdir(full_path):
+                    st = os.stat(full_path)
+                    results.append({
+                        "name": fn,
+                        "is_folder": True,
+                        "folder_key": t,
+                        "path": fn,  # nanti dipakai untuk masuk ke folder
+                        "size_bytes": st.st_size,
+                        "size": human_size(st.st_size),
+                        "mtime": time.strftime(
+                            "%Y-%m-%d %H:%M:%S",
+                            time.localtime(st.st_mtime)
+                        ),
+                    })
+                    continue
+
+                # ============================
+                # JIKA INI FILE BIASA
+                # ============================
                 info = get_file_info(t, fn)
                 if info and t == "video":
                     thumb = generate_thumbnail_if_possible(folder, fn)
                     if thumb:
                         info["thumbnail"] = thumb
+
                 results.append(info)
+
         except FileNotFoundError:
             continue
 
