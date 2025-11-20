@@ -1,11 +1,11 @@
 #!/bin/bash
 
-echo "=== CEK / BUAT VENV ==="
+echo "=== mendapatkan informasi folder VEN ==="
 if [ ! -d "venv" ]; then
     echo "Membuat virtual environment..."
     python3 -m venv venv
 else
-    echo "Venv sudah ada... lanjut."
+    echo "VIRTUALVen sudah ada... lanjut."
 fi
 
 echo "=== AKTIFKAN VENV ==="
@@ -23,5 +23,5 @@ else
     echo "requirements.txt tidak ditemukan, skip."
 fi
 
-echo "=== MENJALANKAN APLIKASI ==="
+echo "=== MENJALANKAN APLIKASI UTAMA ==="
 python3 run.py
