@@ -83,6 +83,10 @@ def video_list():
 def upload():
     if "user_id" not in session:
         return redirect("/login")
+    check = require_root()
+    if check:
+        return check
+    
     return render_template("upload.html")
 
 
