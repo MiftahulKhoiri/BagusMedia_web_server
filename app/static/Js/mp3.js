@@ -111,3 +111,23 @@ themeToggle.addEventListener('click', () => {
         themeToggle.textContent = "🌙";
     }
 });
+
+// ==========================
+// HIGHLIGHT CARD YANG DIPUTAR
+// ==========================
+function highlightCurrent(src) {
+    document.querySelectorAll(".playlist-item").forEach(item => {
+        item.classList.remove("playing");
+        if (item.dataset.src === src) {
+            item.classList.add("playing");
+        }
+    });
+}
+
+// Saat tombol play di klik
+document.querySelectorAll(".play-track").forEach(btn => {
+    btn.addEventListener("click", () => {
+        let src = btn.parentElement.dataset.src;
+        highlightCurrent(src);
+    });
+});
