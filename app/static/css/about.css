@@ -118,35 +118,3 @@ footer {
     background: #0ff;
     transition: .3s linear;
 }
-
-/* ===================================
-   CHART MINIMAL
-=================================== */
-
-canvas {
-    width: 100% !important;
-    height: 180px !important;
-    margin-top: 10px;
-}
-
-/* Stats row */
-.term-stats { display: grid; gap:8px; margin-bottom:8px; }
-.stat-row {
-  display:flex; align-items:center; gap:10px; font-size:13px;
-}
-.stat-row span { width:48px; color:#9fd9a0; font-weight:600; }
-.bar {
-  flex:1; height:12px; background: rgba(255,255,255,0.06); border-radius:6px; overflow:hidden;
-}
-.fill {
-  height:100%; width:0%; background: linear-gradient(90deg,#70ff70,#1fab1f); transition: width 400ms linear;
-  box-shadow: inset 0 -2px 6px rgba(0,0,0,0.25);
-}
-.uptime { color:#cfe8b7; font-weight:600; }
-
-/* Controls */
-.term-controls { display:flex; gap:12px; align-items:center; margin-top:8px; }
-.btn.small {
-  background:#2d2d2d; color:#fff; padding:6px 10px; border-radius:6px; border:none; cursor:pointer;
-}
-.btn.small:hover { background:#414141; }
