@@ -12,6 +12,9 @@
 </head>
 <body>
 
+<!-- Background Neon -->
+<canvas id="neonCanvas"></canvas>
+
 <header class="header">
     <h1 class="title">Tentang Sistem</h1>
 
@@ -23,11 +26,7 @@
 </header>
 
 <main class="container">
-    <canvas id="neonCanvas"></canvas>
 
-    <!-- ============================
-         KARTU INFORMASI APLIKASI
-    ============================ -->
     <div class="card fade-in">
         <h2>📦 Informasi Aplikasi</h2>
         <p><strong>Nama Sistem:</strong> BAGUS MEDIA SERVER</p>
@@ -35,9 +34,6 @@
         <p><strong>Developer:</strong> Bagus Choiri</p>
     </div>
 
-    <!-- ============================
-         KARTU INFORMASI SERVER
-    ============================ -->
     <div class="card fade-in delay1">
         <h2>🖥️ Informasi Server</h2>
         <p><strong>Sistem Operasi:</strong> {{ system }}</p>
@@ -48,27 +44,20 @@
         <p><strong>Disk Terpakai:</strong> {{ disk_used }} GB</p>
     </div>
 
-    <!-- ============================
-         STATUS SISTEM
-    ============================ -->
     <div class="card fade-in delay2">
         <h2>⚡ Status Sistem</h2>
-
-        <p><b>Uptime:</b> {{ uptime }}</p>
+        <p><strong>Uptime:</strong> {{ uptime }}</p>
 
         {% if alt_uptime %}
-            <p><b>Uptime Alternatif:</b> {{ alt_uptime }}</p>
+            <p><strong>Uptime Alternatif:</strong> {{ alt_uptime }}</p>
         {% endif %}
 
         <p><strong>IP Server:</strong> {{ ip_address }}</p>
-
         <p><strong>Lokasi Folder Aplikasi:</strong></p>
         <code>{{ project_root }}</code>
     </div>
 
-    <!-- ============================
-         REALTIME BAR MONITOR
-    ============================ -->
+    <!-- Realtime Monitor -->
     <div class="card fade-in delay3">
         <h2>📊 Realtime System Monitor</h2>
 
@@ -91,9 +80,7 @@
         </div>
     </div>
 
-    <!-- ============================
-         REALTIME CHARTS
-    ============================ -->
+    <!-- Realtime Charts -->
     <div class="card fade-in delay4">
         <h2>📈 Grafik Realtime</h2>
 
@@ -109,6 +96,8 @@
 </footer>
 
 <script src="/static/Js/neon.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/static/Js/about.js" defer></script>
 
 </body>
 </html>
