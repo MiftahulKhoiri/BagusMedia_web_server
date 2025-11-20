@@ -17,20 +17,18 @@
 <header class="header">
     <h1 class="title">Tentang Sistem</h1>
 
-    <!-- =========================
-         TOMBOL HOME SESUAI ROLE
-       ========================= -->
     {% if session.role == "root" %}
         <a href="/admin" class="btn-home">🏠 Admin</a>
     {% else %}
         <a href="{{ url_for('main.home') }}" class="btn-home">🏠 Home</a>
     {% endif %}
-
 </header>
 
 <main class="container">
 
-    <!-- Kartu Informasi -->
+    <!-- ============================
+         KARTU INFORMASI APLIKASI
+    ============================ -->
     <div class="card fade-in">
         <h2>📦 Informasi Aplikasi</h2>
         <p><strong>Nama Sistem:</strong> BAGUS MEDIA SERVER</p>
@@ -38,7 +36,9 @@
         <p><strong>Developer:</strong> Bagus Choiri</p>
     </div>
 
-    <!-- Kartu Device / Server -->
+    <!-- ============================
+         KARTU INFORMASI SERVER
+    ============================ -->
     <div class="card fade-in delay1">
         <h2>🖥️ Informasi Server</h2>
         <p><strong>Sistem Operasi:</strong> {{ system }}</p>
@@ -49,13 +49,14 @@
         <p><strong>Disk Terpakai:</strong> {{ disk_used }} GB</p>
     </div>
 
-    <!-- Kartu Status -->
+    <!-- ============================
+         STATUS SISTEM
+    ============================ -->
     <div class="card fade-in delay2">
         <h2>⚡ Status Sistem</h2>
 
         <p><b>Uptime:</b> {{ uptime }}</p>
 
-        <!-- uptime alternatif jika psutil gagal membaca /proc/stat -->
         {% if alt_uptime %}
             <p><b>Uptime Alternatif:</b> {{ alt_uptime }}</p>
         {% endif %}
@@ -66,6 +67,42 @@
         <code>{{ project_root }}</code>
     </div>
 
+    <!-- ============================
+         REALTIME BAR MONITOR
+    ============================ -->
+    <div class="card fade-in delay3">
+        <h2>📊 Realtime System Monitor</h2>
+
+        <div class="monitor-row">
+            <span>CPU</span>
+            <div class="bar"><div id="cpu-bar" class="fill"></div></div>
+            <span id="cpu-val">0%</span>
+        </div>
+
+        <div class="monitor-row">
+            <span>RAM</span>
+            <div class="bar"><div id="ram-bar" class="fill"></div></div>
+            <span id="ram-val">0%</span>
+        </div>
+
+        <div class="monitor-row">
+            <span>DISK</span>
+            <div class="bar"><div id="disk-bar" class="fill"></div></div>
+            <span id="disk-val">0%</span>
+        </div>
+    </div>
+
+    <!-- ============================
+         REALTIME CHARTS
+    ============================ -->
+    <div class="card fade-in delay4">
+        <h2>📈 Grafik Realtime</h2>
+
+        <canvas id="cpuChart"></canvas>
+        <canvas id="ramChart"></canvas>
+        <canvas id="diskChart"></canvas>
+    </div>
+
 </main>
 
 <footer>
@@ -73,6 +110,99 @@
 </footer>
 
 <script src="/static/Js/neon.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- =======================================
+     REALTIME BAR MONITOR
+======================================= -->
+<script>
+async function updateMonitor() {
+    try {
+        const res = await fetch("/api/monitor");
+        const d = await res.json();
+
+        document.getElementById("cpu-bar").style.width = d.cpu + "%";
+        document.getElementById("cpu-val").textContent = d.cpu + "%";
+
+        document.getElementById("ram-bar").style.width = d.ram_percent + "%";
+        document.getElementById("ram-val").textContent = d.ram_percent + "%";
+
+        document.getElementById("disk-bar").style.width = d.disk_percent + "%";
+        document.getElementById("disk-val").textContent = d.disk_percent + "%";
+    } catch (e) {
+        console.log("Monitor error:", e);
+    }
+}
+
+setInterval(updateMonitor, 1000);
+updateMonitor();
+</script>
+
+<!-- =======================================
+     REALTIME CHARTS
+======================================= -->
+<script>
+let labels = [];
+let cpuData = [];
+let ramData = [];
+let diskData = [];
+
+function createChart(id, label, color) {
+    return new Chart(document.getElementById(id), {
+        type: "line",
+        data: {
+            labels,
+            datasets: [{
+                label,
+                data: [],
+                borderColor: color,
+                borderWidth: 2,
+                tension: 0.3
+            }]
+        },
+        options: {
+            animation: false,
+            scales: { y: { min: 0, max: 100 } }
+        }
+    });
+}
+
+let cpuChart = createChart("cpuChart", "CPU %", "#00ff00");
+let ramChart = createChart("ramChart", "RAM %", "#33ff55");
+let diskChart = createChart("diskChart", "Disk %", "#66ff88");
+
+async function updateCharts() {
+    try {
+        const res = await fetch("/api/monitor");
+        const d = await res.json();
+        const t = new Date().toLocaleTimeString();
+
+        labels.push(t);
+        if (labels.length > 20) labels.shift();
+
+        cpuData.push(d.cpu);
+        if (cpuData.length > 20) cpuData.shift();
+
+        ramData.push(d.ram_percent);
+        if (ramData.length > 20) ramData.shift();
+
+        diskData.push(d.disk_percent);
+        if (diskData.length > 20) diskData.shift();
+
+        cpuChart.data.datasets[0].data = cpuData;
+        ramChart.data.datasets[0].data = ramData;
+        diskChart.data.datasets[0].data = diskData;
+
+        cpuChart.update();
+        ramChart.update();
+        diskChart.update();
+    } catch (e) {
+        console.log("Chart error:", e);
+    }
+}
+
+setInterval(updateCharts, 1000);
+</script>
 
 </body>
 </html>
