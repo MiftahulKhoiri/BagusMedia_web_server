@@ -15,9 +15,12 @@
             <img src="{{ url_for('static', filename='icon/upload-media.png') }}" alt="Logo" class="logo">
             <h1>Upload Media</h1>
         </div>
-        <nav class="menu">
-                        <a href="/" class="menu-item">🏠 Home</a>
-        </nav>
+        {% if session.role == "root" %}
+        <a href="/admin" class="btn-home">🏠 Admin</a>
+        {% else %}
+        <a href="{{ url_for('main.home') }}" class="btn-home">🏠 Home</a>
+    {% endif %}
+
     </header>
 
     <main class="main-content">
