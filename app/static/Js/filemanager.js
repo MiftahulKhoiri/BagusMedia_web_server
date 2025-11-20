@@ -1,8 +1,8 @@
 // =====================================================
-// FILE MANAGER – BAGUS MEDIA SERVER
+// FILE MANAGER – BAGUS MEDIA SERVER (CLEAN VERSION)
 // =====================================================
 
-// Elemen penting
+// Elemen UI
 const sortSelect = document.getElementById("sort");
 const searchInput = document.getElementById("search");
 const fileList = document.getElementById("file-list");
@@ -12,60 +12,62 @@ const modalInput = document.getElementById("rename-input");
 const renameCancel = document.getElementById("rename-cancel");
 const renameSave = document.getElementById("rename-save");
 
-let renameTarget = null;
-
-// Mini Player
 const miniPlayer = document.getElementById("mini-player");
 const miniMediaArea = document.getElementById("mini-media-area");
 const miniClose = document.getElementById("mini-close");
 
+let renameTarget = null;
+let currentFiles = [];
+
 // =====================================================
-// FETCH FILE LIST (AJAX)
+// FETCH FILE LIST + ADAPTER
 // =====================================================
 
 async function loadFiles() {
     const res = await fetch("/api/filemanager/list");
     const data = await res.json();
-    renderFiles(data.files);
-    return data.files;
+
+    // Adapt API → Format yang dipakai frontend
+    currentFiles = data.files.map(f => ({
+        name: f.name,
+        size: f.size_bytes,
+        mtime: f.mtime,
+        url: f.download_url,
+        type: f.is_audio ? "audio" : f.is_video ? "video" : "other"
+    }));
+
+    renderFiles(currentFiles);
 }
 
 // =====================================================
 // RENDER FILE LIST
 // =====================================================
 
-let currentFiles = [];
-
 function renderFiles(files) {
-    currentFiles = files;
-
     const searchText = searchInput.value.toLowerCase();
     const sortType = sortSelect.value;
 
-    // Filter
-    let filtered = files.filter(f => f.name.toLowerCase().includes(searchText));
+    // Filtering
+    let result = files.filter(f =>
+        f.name.toLowerCase().includes(searchText)
+    );
 
     // Sorting
     if (sortType === "name") {
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
+        result.sort((a, b) => a.name.localeCompare(b.name));
     } else if (sortType === "size") {
-        filtered.sort((a, b) => a.size - b.size);
+        result.sort((a, b) => a.size - b.size);
     } else if (sortType === "date") {
-        filtered.sort((a, b) => new Date(b.mtime) - new Date(a.mtime));
+        result.sort((a, b) => new Date(b.mtime) - new Date(a.mtime));
     }
 
-    // Render
-    fileList.innerHTML = "";
+    // Render HTML
+    fileList.innerHTML = result.map(file => `
+        <div class="fm-card">
+            <div class="fm-thumb">${getThumbnail(file)}</div>
 
-    filtered.forEach(file => {
-        const card = document.createElement("div");
-        card.className = "fm-card";
-
-        const thumb = getThumbnail(file);
-
-        card.innerHTML = `
-            <div class="fm-thumb">${thumb}</div>
             <div class="fm-title">${file.name}</div>
+
             <div class="fm-meta">
                 ${formatSize(file.size)} • ${formatDate(file.mtime)}
             </div>
@@ -76,33 +78,31 @@ function renderFiles(files) {
                 <button onclick="openRename('${file.name}')">✏ Rename</button>
                 <button onclick="deleteFile('${file.name}')">🗑 Hapus</button>
             </div>
-        `;
-
-        fileList.appendChild(card);
-    });
+        </div>
+    `).join("");
 }
 
 // =====================================================
-// GENERATE THUMBNAIL
+// THUMBNAIL
 // =====================================================
 
 function getThumbnail(file) {
-    if (file.type === "image") {
-        return `<img src="${file.url}">`;
+    switch (file.type) {
+        case "image": return `<img src="${file.url}">`;
+        case "audio": return "🎵";
+        case "video": return "🎬";
+        default: return "📄";
     }
-    if (file.type === "audio") return "🎵";
-    if (file.type === "video") return "🎬";
-    return "📄";
 }
 
 // =====================================================
-// FORMAT BANTUAN
+// FORMAT UTILITIES
 // =====================================================
 
 function formatSize(bytes) {
-    if (bytes < 1024) return bytes + " B";
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 function formatDate(ts) {
@@ -110,20 +110,17 @@ function formatDate(ts) {
 }
 
 // =====================================================
-// PREVIEW / MINI PLAYER
+// PREVIEW (MINI PLAYER)
 // =====================================================
 
 function previewFile(url, type) {
     miniPlayer.classList.remove("hidden");
-    miniMediaArea.innerHTML = "";
 
     if (type === "audio") {
         miniMediaArea.innerHTML = `<audio controls autoplay src="${url}"></audio>`;
-    } 
-    else if (type === "video") {
+    } else if (type === "video") {
         miniMediaArea.innerHTML = `<video controls autoplay src="${url}"></video>`;
-    } 
-    else {
+    } else {
         miniMediaArea.innerHTML = `<p>Preview tidak tersedia</p>`;
     }
 }
@@ -134,7 +131,7 @@ miniClose.onclick = () => {
 };
 
 // =====================================================
-// DOWNLOAD FILE
+// DOWNLOAD
 // =====================================================
 
 function downloadFile(url) {
@@ -145,7 +142,7 @@ function downloadFile(url) {
 }
 
 // =====================================================
-// RENAME FILE (OPEN MODAL)
+// RENAME
 // =====================================================
 
 function openRename(name) {
@@ -154,30 +151,28 @@ function openRename(name) {
     modal.classList.remove("hidden");
 }
 
-renameCancel.onclick = () => {
-    modal.classList.add("hidden");
-};
+renameCancel.onclick = () => modal.classList.add("hidden");
 
 renameSave.onclick = async () => {
     const newName = modalInput.value.trim();
     if (!newName) return;
 
-    const res = await fetch("/api/filemanager/rename", {
+    await fetch("/api/filemanager/rename", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ old_name: renameTarget, new_name: newName })
     });
 
     modal.classList.add("hidden");
-    await loadFiles();
+    loadFiles();
 };
 
 // =====================================================
-// DELETE FILE
+// DELETE
 // =====================================================
 
 async function deleteFile(name) {
-    if (!confirm("Hapus file: " + name + " ?")) return;
+    if (!confirm(`Hapus file: ${name}?`)) return;
 
     await fetch("/api/filemanager/delete", {
         method: "POST",
@@ -185,15 +180,15 @@ async function deleteFile(name) {
         body: JSON.stringify({ filename: name })
     });
 
-    await loadFiles();
+    loadFiles();
 }
 
 // =====================================================
-// EVENT LISTENER
+// EVENT HANDLER
 // =====================================================
 
-sortSelect.onchange = loadFiles;
 searchInput.oninput = loadFiles;
+sortSelect.onchange = loadFiles;
 
 // =====================================================
 // INITIAL LOAD
