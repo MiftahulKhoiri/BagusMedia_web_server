@@ -131,3 +131,38 @@ document.querySelectorAll(".play-track").forEach(btn => {
         highlightCurrent(src);
     });
 });
+
+/* ============================
+   MINI PLAYER LOGIC
+============================ */
+
+const mini = document.getElementById("mini-player");
+const miniTitle = document.getElementById("mini-title");
+
+const miniPrev = document.getElementById("mini-prev");
+const miniPlay = document.getElementById("mini-play");
+const miniPause = document.getElementById("mini-pause");
+const miniNext = document.getElementById("mini-next");
+const miniClose = document.getElementById("mini-close");
+
+// Munculkan mini player saat lagu diputar
+function showMiniPlayer(title) {
+    mini.classList.remove("hidden");
+    miniTitle.textContent = title;
+}
+
+// Sembunyikan manual
+miniClose.onclick = () => {
+    mini.classList.add("hidden");
+};
+
+// Sinkron tombol mini dengan player utama
+miniPlay.onclick = () => audio.play();
+miniPause.onclick = () => audio.pause();
+miniPrev.onclick = () => playPrev();
+miniNext.onclick = () => playNext();
+
+// Panggil fungsi ini setiap lagu diputar
+function onTrackPlay(title) {
+    showMiniPlayer(title);
+}
