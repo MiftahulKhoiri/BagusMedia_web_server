@@ -123,5 +123,22 @@
 <!-- MAIN SCRIPT -->
 <script src="{{ url_for('static', filename='Js/mp3.js') }}"></script>
 
+<!-- ============================
+     FLOATING MINI PLAYER
+============================ -->
+<div id="mini-player" class="mini-player hidden">
+    <div class="mini-info">
+        <span id="mini-title">Judul Lagu</span>
+    </div>
+
+    <div class="mini-controls">
+        <button id="mini-prev">⏮</button>
+        <button id="mini-play">▶</button>
+        <button id="mini-pause">⏸</button>
+        <button id="mini-next">⏭</button>
+    </div>
+
+    <button id="mini-close" class="mini-close">✖</button>
+</div>
 </body>
 </html>
