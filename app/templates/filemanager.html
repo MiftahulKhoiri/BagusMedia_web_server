@@ -2,26 +2,25 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>File Manager - BAGUS MEDIA SERVER</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>File Manager - BAGUS MEDIA SERVER</title>
 
-  <link rel="stylesheet" href="/static/css/neon.css">
-  <link rel="stylesheet" href="/static/css/filemanager.css">
-
-  <link rel="icon" href="{{ url_for('static', filename='icon/folder.png') }}">
+    <link rel="stylesheet" href="/static/css/neon.css">
+    <link rel="stylesheet" href="/static/css/filemanager.css">
+    <link rel="icon" href="{{ url_for('static', filename='icon/folder.png') }}">
 </head>
+
 <body>
 
 <canvas id="neonCanvas"></canvas>
 
-<!-- ============================
-     HEADER DENGAN ROLE CHECK
-=============================== -->
+<!-- ======================================
+     HEADER
+======================================= -->
 <header class="header">
     <h1 class="title">File Manager</h1>
 
-    <!-- ========== ROUTE HOME SESUAI ROLE ========== -->
     {% if session.role == "root" %}
         <a href="/admin" class="btn-back">⬅ Admin</a>
     {% else %}
@@ -29,13 +28,12 @@
     {% endif %}
 </header>
 
-
-<!-- ============================
-     BODY FILE MANAGER
-=============================== -->
+<!-- ======================================
+     FILE MANAGER BODY
+======================================= -->
 <main class="fm-container">
 
-    <!-- FILTER / SEARCH / REFRESH -->
+    <!-- Controls -->
     <div class="fm-controls">
         <select id="type-filter">
             <option value="all">Semua</option>
@@ -44,19 +42,14 @@
             <option value="upload">Uploads</option>
         </select>
 
-        <input id="search" placeholder="Cari nama file..." />
-
+        <input id="search" placeholder="Cari nama file...">
         <button id="refresh">Refresh</button>
     </div>
 
-    <!-- LIST FILE -->
-    <div id="fm-list" class="fm-list">
-        <!-- file cards akan di-render via JS -->
-    </div>
+    <!-- File List -->
+    <div id="fm-list" class="fm-list"></div>
 
-    <!-- ============================
-         MODAL RENAME
-    ================================ -->
+    <!-- Modal Rename -->
     <div id="modal-rename" class="modal hidden">
         <div class="modal-card">
             <h3>Ganti Nama</h3>
@@ -69,9 +62,7 @@
         </div>
     </div>
 
-    <!-- ============================
-         MINI PLAYER (AUDIO/VIDEO)
-    ================================ -->
+    <!-- Mini Player -->
     <div id="mini-player" class="mini-player hidden">
         <div id="mini-media-area"></div>
         <button id="mini-close">Tutup</button>
@@ -79,9 +70,9 @@
 
 </main>
 
-<!-- ============================
+<!-- ======================================
      FOOTER
-=============================== -->
+======================================= -->
 <footer>
     <p>© {{ current_year }} BAGUS MEDIA SERVER</p>
 </footer>
