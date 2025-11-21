@@ -38,7 +38,8 @@
     transition: all 0.3s ease;
     cursor: pointer;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    position: relative;
 }
 
 .file-item:hover {
@@ -71,7 +72,8 @@
 .file-actions {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .file-action-btn {
@@ -79,8 +81,8 @@
     border: none;
     color: #aaa;
     cursor: pointer;
-    font-size: 14px;
-    padding: 5px 10px;
+    font-size: 12px;
+    padding: 6px 8px;
     border-radius: 4px;
     transition: all 0.3s ease;
 }
@@ -88,6 +90,16 @@
 .file-action-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     color: white;
+}
+
+.file-thumbnail {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.file-thumbnail img {
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Controls Enhancement */
@@ -248,5 +260,9 @@
     
     .file-actions {
         flex-wrap: wrap;
+    }
+    
+    .file-item {
+        padding: 10px;
     }
 }
