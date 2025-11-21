@@ -1,6 +1,6 @@
 /* ===== File: filemanager.js ===== */
 
-let currentRoot = "mp3";
+let currentRoot = "app";
 let currentPath = "";
 
 // Switch Root Folder
