@@ -1,131 +1,185 @@
-// filemanager.js - Enhanced and Compatible with Your API
+/* ===== File: filemanager.js ===== */
 
-class FileManager {
-    constructor() {
-        this.currentType = 'all';
-        this.selectedFiles = new Set();
-        this.files = [];
-        this.filteredFiles = [];
-        this.currentFile = null;
-        this.currentMedia = null;
-        this.isPlaying = false;
-        
-        this.initializeElements();
-        this.bindEvents();
-        this.loadFiles();
-    }
+let currentRoot = "mp3";
+let currentPath = "";
 
-    initializeElements() {
-        // File list and controls
-        this.fmList = document.getElementById('fm-list');
-        this.searchInput = document.getElementById('search');
-        this.typeFilter = document.getElementById('type-filter');
-        this.refreshBtn = document.getElementById('refresh');
-        this.currentPath = document.getElementById('current-path');
-        this.fileCount = document.getElementById('file-count');
-        
-        // Multi-select
-        this.multiActions = document.getElementById('multi-actions');
-        this.selectedCount = document.getElementById('selected-count');
-        this.deleteSelectedBtn = document.getElementById('delete-selected');
-        this.clearSelectionBtn = document.getElementById('clear-selection');
-        
-        // Modals
-        this.modalRename = document.getElementById('modal-rename');
-        this.modalDelete = document.getElementById('modal-delete');
-        this.modalInfo = document.getElementById('modal-info');
-        
-        // Rename elements
-        this.renameInput = document.getElementById('rename-input');
-        this.renameCancelBtn = document.getElementById('rename-cancel');
-        this.renameSaveBtn = document.getElementById('rename-save');
-        
-        // Delete elements
-        this.deleteMessage = document.getElementById('delete-message');
-        this.deleteCancelBtn = document.getElementById('delete-cancel');
-        this.deleteConfirmBtn = document.getElementById('delete-confirm');
-        
-        // Info elements
-        this.infoCloseBtn = document.getElementById('info-close');
-        
-        // Mini player
-        this.miniPlayer = document.getElementById('mini-player');
-        this.miniMediaArea = document.getElementById('mini-media-area');
-        this.miniCloseBtn = document.getElementById('mini-close');
-        this.miniPlayBtn = document.getElementById('mini-play');
-        this.miniPrevBtn = document.getElementById('mini-prev');
-        this.miniNextBtn = document.getElementById('mini-next');
-        this.miniTitle = document.getElementById('mini-title');
-        
-        // Toast container
-        this.toastContainer = document.getElementById('toast-container');
-        
-        // Create loading indicator
-        this.createLoadingIndicator();
-    }
+// Switch Root Folder
+function switchRoot(root) {
+  currentRoot = root;
+  currentPath = "";
+  loadFiles();
+}
 
-    createLoadingIndicator() {
-        this.loadingIndicator = document.createElement('div');
-        this.loadingIndicator.className = 'loading-indicator';
-        this.loadingIndicator.innerHTML = `
-            <i class="fas fa-spinner fa-spin"></i>
-            <p>Memuat file...</p>
-        `;
-        this.fmList.appendChild(this.loadingIndicator);
-    }
+// Load File List
+function loadFiles() {
+  fetch(`/api/files?root=${currentRoot}&path=${currentPath}`)
+    .then(r => r.json())
+    .then(data => render(data))
+    .catch(err => console.error("Load error:", err));
+}
 
-    bindEvents() {
-        // Search and filter
-        this.searchInput.addEventListener('input', () => this.filterFiles());
-        this.typeFilter.addEventListener('change', (e) => {
-            this.currentType = e.target.value;
-            this.updatePathInfo();
-            this.loadFiles();
-        });
-        this.refreshBtn.addEventListener('click', () => this.loadFiles());
-        
-        // Multi-select
-        this.deleteSelectedBtn.addEventListener('click', () => this.deleteSelectedFiles());
-        this.clearSelectionBtn.addEventListener('click', () => this.clearSelection());
-        
-        // Rename modal
-        this.renameSaveBtn.addEventListener('click', () => this.renameFile());
-        this.renameCancelBtn.addEventListener('click', () => this.hideRenameModal());
-        
-        // Delete modal
-        this.deleteConfirmBtn.addEventListener('click', () => this.confirmDelete());
-        this.deleteCancelBtn.addEventListener('click', () => this.hideDeleteModal());
-        
-        // Info modal
-        this.infoCloseBtn.addEventListener('click', () => this.hideInfoModal());
-        
-        // Mini player
-        this.miniCloseBtn.addEventListener('click', () => this.hideMiniPlayer());
-        this.miniPlayBtn.addEventListener('click', () => this.togglePlayPause());
-        
-        // Close modals on background click
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    this.hideAllModals();
-                }
-            });
-        });
-        
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => this.handleKeyboard(e));
-        
-        // Select all with Ctrl+A
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.key === 'a') {
-                e.preventDefault();
-                this.selectAllFiles();
-            }
-        });
-    }
+// Render UI
+function render(data) {
+  document.getElementById("pathDisplay").innerText = `${currentRoot}/${currentPath}`;
+  let html = "";
 
-    async loadFiles() {
-        this.showLoading();
-        
-        try {
-            const response
+  // Folders
+  data.folders.forEach(f => {
+    html += `
+      <div class='item'>
+        <span class='folder' onclick='openFolder("${f.name}")'>📁 ${f.name}</span>
+        <span>
+          <button onclick='renameFolder("${f.name}")'>✏</button>
+          <button onclick='deleteFolder("${f.name}")'>🗑</button>
+        </span>
+      </div>`;
+  });
+
+  // Files
+  data.files.forEach(f => {
+    let preview = "";
+    if (f.is_video) preview = `<video controls src='${f.path}'></video>`;
+    if (f.is_audio) preview = `<audio controls src='${f.path}'></audio>`;
+
+    html += `
+      <div class='item'>
+        <div>
+          📄 ${f.name}
+          ${preview ? `<div class='preview-box'>${preview}</div>` : ""}
+        </div>
+        <span>
+          <button onclick='renameFile("${f.name}")'>✏ Rename</button>
+          <button onclick='deleteFile("${f.name}")'>🗑 Delete</button>
+          <a href='${f.download_url}'><button>⬇ Download</button></a>
+        </span>
+      </div>`;
+  });
+
+  document.getElementById("filelist").innerHTML = html;
+}
+
+// Open Folder
+function openFolder(name) {
+  currentPath = (currentPath + "/" + name).replace(/^\/+/, "");
+  loadFiles();
+}
+
+// Go Up One Level
+function goUp() {
+  if (!currentPath) return;
+  let parts = currentPath.split("/");
+  parts.pop();
+  currentPath = parts.join("/");
+  loadFiles();
+}
+
+// Create Folder
+function createFolder() {
+  let name = prompt("Folder baru?");
+  if (!name) return;
+  fetch(`/api/create-folder`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ root: currentRoot, path: currentPath, name })
+  }).then(() => loadFiles());
+}
+
+// Delete Folder
+function deleteFolder(foldername) {
+  if (!confirm("Hapus folder beserta isinya?")) return;
+  fetch(`/api/delete-folder`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ root: currentRoot, path: currentPath, foldername })
+  }).then(() => loadFiles());
+}
+
+// Delete CURRENT folder
+function deleteCurrentFolder() {
+  if (!currentPath) return alert("Tidak bisa hapus root!");
+
+  let parts = currentPath.split("/");
+  let foldername = parts.pop();
+  let parent = parts.join("/");
+
+  if (!confirm(`Hapus folder ${foldername}?`)) return;
+
+  fetch(`/api/delete-folder`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ root: currentRoot, path: parent, foldername })
+  }).then(() => {
+    currentPath = parent;
+    loadFiles();
+  });
+}
+
+// Rename folder
+function renameFolder(old_name) {
+  let new_name = prompt("Nama baru?", old_name);
+  if (!new_name) return;
+
+  fetch(`/api/rename-folder`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ root: currentRoot, path: currentPath, old_name, new_name })
+  }).then(() => loadFiles());
+}
+
+// Rename current folder
+function renameCurrentFolder() {
+  if (!currentPath) return alert("Root tidak bisa di-rename!");
+
+  let parts = currentPath.split("/");
+  let old_name = parts.pop();
+  let parent = parts.join("/");
+  let new_name = prompt("Nama baru?", old_name);
+  if (!new_name) return;
+
+  fetch(`/api/rename-folder`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ root: currentRoot, path: parent, old_name, new_name })
+  }).then(() => {
+    currentPath = (parent + "/" + new_name).replace(/^\/+/, "");
+    loadFiles();
+  });
+}
+
+// Delete File
+function deleteFile(filename) {
+  if (!confirm("Hapus file ini?")) return;
+  fetch(`/api/delete-file`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ root: currentRoot, path: currentPath, filename })
+  }).then(() => loadFiles());
+}
+
+// Rename File
+function renameFile(old_name) {
+  let new_name = prompt("Nama baru?", old_name);
+  if (!new_name) return;
+
+  fetch(`/api/rename-file`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ root: currentRoot, path: currentPath, old_name, new_name })
+  }).then(() => loadFiles());
+}
+
+// Upload Files
+function uploadFiles() {
+  let files = document.getElementById("fileInput").files;
+  let form = new FormData();
+
+  for (let f of files) form.append("files", f);
+
+  fetch(`/api/upload?root=${currentRoot}&path=${currentPath}`, {
+    method: "POST",
+    body: form
+  }).then(() => loadFiles());
+}
+
+// INITIAL LOAD
+loadFiles();
