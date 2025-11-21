@@ -141,3 +141,27 @@ body {
   background: #f8f8f8;
   position: relative;
 }
+
+/* Dragbar (garis kecil di antara sidebar & main) */
+#dragbar {
+  width: 6px;
+  background: #ddd;
+  cursor: ew-resize;
+  height: 100vh;
+}
+
+/* Saat dragging */
+#dragbar.active {
+  background: #bbb;
+}
+
+/* Collapse mode */
+body.sidebar-collapsed #sidebar {
+  width: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+body.sidebar-collapsed #dragbar {
+  display: none;
+}
