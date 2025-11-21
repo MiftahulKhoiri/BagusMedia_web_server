@@ -1,8 +1,8 @@
-// filemanager.js - Enhanced but Compatible Version
+// filemanager.js - Compatible with Your API
 
 class FileManager {
     constructor() {
-        this.currentPath = '/';
+        this.currentType = 'all';
         this.selectedFiles = new Set();
         this.files = [];
         
@@ -29,7 +29,7 @@ class FileManager {
         this.miniMediaArea = document.getElementById('mini-media-area');
         this.miniCloseBtn = document.getElementById('mini-close');
         
-        // New elements we'll add dynamically
+        // Current file for operations
         this.currentFile = null;
         
         // Create loading indicator dynamically
@@ -50,7 +50,10 @@ class FileManager {
     bindEvents() {
         // Original events
         this.searchInput.addEventListener('input', () => this.filterFiles());
-        this.typeFilter.addEventListener('change', () => this.filterFiles());
+        this.typeFilter.addEventListener('change', (e) => {
+            this.currentType = e.target.value;
+            this.loadFiles();
+        });
         this.refreshBtn.addEventListener('click', () => this.loadFiles());
         
         // Rename modal events
@@ -72,8 +75,8 @@ class FileManager {
         this.showLoading();
         
         try {
-            // Using the existing endpoint structure
-            const response = await fetch(`/api/files?path=${encodeURIComponent(this.currentPath)}`);
+            // Using your existing endpoint structure
+            const response = await fetch(`/api/files?type=${this.currentType}`);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -116,19 +119,24 @@ class FileManager {
     createFileElement(file) {
         const fileDiv = document.createElement('div');
         fileDiv.className = 'file-item';
-        fileDiv.dataset.type = file.type;
+        fileDiv.dataset.type = file.is_folder ? 'folder' : 'file';
         
         const fileIcon = this.getFileIcon(file);
-        const fileSize = file.size ? this.formatFileSize(file.size) : '';
+        const fileSize = file.size || '';
         
         fileDiv.innerHTML = `
             <div class="file-icon">${fileIcon}</div>
             <div class="file-name" title="${file.name}">${file.name}</div>
             <div class="file-size">${fileSize}</div>
             <div class="file-actions">
-                <button class="file-action-btn" data-action="preview" title="Preview">
-                    <i class="fas fa-play"></i>
-                </button>
+                ${!file.is_folder ? `
+                    <button class="file-action-btn" data-action="preview" title="Preview">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="file-action-btn" data-action="download" title="Download">
+                        <i class="fas fa-download"></i>
+                    </button>
+                ` : ''}
                 <button class="file-action-btn" data-action="rename" title="Rename">
                     <i class="fas fa-edit"></i>
                 </button>
@@ -136,13 +144,19 @@ class FileManager {
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
+            ${file.thumbnail ? `
+                <div class="file-thumbnail">
+                    <img src="${file.thumbnail}" alt="${file.name}" style="max-width: 100px; max-height: 60px;">
+                </div>
+            ` : ''}
         `;
         
         // Add event listeners
         fileDiv.addEventListener('click', (e) => {
             if (!e.target.closest('.file-action-btn')) {
-                if (file.type === 'folder') {
-                    this.navigateToFolder(file.path);
+                if (file.is_folder) {
+                    // Folder click - you might want to implement folder navigation
+                    this.showMessage('Navigasi folder belum diimplementasikan', 'info');
                 } else {
                     this.previewFile(file);
                 }
@@ -173,7 +187,7 @@ class FileManager {
             default: 'fas fa-file'
         };
         
-        if (file.type === 'folder') return `<i class="${icons.folder}"></i>`;
+        if (file.is_folder) return `<i class="${icons.folder}"></i>`;
         
         const extension = file.name.split('.').pop().toLowerCase();
         
@@ -196,51 +210,14 @@ class FileManager {
         }
     }
 
-    formatFileSize(bytes) {
-        if (!bytes || bytes === 0) return '0 B';
-        
-        const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(1024));
-        
-        return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
-    }
-
-    navigateToFolder(path) {
-        this.currentPath = path;
-        this.loadFiles();
-    }
-
     filterFiles() {
         const searchTerm = this.searchInput.value.toLowerCase();
-        const filterType = this.typeFilter.value;
         
         const filteredFiles = this.files.filter(file => {
             // Apply search filter
             if (searchTerm && !file.name.toLowerCase().includes(searchTerm)) {
                 return false;
             }
-            
-            // Apply type filter
-            if (filterType !== 'all') {
-                if (filterType === 'folder' && file.type !== 'folder') {
-                    return false;
-                } else if (filterType !== 'folder') {
-                    const extension = file.name.split('.').pop().toLowerCase();
-                    
-                    switch (filterType) {
-                        case 'mp3':
-                            if (!['mp3', 'wav', 'ogg', 'flac'].includes(extension)) return false;
-                            break;
-                        case 'video':
-                            if (!['mp4', 'avi', 'mkv', 'mov', 'wmv'].includes(extension)) return false;
-                            break;
-                        case 'upload':
-                            // Custom logic for uploads if needed
-                            break;
-                    }
-                }
-            }
-            
             return true;
         });
         
@@ -276,6 +253,9 @@ class FileManager {
             case 'preview':
                 this.previewFile(file);
                 break;
+            case 'download':
+                this.downloadFile(file);
+                break;
             case 'rename':
                 this.showRenameModal(file);
                 break;
@@ -286,6 +266,7 @@ class FileManager {
     }
 
     previewFile(file) {
+        // Determine file type for preview
         const extension = file.name.split('.').pop().toLowerCase();
         
         this.miniMediaArea.innerHTML = '';
@@ -307,7 +288,8 @@ class FileManager {
     previewAudio(file) {
         const audio = document.createElement('audio');
         audio.controls = true;
-        audio.src = file.url || `/api/files/preview?path=${encodeURIComponent(file.path)}`;
+        // Use the path from your API response or construct download URL
+        audio.src = file.path || `/filemanager/download?folder=${file.folder_key}&filename=${encodeURIComponent(file.name)}`;
         
         this.miniMediaArea.appendChild(audio);
         this.currentMedia = audio;
@@ -316,7 +298,7 @@ class FileManager {
     previewVideo(file) {
         const video = document.createElement('video');
         video.controls = true;
-        video.src = file.url || `/api/files/preview?path=${encodeURIComponent(file.path)}`;
+        video.src = file.path || `/filemanager/download?folder=${file.folder_key}&filename=${encodeURIComponent(file.name)}`;
         video.style.width = '100%';
         
         this.miniMediaArea.appendChild(video);
@@ -325,12 +307,18 @@ class FileManager {
 
     previewImage(file) {
         const img = document.createElement('img');
-        img.src = file.url || `/api/files/preview?path=${encodeURIComponent(file.path)}`;
+        img.src = file.path || `/filemanager/download?folder=${file.folder_key}&filename=${encodeURIComponent(file.name)}`;
         img.style.maxWidth = '100%';
         img.style.maxHeight = '200px';
         
         this.miniMediaArea.appendChild(img);
         this.currentMedia = null;
+    }
+
+    downloadFile(file) {
+        // Use your existing download endpoint
+        const downloadUrl = `/filemanager/download?folder=${file.folder_key}&filename=${encodeURIComponent(file.name)}`;
+        window.open(downloadUrl, '_blank');
     }
 
     showMiniPlayer() {
@@ -369,28 +357,31 @@ class FileManager {
         if (!this.currentFile) return;
         
         try {
-            // Using existing rename endpoint
-            const response = await fetch('/api/rename', {
+            // Using your existing rename endpoint
+            const response = await fetch('/api/rename-file', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    old_path: this.currentFile.path,
+                    folder: this.currentFile.folder_key,
+                    old_name: this.currentFile.name,
                     new_name: newName
                 })
             });
             
-            if (response.ok) {
+            const result = await response.json();
+            
+            if (response.ok && result.status === 'ok') {
                 this.showMessage('File berhasil diubah nama', 'success');
                 this.hideRenameModal();
                 this.loadFiles();
             } else {
-                throw new Error('Gagal mengubah nama file');
+                throw new Error(result.error || 'Gagal mengubah nama file');
             }
         } catch (error) {
             console.error('Error renaming file:', error);
-            this.showMessage('Gagal mengubah nama file', 'error');
+            this.showMessage(error.message, 'error');
         }
     }
 
@@ -400,26 +391,29 @@ class FileManager {
         }
         
         try {
-            // Using existing delete endpoint
-            const response = await fetch('/api/delete', {
+            // Using your existing delete endpoint
+            const response = await fetch('/api/delete-file', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    path: file.path
+                    folder: file.folder_key,
+                    filename: file.name
                 })
             });
             
-            if (response.ok) {
+            const result = await response.json();
+            
+            if (response.ok && result.status === 'ok') {
                 this.showMessage('File berhasil dihapus', 'success');
                 this.loadFiles();
             } else {
-                throw new Error('Gagal menghapus file');
+                throw new Error(result.error || 'Gagal menghapus file');
             }
         } catch (error) {
             console.error('Error deleting file:', error);
-            this.showMessage('Gagal menghapus file', 'error');
+            this.showMessage(error.message, 'error');
         }
     }
 
