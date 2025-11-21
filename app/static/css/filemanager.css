@@ -111,3 +111,33 @@ video, audio {
   width: 100%;
   margin-top: 6px;
 }
+
+/* FIX Layout di HP agar sidebar tidak hilang */
+body {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Sidebar fix */
+#sidebar {
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+  background: #ffffff;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+/* Main area */
+#main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #f8f8f8;
+  position: relative;
+}
