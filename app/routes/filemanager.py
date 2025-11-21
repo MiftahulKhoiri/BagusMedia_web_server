@@ -245,7 +245,7 @@ def fm_download():
 # =====================================================
 # UPLOAD MEDIA PAGE
 # =====================================================
-@media.route("/upload")
+@filemanager.route("/upload")
 def upload():
     if "user_id" not in session:
         return redirect("/login")
@@ -259,7 +259,7 @@ def upload():
 # =====================================================
 # API UPLOAD MEDIA
 # =====================================================
-@media.route("/api/upload", methods=["POST"])
+@filemanager.route("/api/upload", methods=["POST"])
 def upload_file():
     if "user_id" not in session:
         return jsonify({"error": "Harus login!"}), 403
