@@ -75,64 +75,6 @@ def video_list():
 
     return render_template("video-list.html", video_files=video_files)
 
-
-# =====================================================
-# UPLOAD MEDIA PAGE
-# =====================================================
-@media.route("/upload")
-def upload():
-    if "user_id" not in session:
-        return redirect("/login")
-    check = require_root()
-    if check:
-        return check
-    
-    return render_template("upload.html")
-
-
-# =====================================================
-# API UPLOAD MEDIA
-# =====================================================
-@media.route("/api/upload", methods=["POST"])
-def upload_file():
-    if "user_id" not in session:
-        return jsonify({"error": "Harus login!"}), 403
-
-    if "files" not in request.files:
-        return jsonify({"error": "Tidak ada file!"})
-
-    files = request.files.getlist("files")
-    results = []
-
-    for file in files:
-        if file.filename == "":
-            results.append({"filename": "", "status": "error"})
-            continue
-
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            temp_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
-
-            # Simpan sementara
-            file.save(temp_path)
-
-            ext = filename.rsplit(".", 1)[1].lower()
-
-            # Tentukan tujuan
-            if ext in ['mp3', 'wav', 'ogg']:
-                dest = current_app.config["MP3_FOLDER"]
-            else:
-                dest = current_app.config["VIDEO_FOLDER"]
-
-            shutil.move(temp_path, os.path.join(dest, filename))
-            results.append({"filename": filename, "status": "success"})
-
-        else:
-            results.append({"filename": file.filename, "status": "error"})
-
-    return jsonify({"results": results})
-
-
 # =====================================================
 # SERVE MEDIA (FINAL FIX)
 # =====================================================
