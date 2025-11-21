@@ -1,4 +1,3 @@
-<!-- app/templates/filemanager.html -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -9,6 +8,9 @@
     <link rel="stylesheet" href="/static/css/neon.css">
     <link rel="stylesheet" href="/static/css/filemanager.css">
     <link rel="icon" href="{{ url_for('static', filename='icon/folder.png') }}">
+    
+    <!-- Ikon untuk UI yang lebih baik -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -19,13 +21,27 @@
      HEADER
 ======================================= -->
 <header class="header">
-    <h1 class="title">File Manager</h1>
-
-    {% if session.role == "root" %}
-        <a href="/admin" class="btn-back">⬅ Admin</a>
-    {% else %}
-        <a href="{{ url_for('main.home') }}" class="btn-back">⬅ Kembali</a>
-    {% endif %}
+    <div class="header-content">
+        <h1 class="title">File Manager</h1>
+        
+        <div class="header-actions">
+            {% if session.role == "root" %}
+                <a href="/admin" class="btn btn-secondary">
+                    <i class="fas fa-cog"></i> Admin Panel
+                </a>
+            {% endif %}
+            <a href="{{ url_for('main.home') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Kembali
+            </a>
+        </div>
+    </div>
+    
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb" id="breadcrumb">
+        <a href="#" class="breadcrumb-home" data-path="/">
+            <i class="fas fa-home"></i> Root
+        </a>
+    </nav>
 </header>
 
 <!-- ======================================
@@ -33,31 +49,178 @@
 ======================================= -->
 <main class="fm-container">
 
-    <!-- Controls -->
+    <!-- Controls Bar -->
     <div class="fm-controls">
-        <select id="type-filter">
-            <option value="all">Semua</option>
-            <option value="mp3">Musik (MP3)</option>
-            <option value="video">Video</option>
-            <option value="upload">Uploads</option>
-        </select>
+        <div class="controls-left">
+            <select id="type-filter" class="select-control">
+                <option value="all">Semua File</option>
+                <option value="mp3">Musik (MP3)</option>
+                <option value="video">Video</option>
+                <option value="image">Gambar</option>
+                <option value="document">Dokumen</option>
+                <option value="upload">Uploads</option>
+            </select>
 
-        <input id="search" placeholder="Cari nama file...">
-        <button id="refresh">Refresh</button>
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input id="search" placeholder="Cari nama file..." class="search-input">
+            </div>
+        </div>
+        
+        <div class="controls-right">
+            <!-- Upload Button -->
+            <button id="upload-btn" class="btn btn-primary">
+                <i class="fas fa-upload"></i> Upload
+            </button>
+            
+            <!-- Create Folder Button -->
+            <button id="create-folder-btn" class="btn btn-primary">
+                <i class="fas fa-folder-plus"></i> Folder Baru
+            </button>
+            
+            <!-- Multi-select Actions (hidden by default) -->
+            <div id="multi-actions" class="multi-actions hidden">
+                <span id="selected-count">0 item dipilih</span>
+                <button id="delete-selected" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Hapus
+                </button>
+                <button id="clear-selection" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Batal
+                </button>
+            </div>
+            
+            <!-- Refresh Button -->
+            <button id="refresh" class="btn btn-secondary">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
     </div>
 
     <!-- File List -->
-    <div id="fm-list" class="fm-list"></div>
+    <div class="fm-content">
+        <div id="fm-list" class="fm-list">
+            <!-- Loading indicator -->
+            <div id="loading" class="loading-indicator">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Memuat file...</p>
+            </div>
+        </div>
+        
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state hidden">
+            <i class="fas fa-folder-open"></i>
+            <h3>Folder Kosong</h3>
+            <p>Tidak ada file di folder ini</p>
+            <button id="upload-empty" class="btn btn-primary">
+                <i class="fas fa-upload"></i> Upload File Pertama
+            </button>
+        </div>
+    </div>
 
-    <!-- Modal Rename -->
+    <!-- Pagination Controls -->
+    <div id="pagination" class="pagination hidden">
+        <button id="prev-page" class="btn btn-secondary">
+            <i class="fas fa-chevron-left"></i> Sebelumnya
+        </button>
+        <span id="page-info">Halaman 1 dari 1</span>
+        <button id="next-page" class="btn btn-secondary">
+            Selanjutnya <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <!-- File Upload Modal -->
+    <div id="modal-upload" class="modal hidden">
+        <div class="modal-card">
+            <h3><i class="fas fa-upload"></i> Upload File</h3>
+            
+            <div class="upload-area" id="upload-area">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Seret file ke sini atau klik untuk memilih</p>
+                <input type="file" id="file-input" multiple style="display: none;">
+            </div>
+            
+            <div id="upload-progress" class="upload-progress hidden">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <span id="progress-text">0%</span>
+            </div>
+            
+            <div class="modal-actions">
+                <button id="upload-cancel" class="btn btn-secondary">Batal</button>
+                <button id="upload-start" class="btn btn-primary" disabled>Upload</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Folder Modal -->
+    <div id="modal-create-folder" class="modal hidden">
+        <div class="modal-card">
+            <h3><i class="fas fa-folder-plus"></i> Buat Folder Baru</h3>
+            <input id="folder-name-input" placeholder="Nama folder">
+            
+            <div class="modal-actions">
+                <button id="create-folder-cancel" class="btn btn-secondary">Batal</button>
+                <button id="create-folder-save" class="btn btn-primary">Buat</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rename Modal -->
     <div id="modal-rename" class="modal hidden">
         <div class="modal-card">
-            <h3>Ganti Nama</h3>
-            <input id="rename-input" placeholder="Nama-baru.mp4">
-
+            <h3><i class="fas fa-edit"></i> Ganti Nama</h3>
+            <input id="rename-input" placeholder="Nama baru">
+            
             <div class="modal-actions">
-                <button id="rename-cancel">Batal</button>
-                <button id="rename-save">Simpan</button>
+                <button id="rename-cancel" class="btn btn-secondary">Batal</button>
+                <button id="rename-save" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="modal-delete" class="modal hidden">
+        <div class="modal-card">
+            <h3><i class="fas fa-exclamation-triangle"></i> Konfirmasi Hapus</h3>
+            <p id="delete-message">Apakah Anda yakin ingin menghapus file ini?</p>
+            
+            <div class="modal-actions">
+                <button id="delete-cancel" class="btn btn-secondary">Batal</button>
+                <button id="delete-confirm" class="btn btn-danger">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Info Modal -->
+    <div id="modal-info" class="modal hidden">
+        <div class="modal-card">
+            <h3><i class="fas fa-info-circle"></i> Informasi File</h3>
+            <div class="file-info">
+                <div class="info-row">
+                    <span class="info-label">Nama:</span>
+                    <span id="info-name" class="info-value"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Jenis:</span>
+                    <span id="info-type" class="info-value"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Ukuran:</span>
+                    <span id="info-size" class="info-value"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Diubah:</span>
+                    <span id="info-modified" class="info-value"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Path:</span>
+                    <span id="info-path" class="info-value"></span>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button id="info-close" class="btn btn-primary">Tutup</button>
             </div>
         </div>
     </div>
@@ -65,8 +228,24 @@
     <!-- Mini Player -->
     <div id="mini-player" class="mini-player hidden">
         <div id="mini-media-area"></div>
-        <button id="mini-close">Tutup</button>
+        <div class="mini-controls">
+            <button id="mini-prev" class="btn btn-secondary">
+                <i class="fas fa-step-backward"></i>
+            </button>
+            <button id="mini-play" class="btn btn-primary">
+                <i class="fas fa-play"></i>
+            </button>
+            <button id="mini-next" class="btn btn-secondary">
+                <i class="fas fa-step-forward"></i>
+            </button>
+            <button id="mini-close" class="btn btn-secondary">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
     </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
 
 </main>
 
