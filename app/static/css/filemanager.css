@@ -1,409 +1,254 @@
-/* filemanager.css - Enhanced Styles */
+/* =====================================================
+   FILE MANAGER UI (Dark Neon Style)
+   ===================================================== */
 
-/* ======================================
-   GLOBAL STYLES
-======================================= */
-:root {
-    --primary-color: #6c8eff;
-    --primary-dark: #5a7eff;
-    --danger-color: #ff6c6c;
-    --success-color: #4CAF50;
-    --warning-color: #ffa726;
-    --bg-dark: rgba(0, 0, 0, 0.8);
-    --bg-light: rgba(255, 255, 255, 0.1);
-    --border-color: rgba(255, 255, 255, 0.2);
-    --text-light: #ffffff;
-    --text-muted: #aaaaaa;
+body {
+    font-family: Arial, sans-serif;
+    color: #fff;
 }
 
-/* ======================================
-   HEADER STYLES
-======================================= */
-.header {
-    padding: 20px;
-    text-align: center;
+/* ===============================
+   Container Utama
+   =============================== */
+
+.fm-container {
+    width: 92%;
+    max-width: 1100px;
+    margin: 40px auto;
     position: relative;
+    z-index: 2;
 }
 
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 15px;
-}
+/* ===============================
+   Control Panel
+   =============================== */
 
-.header .title {
-    font-size: 2.5rem;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.header .title i {
-    color: var(--primary-color);
-}
-
-.header-actions {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.path-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background: var(--bg-light);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-}
-
-#current-path {
-    font-weight: bold;
-    color: var(--primary-color);
-}
-
-.file-count {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-}
-
-/* ======================================
-   BUTTON STYLES
-======================================= */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    text-align: center;
-    justify-content: center;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    color: white;
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(108, 142, 255, 0.4);
-}
-
-.btn-secondary {
-    background: var(--bg-light);
-    color: var(--text-light);
-    border: 1px solid var(--border-color);
-}
-
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.btn-danger {
-    background: linear-gradient(135deg, var(--danger-color), #ff4a4a);
-    color: white;
-}
-
-.btn-danger:hover {
-    background: linear-gradient(135deg, #ff5a5a, var(--danger-color));
-    transform: translateY(-2px);
-}
-
-.btn-sm {
-    padding: 6px 12px;
-    font-size: 12px;
-}
-
-/* ======================================
-   CONTROLS STYLES
-======================================= */
 .fm-controls {
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
     align-items: center;
-    padding: 20px;
-    background: var(--bg-light);
-    border-radius: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 15px;
-    border: 1px solid var(--border-color);
+    margin-bottom: 18px;
 }
 
-.controls-left, .controls-right {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.filter-group, .search-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.filter-group label {
-    color: var(--text-muted);
-    font-size: 14px;
-}
-
-.select-control {
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    background: var(--bg-dark);
-    color: var(--text-light);
-    cursor: pointer;
-    min-width: 150px;
-}
-
-.search-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.search-container i {
-    position: absolute;
-    left: 12px;
-    color: var(--text-muted);
-    z-index: 1;
-}
-
-.search-input {
-    padding: 10px 10px 10px 35px;
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    background: var(--bg-dark);
-    color: var(--text-light);
-    width: 250px;
-    transition: all 0.3s ease;
-}
-
-.search-input:focus {
+.fm-controls select,
+.fm-controls input {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(0,0,0,0.45);
+    color: #fff;
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(108, 142, 255, 0.2);
+    backdrop-filter: blur(5px);
 }
 
-/* ======================================
-   FILE LIST STYLES
-======================================= */
-.fm-content {
-    min-height: 400px;
-    position: relative;
+.fm-controls button {
+    padding: 10px 16px;
+    background: rgba(0,150,255,0.25);
+    border: 1px solid rgba(0,150,255,0.5);
+    border-radius: 8px;
+    color: #00c8ff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
 }
+
+.fm-controls button:hover {
+    background: rgba(0,150,255,0.5);
+}
+
+/* ===============================
+   Grid List File
+   =============================== */
 
 .fm-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 15px;
-    margin-bottom: 20px;
 }
 
-.file-item {
-    background: var(--bg-light);
-    border-radius: 10px;
-    padding: 15px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: 1px solid var(--border-color);
-    position: relative;
+/* ===============================
+   File Card
+   =============================== */
+
+.fm-card {
+    background: rgba(255,255,255,0.05);
+    padding: 12px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0,255,255,0.1);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    gap: 10px;
+    backdrop-filter: blur(10px);
+    transition: 0.2s;
 }
 
-.file-item:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-    border-color: var(--primary-color);
+.fm-card:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-2px);
 }
 
-.file-item.selected {
-    border-color: var(--primary-color);
-    background: rgba(108, 142, 255, 0.2);
-}
+/* ===============================
+   Thumbnail
+   =============================== */
 
-.file-item.folder {
-    border-color: #ffa726;
-}
-
-.file-item.folder:hover {
-    border-color: #ff9800;
-}
-
-.file-checkbox {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-}
-
-.file-icon {
-    font-size: 48px;
-    margin-bottom: 12px;
-    color: var(--primary-color);
-}
-
-.file-item.folder .file-icon {
-    color: #ffa726;
-}
-
-.file-name {
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 8px;
-    word-break: break-word;
+.fm-thumb {
     width: 100%;
+    height: 150px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
     overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-}
-
-.file-size {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-bottom: 12px;
-}
-
-.file-actions {
     display: flex;
     justify-content: center;
-    gap: 8px;
-    width: 100%;
-}
-
-.file-action-btn {
-    background: var(--bg-dark);
-    border: 1px solid var(--border-color);
-    color: var(--text-muted);
-    cursor: pointer;
-    font-size: 12px;
-    padding: 6px 8px;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    display: flex;
     align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
+    font-size: 42px;
+    color: #0ff;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-.file-action-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: var(--text-light);
-    transform: scale(1.1);
-}
-
-.file-thumbnail {
-    margin-top: 10px;
+.fm-thumb img {
     width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.file-thumbnail img {
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    max-width: 100%;
-    max-height: 80px;
+    height: 100%;
     object-fit: cover;
 }
 
-/* ======================================
-   MULTI-SELECT ACTIONS
-======================================= */
-.multi-actions {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px 20px;
-    background: rgba(108, 142, 255, 0.2);
-    border-radius: 8px;
-    margin-top: 20px;
-    border: 1px solid var(--primary-color);
-    animation: slideUp 0.3s ease;
-}
+/* ===============================
+   Title & Metadata
+   =============================== */
 
-#selected-count {
+.fm-title {
     font-weight: bold;
-    color: var(--primary-color);
+    font-size: 16px;
+    margin-top: 4px;
 }
 
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.fm-meta {
+    font-size: 12px;
+    color: #ccc;
 }
 
-/* ======================================
-   LOADING & EMPTY STATES
-======================================= */
-.loading-indicator {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text-muted);
-    grid-column: 1 / -1;
+/* ===============================
+   Tombol Aksi (Play, Download, Rename, Delete)
+   =============================== */
+
+.fm-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
 }
 
-.loading-indicator i {
-    font-size: 40px;
-    margin-bottom: 15px;
-    color: var(--primary-color);
+.fm-actions button {
+    padding: 6px 10px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.2s;
 }
 
-.empty-state {
-    text-align: center;
-    padding: 80px 20px;
-    color: var(--text-muted);
-    grid-column: 1 / -1;
+.fm-actions button:hover {
+    background: rgba(255,255,255,0.2);
 }
 
-.empty-state i {
-    font-size: 80px;
-    margin-bottom: 20px;
-    color: var(--primary-color);
-}
+/* ===============================
+   Modal Rename
+   =============================== */
 
-.empty-state h3 {
-    margin-bottom: 10px;
-    color: var(--text-light);
-    font-size: 1.5rem;
-}
-
-/* ======================================
-   MODAL STYLES
-======================================= */
 .modal {
     position: fixed;
-    top: 0;
-    left: 0;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.65);
+    z-index: 999;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-card {
+    background: rgba(20,20,20,0.9);
+    padding: 20px;
+    width: 320px;
+    border-radius: 12px;
+    color: white;
+    box-shadow: 0 0 14px rgba(0,255,255,0.2);
+    backdrop-filter: blur(10px);
+}
+
+.modal-card input {
     width: 100%;
-    height: 100%;
-    background: rgba(0,
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.modal-actions button {
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    background: rgba(0,150,255,0.3);
+    color: #00eaff;
+    border: 1px solid rgba(0,150,255,0.5);
+}
+
+.modal-actions button:hover {
+    background: rgba(0,150,255,0.6);
+}
+
+/* ===============================
+   Mini Player (Preview)
+   =============================== */
+
+.mini-player {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background: rgba(0,0,0,0.85);
+    border-radius: 12px;
+    padding: 14px;
+    width: 330px;
+    box-shadow: 0 0 25px rgba(0,255,255,0.25);
+    z-index: 900;
+}
+
+.mini-player.hidden {
+    display: none;
+}
+
+#mini-media-area {
+    margin-bottom: 12px;
+}
+
+#mini-media-area audio,
+#mini-media-area video {
+    width: 100%;
+    border-radius: 8px;
+}
+
+#mini-close {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,0,0,0.4);
+    color: white;
+    cursor: pointer;
+}
+
+#mini-close:hover {
+    background: rgba(255,0,0,0.7);
+}
