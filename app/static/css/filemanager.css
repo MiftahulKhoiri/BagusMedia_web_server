@@ -1,254 +1,113 @@
-/* =====================================================
-   FILE MANAGER UI (Dark Neon Style)
-   ===================================================== */
+/* ===== File: filemanager.css ===== */
 
+/* Global */
 body {
-    font-family: Arial, sans-serif;
-    color: #fff;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f0f0f0;
+  display: flex;
+  height: 100vh;
 }
 
-/* ===============================
-   Container Utama
-   =============================== */
-
-.fm-container {
-    width: 92%;
-    max-width: 1100px;
-    margin: 40px auto;
-    position: relative;
-    z-index: 2;
+/* Sidebar */
+#sidebar {
+  width: 240px;
+  background: #ffffff;
+  border-right: 1px solid #ddd;
+  padding: 10px;
+  overflow-y: auto;
 }
 
-/* ===============================
-   Control Panel
-   =============================== */
-
-.fm-controls {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 18px;
+#sidebar h3 {
+  margin-top: 0;
+  font-size: 18px;
 }
 
-.fm-controls select,
-.fm-controls input {
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(0,0,0,0.45);
-    color: #fff;
-    outline: none;
-    backdrop-filter: blur(5px);
+.side-item {
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  transition: 0.2s;
 }
 
-.fm-controls button {
-    padding: 10px 16px;
-    background: rgba(0,150,255,0.25);
-    border: 1px solid rgba(0,150,255,0.5);
-    border-radius: 8px;
-    color: #00c8ff;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.2s;
+.side-item:hover {
+  background: #e0e0e0;
 }
 
-.fm-controls button:hover {
-    background: rgba(0,150,255,0.5);
+/* Main Area */
+#main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-/* ===============================
-   Grid List File
-   =============================== */
-
-.fm-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 15px;
+#topbar {
+  padding: 10px;
+  background: #ffffff;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  gap: 10px;
 }
 
-/* ===============================
-   File Card
-   =============================== */
-
-.fm-card {
-    background: rgba(255,255,255,0.05);
-    padding: 12px;
-    border-radius: 12px;
-    box-shadow: 0 0 12px rgba(0,255,255,0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    backdrop-filter: blur(10px);
-    transition: 0.2s;
+button {
+  padding: 6px 10px;
+  border: 1px solid #aaa;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: 0.2s;
 }
 
-.fm-card:hover {
-    background: rgba(255,255,255,0.1);
-    transform: translateY(-2px);
+button:hover {
+  background: #eee;
 }
 
-/* ===============================
-   Thumbnail
-   =============================== */
-
-.fm-thumb {
-    width: 100%;
-    height: 150px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 42px;
-    color: #0ff;
-    border: 1px solid rgba(255,255,255,0.1);
+#pathDisplay {
+  padding: 10px;
+  font-weight: bold;
+  background: #fafafa;
+  border-bottom: 1px solid #ddd;
 }
 
-.fm-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+#filelist {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
 }
 
-/* ===============================
-   Title & Metadata
-   =============================== */
-
-.fm-title {
-    font-weight: bold;
-    font-size: 16px;
-    margin-top: 4px;
+/* Item box */
+.item {
+  padding: 10px;
+  background: #fff;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.2s;
 }
 
-.fm-meta {
-    font-size: 12px;
-    color: #ccc;
+.item:hover {
+  background: #f7f7f7;
 }
 
-/* ===============================
-   Tombol Aksi (Play, Download, Rename, Delete)
-   =============================== */
-
-.fm-actions {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
+.folder {
+  font-weight: bold;
+  cursor: pointer;
 }
 
-.fm-actions button {
-    padding: 6px 10px;
-    background: rgba(0,0,0,0.4);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #fff;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    transition: 0.2s;
+/* Preview box */
+.preview-box {
+  width: 200px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 10px;
+  box-shadow: 0px 0px 4px rgba(0,0,0,0.1);
 }
 
-.fm-actions button:hover {
-    background: rgba(255,255,255,0.2);
-}
-
-/* ===============================
-   Modal Rename
-   =============================== */
-
-.modal {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0,0,0,0.65);
-    z-index: 999;
-}
-
-.modal.hidden {
-    display: none;
-}
-
-.modal-card {
-    background: rgba(20,20,20,0.9);
-    padding: 20px;
-    width: 320px;
-    border-radius: 12px;
-    color: white;
-    box-shadow: 0 0 14px rgba(0,255,255,0.2);
-    backdrop-filter: blur(10px);
-}
-
-.modal-card input {
-    width: 100%;
-    margin-top: 12px;
-    padding: 10px;
-    border-radius: 8px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: #fff;
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    margin-top: 15px;
-}
-
-.modal-actions button {
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    background: rgba(0,150,255,0.3);
-    color: #00eaff;
-    border: 1px solid rgba(0,150,255,0.5);
-}
-
-.modal-actions button:hover {
-    background: rgba(0,150,255,0.6);
-}
-
-/* ===============================
-   Mini Player (Preview)
-   =============================== */
-
-.mini-player {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    background: rgba(0,0,0,0.85);
-    border-radius: 12px;
-    padding: 14px;
-    width: 330px;
-    box-shadow: 0 0 25px rgba(0,255,255,0.25);
-    z-index: 900;
-}
-
-.mini-player.hidden {
-    display: none;
-}
-
-#mini-media-area {
-    margin-bottom: 12px;
-}
-
-#mini-media-area audio,
-#mini-media-area video {
-    width: 100%;
-    border-radius: 8px;
-}
-
-#mini-close {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    background: rgba(255,0,0,0.4);
-    color: white;
-    cursor: pointer;
-}
-
-#mini-close:hover {
-    background: rgba(255,0,0,0.7);
+video, audio {
+  width: 100%;
+  margin-top: 6px;
 }
