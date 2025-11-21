@@ -1,254 +1,425 @@
-/* =====================================================
-   FILE MANAGER UI (Dark Neon Style)
-   ===================================================== */
-
-body {
-    font-family: Arial, sans-serif;
-    color: #fff;
-}
-
-/* ===============================
-   Container Utama
-   =============================== */
-
-.fm-container {
-    width: 92%;
-    max-width: 1100px;
-    margin: 40px auto;
-    position: relative;
-    z-index: 2;
-}
-
-/* ===============================
-   Control Panel
-   =============================== */
-
-.fm-controls {
+/* Breadcrumb Styles */
+.breadcrumb {
     display: flex;
-    gap: 10px;
     align-items: center;
-    margin-bottom: 18px;
-}
-
-.fm-controls select,
-.fm-controls input {
-    padding: 10px 12px;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(0,0,0,0.45);
-    color: #fff;
-    outline: none;
-    backdrop-filter: blur(5px);
-}
-
-.fm-controls button {
-    padding: 10px 16px;
-    background: rgba(0,150,255,0.25);
-    border: 1px solid rgba(0,150,255,0.5);
-    border-radius: 8px;
-    color: #00c8ff;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.2s;
-}
-
-.fm-controls button:hover {
-    background: rgba(0,150,255,0.5);
-}
-
-/* ===============================
-   Grid List File
-   =============================== */
-
-.fm-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 15px;
-}
-
-/* ===============================
-   File Card
-   =============================== */
-
-.fm-card {
-    background: rgba(255,255,255,0.05);
-    padding: 12px;
-    border-radius: 12px;
-    box-shadow: 0 0 12px rgba(0,255,255,0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    backdrop-filter: blur(10px);
-    transition: 0.2s;
-}
-
-.fm-card:hover {
-    background: rgba(255,255,255,0.1);
-    transform: translateY(-2px);
-}
-
-/* ===============================
-   Thumbnail
-   =============================== */
-
-.fm-thumb {
-    width: 100%;
-    height: 150px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 42px;
-    color: #0ff;
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.fm-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* ===============================
-   Title & Metadata
-   =============================== */
-
-.fm-title {
-    font-weight: bold;
-    font-size: 16px;
-    margin-top: 4px;
-}
-
-.fm-meta {
-    font-size: 12px;
-    color: #ccc;
-}
-
-/* ===============================
-   Tombol Aksi (Play, Download, Rename, Delete)
-   =============================== */
-
-.fm-actions {
-    display: flex;
-    gap: 6px;
+    margin: 10px 0;
     flex-wrap: wrap;
 }
 
-.fm-actions button {
-    padding: 6px 10px;
-    background: rgba(0,0,0,0.4);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #fff;
+.breadcrumb a {
+    color: #6c8eff;
+    text-decoration: none;
+    margin: 0 5px;
+    transition: color 0.3s;
+}
+
+.breadcrumb a:hover {
+    color: #8fa8ff;
+}
+
+.breadcrumb .breadcrumb-separator {
+    color: #aaa;
+    margin: 0 5px;
+}
+
+.breadcrumb-home {
+    font-weight: bold;
+}
+
+/* Header Layout */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Button Styles */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 13px;
-    transition: 0.2s;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-decoration: none;
 }
 
-.fm-actions button:hover {
-    background: rgba(255,255,255,0.2);
+.btn-primary {
+    background: linear-gradient(135deg, #6c8eff, #4a6fff);
+    color: white;
 }
 
-/* ===============================
-   Modal Rename
-   =============================== */
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5a7eff, #3a5fff);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 142, 255, 0.4);
+}
 
-.modal {
-    position: fixed;
-    inset: 0;
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ff6c6c, #ff4a4a);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #ff5a5a, #ff3a3a);
+}
+
+/* Controls Layout */
+.fm-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.controls-left, .controls-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Search Input */
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-container i {
+    position: absolute;
+    left: 12px;
+    color: #aaa;
+}
+
+.search-input {
+    padding: 10px 10px 10px 35px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    width: 250px;
+}
+
+/* Select Control */
+.select-control {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    cursor: pointer;
+}
+
+/* Multi-select Actions */
+.multi-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background: rgba(108, 142, 255, 0.2);
+    border-radius: 6px;
+}
+
+/* File List Improvements */
+.fm-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.file-item {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.file-item:hover {
+    background: rgba(0, 0, 0, 0.5);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.file-item.selected {
+    border-color: #6c8eff;
+    background: rgba(108, 142, 255, 0.2);
+}
+
+.file-icon {
+    font-size: 40px;
+    text-align: center;
+    margin-bottom: 10px;
+    color: #6c8eff;
+}
+
+.file-name {
+    font-size: 14px;
+    text-align: center;
+    word-break: break-word;
+    margin-bottom: 5px;
+}
+
+.file-size {
+    font-size: 12px;
+    color: #aaa;
+    text-align: center;
+}
+
+.file-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.file-action-btn {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+.file-action-btn:hover {
+    color: white;
+}
+
+/* Checkbox for multi-select */
+.file-checkbox {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 18px;
+    height: 18px;
+}
+
+/* Loading and Empty States */
+.loading-indicator {
+    text-align: center;
+    padding: 40px;
+    color: #aaa;
+}
+
+.loading-indicator i {
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #aaa;
+}
+
+.empty-state i {
+    font-size: 60px;
+    margin-bottom: 20px;
+    color: #6c8eff;
+}
+
+.empty-state h3 {
+    margin-bottom: 10px;
+    color: white;
+}
+
+/* Upload Area */
+.upload-area {
+    border: 2px dashed #6c8eff;
+    border-radius: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 20px;
+}
+
+.upload-area:hover {
+    background: rgba(108, 142, 255, 0.1);
+}
+
+.upload-area i {
+    font-size: 50px;
+    color: #6c8eff;
+    margin-bottom: 15px;
+}
+
+/* Progress Bar */
+.upload-progress {
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    height: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6c8eff, #4a6fff);
+    width: 0%;
+    transition: width 0.3s;
+}
+
+/* File Info */
+.file-info {
+    margin-bottom: 20px;
+}
+
+.info-row {
+    display: flex;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-label {
+    font-weight: bold;
+    width: 100px;
+    color: #aaa;
+}
+
+.info-value {
+    flex: 1;
+    word-break: break-all;
+}
+
+/* Pagination */
+.pagination {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(0,0,0,0.65);
-    z-index: 999;
+    gap: 15px;
+    margin-top: 20px;
 }
 
-.modal.hidden {
-    display: none;
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
 }
 
-.modal-card {
-    background: rgba(20,20,20,0.9);
-    padding: 20px;
-    width: 320px;
-    border-radius: 12px;
+.toast {
+    background: rgba(0, 0, 0, 0.8);
     color: white;
-    box-shadow: 0 0 14px rgba(0,255,255,0.2);
-    backdrop-filter: blur(10px);
-}
-
-.modal-card input {
-    width: 100%;
-    margin-top: 12px;
-    padding: 10px;
+    padding: 15px 20px;
     border-radius: 8px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: #fff;
-}
-
-.modal-actions {
+    margin-bottom: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    margin-top: 15px;
+    align-items: center;
+    gap: 10px;
+    max-width: 350px;
+    animation: toastSlideIn 0.3s ease;
 }
 
-.modal-actions button {
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    background: rgba(0,150,255,0.3);
-    color: #00eaff;
-    border: 1px solid rgba(0,150,255,0.5);
+.toast.success {
+    border-left: 4px solid #4CAF50;
 }
 
-.modal-actions button:hover {
-    background: rgba(0,150,255,0.6);
+.toast.error {
+    border-left: 4px solid #f44336;
 }
 
-/* ===============================
-   Mini Player (Preview)
-   =============================== */
+.toast.info {
+    border-left: 4px solid #2196F3;
+}
 
+@keyframes toastSlideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Mini Player Improvements */
 .mini-player {
     position: fixed;
-    right: 20px;
     bottom: 20px;
-    background: rgba(0,0,0,0.85);
-    border-radius: 12px;
-    padding: 14px;
-    width: 330px;
-    box-shadow: 0 0 25px rgba(0,255,255,0.25);
-    z-index: 900;
+    right: 20px;
+    width: 300px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+    z-index: 100;
 }
 
-.mini-player.hidden {
-    display: none;
+.mini-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
 }
 
-#mini-media-area {
-    margin-bottom: 12px;
-}
-
-#mini-media-area audio,
-#mini-media-area video {
-    width: 100%;
-    border-radius: 8px;
-}
-
-#mini-close {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    background: rgba(255,0,0,0.4);
-    color: white;
-    cursor: pointer;
-}
-
-#mini-close:hover {
-    background: rgba(255,0,0,0.7);
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .fm-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .controls-left, .controls-right {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .search-input {
+        width: 100%;
+    }
+    
+    .fm-list {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .mini-player {
+        width: calc(100% - 40px);
+        left: 20px;
+    }
 }
