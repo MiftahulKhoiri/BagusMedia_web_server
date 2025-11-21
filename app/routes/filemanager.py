@@ -1,6 +1,7 @@
 # app/routes/filemanager.py
 
 import os
+import shutil
 import time
 import subprocess
 from flask import Blueprint, render_template, request, jsonify, current_app, session, send_from_directory
