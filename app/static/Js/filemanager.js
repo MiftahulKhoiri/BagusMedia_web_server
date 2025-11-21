@@ -183,3 +183,35 @@ function uploadFiles() {
 
 // INITIAL LOAD
 loadFiles();
+
+// ========== COLLAPSE SIDEBAR ==========
+document.getElementById("toggleSidebar").addEventListener("click", () => {
+  document.body.classList.toggle("sidebar-collapsed");
+});
+
+
+// ========== DRAGGABLE RESIZE ==========
+const sidebar = document.getElementById("sidebar");
+const dragbar = document.getElementById("dragbar");
+let dragging = false;
+
+dragbar.addEventListener("mousedown", function () {
+  dragging = true;
+  dragbar.classList.add("active");
+});
+
+document.addEventListener("mousemove", function (e) {
+  if (!dragging) return;
+  let newWidth = e.clientX;
+
+  if (newWidth < 120) newWidth = 120;   // batas minimum
+  if (newWidth > 350) newWidth = 350;   // batas maksimum
+
+  sidebar.style.width = newWidth + "px";
+  sidebar.style.minWidth = newWidth + "px";
+});
+
+document.addEventListener("mouseup", function () {
+  dragging = false;
+  dragbar.classList.remove("active");
+});
