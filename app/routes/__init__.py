@@ -17,6 +17,7 @@ def register_blueprints(app, sock=None):
     - media       : mp3, video, upload, serve media
     - profile     : profil user, edit, upload foto
     - update_bp   : halaman update + API cek update
+    - file manager:  upload, download, rename,delet,
     - register_ws : route websocket update
     """
 
