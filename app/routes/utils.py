@@ -4,11 +4,26 @@ import hashlib
 from flask import session, redirect
 
 # ============================================
-# FORMAT EKSTENSI VALID
+# FORMAT EKSTENSI VALID (FULL)
 # ============================================
 ALLOWED_EXTENSIONS = {
-    'mp4', 'avi', 'mkv', 'mov', 'wmv',
-    'mp3', 'wav', 'ogg'
+    # Video
+    'mp4', 'avi', 'mkv', 'mov', 'wmv', 'webm',
+
+    # Audio
+    'mp3', 'wav', 'ogg', 'aac', 'flac',
+
+    # Images
+    'jpg', 'jpeg', 'png', 'gif', 'webp',
+
+    # Documents
+    'pdf', 'txt', 'doc', 'docx',
+
+    # Archives
+    'zip', 'rar', '7z',
+
+    # Other
+    'json'
 }
 
 # ============================================
