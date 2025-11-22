@@ -6,17 +6,21 @@
   <title>Advanced File Manager</title>
   <link rel="stylesheet" href="/static/css/filemanager.css" />
 </head>
+
 <body>
   <!-- SIDEBAR -->
   <div id="sidebar">
-    <h3>Root Folders</h3>
+    <h3 class="side-title">⚡ Root Folders</h3>
+
     <div class="side-item" onclick="switchRoot('mp3')">🎵 MP3</div>
     <div class="side-item" onclick="switchRoot('video')">🎬 Video</div>
     <div class="side-item" onclick="switchRoot('upload')">⬆ Upload Temp</div>
   </div>
 
-  <!-- MAIN AREA -->
+  <!-- DRAGBAR -->
   <div id="dragbar"></div>
+
+  <!-- MAIN AREA -->
   <div id="main">
     <div id="topbar">
       <button id="toggleSidebar">☰</button>
@@ -31,6 +35,6 @@
     <div id="filelist"></div>
   </div>
 
-  <script src="/static/Js/filemanager.js"></script>
+  <script src="/static/js/filemanager.js"></script>
 </body>
 </html>
