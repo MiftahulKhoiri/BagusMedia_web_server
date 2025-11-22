@@ -1,217 +1,93 @@
-/* ===== File: filemanager.js ===== */
-
-let currentRoot = "app";
-let currentPath = "";
-
-// Switch Root Folder
-function switchRoot(root) {
-  currentRoot = root;
-  currentPath = "";
-  loadFiles();
-}
-
-// Load File List
-function loadFiles() {
-  fetch(`/api/files?root=${currentRoot}&path=${currentPath}`)
-    .then(r => r.json())
-    .then(data => render(data))
-    .catch(err => console.error("Load error:", err));
-}
-
-// Render UI
-function render(data) {
-  document.getElementById("pathDisplay").innerText = `${currentRoot}/${currentPath}`;
-  let html = "";
-
-  // Folders
-  data.folders.forEach(f => {
-    html += `
-      <div class='item'>
-        <span class='folder' onclick='openFolder("${f.name}")'>📁 ${f.name}</span>
-        <span>
-          <button onclick='renameFolder("${f.name}")'>✏</button>
-          <button onclick='deleteFolder("${f.name}")'>🗑</button>
-        </span>
-      </div>`;
-  });
-
-  // Files
-  data.files.forEach(f => {
-    let preview = "";
-    if (f.is_video) preview = `<video controls src='${f.path}'></video>`;
-    if (f.is_audio) preview = `<audio controls src='${f.path}'></audio>`;
-
-    html += `
-      <div class='item'>
-        <div>
-          📄 ${f.name}
-          ${preview ? `<div class='preview-box'>${preview}</div>` : ""}
-        </div>
-        <span>
-          <button onclick='renameFile("${f.name}")'>✏ Rename</button>
-          <button onclick='deleteFile("${f.name}")'>🗑 Delete</button>
-          <a href='${f.download_url}'><button>⬇ Download</button></a>
-        </span>
-      </div>`;
-  });
-
-  document.getElementById("filelist").innerHTML = html;
-}
-
-// Open Folder
-function openFolder(name) {
-  currentPath = (currentPath + "/" + name).replace(/^\/+/, "");
-  loadFiles();
-}
-
-// Go Up One Level
-function goUp() {
-  if (!currentPath) return;
-  let parts = currentPath.split("/");
-  parts.pop();
-  currentPath = parts.join("/");
-  loadFiles();
-}
-
-// Create Folder
-function createFolder() {
-  let name = prompt("Folder baru?");
-  if (!name) return;
-  fetch(`/api/create-folder`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ root: currentRoot, path: currentPath, name })
-  }).then(() => loadFiles());
-}
-
-// Delete Folder
-function deleteFolder(foldername) {
-  if (!confirm("Hapus folder beserta isinya?")) return;
-  fetch(`/api/delete-folder`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ root: currentRoot, path: currentPath, foldername })
-  }).then(() => loadFiles());
-}
-
-// Delete CURRENT folder
-function deleteCurrentFolder() {
-  if (!currentPath) return alert("Tidak bisa hapus root!");
-
-  let parts = currentPath.split("/");
-  let foldername = parts.pop();
-  let parent = parts.join("/");
-
-  if (!confirm(`Hapus folder ${foldername}?`)) return;
-
-  fetch(`/api/delete-folder`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ root: currentRoot, path: parent, foldername })
-  }).then(() => {
-    currentPath = parent;
-    loadFiles();
-  });
-}
-
-// Rename folder
-function renameFolder(old_name) {
-  let new_name = prompt("Nama baru?", old_name);
-  if (!new_name) return;
-
-  fetch(`/api/rename-folder`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ root: currentRoot, path: currentPath, old_name, new_name })
-  }).then(() => loadFiles());
-}
-
-// Rename current folder
-function renameCurrentFolder() {
-  if (!currentPath) return alert("Root tidak bisa di-rename!");
-
-  let parts = currentPath.split("/");
-  let old_name = parts.pop();
-  let parent = parts.join("/");
-  let new_name = prompt("Nama baru?", old_name);
-  if (!new_name) return;
-
-  fetch(`/api/rename-folder`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ root: currentRoot, path: parent, old_name, new_name })
-  }).then(() => {
-    currentPath = (parent + "/" + new_name).replace(/^\/+/, "");
-    loadFiles();
-  });
-}
-
-// Delete File
-function deleteFile(filename) {
-  if (!confirm("Hapus file ini?")) return;
-  fetch(`/api/delete-file`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ root: currentRoot, path: currentPath, filename })
-  }).then(() => loadFiles());
-}
-
-// Rename File
-function renameFile(old_name) {
-  let new_name = prompt("Nama baru?", old_name);
-  if (!new_name) return;
-
-  fetch(`/api/rename-file`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ root: currentRoot, path: currentPath, old_name, new_name })
-  }).then(() => loadFiles());
-}
-
-// Upload Files
-function uploadFiles() {
-  let files = document.getElementById("fileInput").files;
-  let form = new FormData();
-
-  for (let f of files) form.append("files", f);
-
-  fetch(`/api/upload?root=${currentRoot}&path=${currentPath}`, {
-    method: "POST",
-    body: form
-  }).then(() => loadFiles());
-}
-
-// INITIAL LOAD
-loadFiles();
-
-// ========== COLLAPSE SIDEBAR ==========
-document.getElementById("toggleSidebar").addEventListener("click", () => {
-  document.body.classList.toggle("sidebar-collapsed");
-});
-
-
-// ========== DRAGGABLE RESIZE ==========
+/* =============================== */
+/*       SIDEBAR DRAG RESIZE      */
+/* =============================== */
 const sidebar = document.getElementById("sidebar");
 const dragbar = document.getElementById("dragbar");
+const toggleBtn = document.getElementById("toggleSidebar");
+
 let dragging = false;
 
-dragbar.addEventListener("mousedown", function () {
-  dragging = true;
-  dragbar.classList.add("active");
+/* Desktop drag */
+dragbar.addEventListener("mousedown", () => {
+    dragging = true;
+    dragbar.classList.add("active");
 });
 
-document.addEventListener("mousemove", function (e) {
-  if (!dragging) return;
-  let newWidth = e.clientX;
+document.addEventListener("mousemove", (e) => {
+    if (!dragging) return;
 
-  if (newWidth < 120) newWidth = 120;   // batas minimum
-  if (newWidth > 350) newWidth = 350;   // batas maksimum
+    let newWidth = e.clientX;
+    if (newWidth < 150) newWidth = 150;
+    if (newWidth > 400) newWidth = 400;
 
-  sidebar.style.width = newWidth + "px";
-  sidebar.style.minWidth = newWidth + "px";
+    sidebar.style.width = newWidth + "px";
 });
 
-document.addEventListener("mouseup", function () {
-  dragging = false;
-  dragbar.classList.remove("active");
+document.addEventListener("mouseup", () => {
+    dragging = false;
+    dragbar.classList.remove("active");
 });
+
+/* Mobile drag */
+dragbar.addEventListener("touchstart", () => {
+    dragging = true;
+    dragbar.classList.add("active");
+});
+
+document.addEventListener("touchmove", (e) => {
+    if (!dragging) return;
+
+    let newWidth = e.touches[0].clientX;
+    if (newWidth < 150) newWidth = 150;
+    if (newWidth > 400) newWidth = 400;
+
+    sidebar.style.width = newWidth + "px";
+});
+
+document.addEventListener("touchend", () => {
+    dragging = false;
+    dragbar.classList.remove("active");
+});
+
+
+/* =============================== */
+/*       TOGGLE SIDEBAR           */
+/* =============================== */
+toggleBtn.addEventListener("click", () => {
+    if (sidebar.style.width === "0px") {
+        sidebar.style.width = "260px";
+        dragbar.style.display = "block";
+    } else {
+        sidebar.style.width = "0px";
+        dragbar.style.display = "none";
+    }
+});
+
+
+/* =============================== */
+/*  SISTEM FILE — FOLDER & FILE   */
+/* =============================== */
+
+function switchRoot(folder) {
+    console.log("Switch root:", folder);
+}
+
+function goUp() {
+    console.log("Up folder");
+}
+
+function createFolder() {
+    console.log("Create Folder");
+}
+
+function renameCurrentFolder() {
+    console.log("Rename Folder");
+}
+
+function deleteCurrentFolder() {
+    console.log("Delete Folder");
+}
+
+function uploadFiles() {
+    console.log("Uploading...");
+}
