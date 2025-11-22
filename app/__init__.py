@@ -14,6 +14,7 @@ def detect_storage_paths():
 
     android_paths = [
         "/storage/emulated/0",
+        "storage/",
         "/sdcard",
         "/storage/self/primary"
     ]
