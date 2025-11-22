@@ -27,7 +27,7 @@ def register_blueprints(app, sock=None):
     app.register_blueprint(profile)
     app.register_blueprint(update_bp)
     app.register_blueprint(about)
-    app.register_blueprint(filemanager)
+    app.register_blueprint(filemanager, url_prefix="/filemanager")
     app.register_blueprint(admin)
 
     # Daftarkan websocket jika disediakan
