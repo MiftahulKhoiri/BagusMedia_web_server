@@ -198,6 +198,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 setInterval(() => {
-  document.getElementById("debug-audio-url").textContent =
-    "AUDIO URL: " + audio.src;
+    const dbg = document.getElementById('debug-url');
+    if (dbg && audio) {
+        dbg.textContent = "AUDIO SRC: " + audio.src;
+    }
 }, 500);
