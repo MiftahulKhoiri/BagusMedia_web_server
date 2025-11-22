@@ -104,7 +104,7 @@
             <div class="playlist" id="playlist">
                 {% for file in mp3_files %}
                 <div class="playlist-item"
-                     data-src="{{ url_for('media.serve_media', folder='music', filename=file) }}">
+                     data-src="{{ url_for('media.serve_media', folder='mp3', filename=file) }}">
                     <span class="track-name">{{ file }}</span>
                     <button class="play-track">▶</button>
                 </div>
