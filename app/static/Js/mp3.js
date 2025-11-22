@@ -1,3 +1,4 @@
+alert("MP3.JS TERLOAD");
 // static/Js/mp3.js
 // Safe-init: tunggu DOM ready agar elemen yang di-HTML (termasuk mini-player) sudah ada.
 document.addEventListener("DOMContentLoaded", () => {
