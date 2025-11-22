@@ -132,6 +132,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Klik pada playlist
+  console.log("PLAYLIST ITEMS:", playlistItems);
+alert("Jumlah playlist items: " + playlistItems.length);
   playlistItems.forEach((item, index) => {
       const btn = item.querySelector('.play-track');
       if (btn) btn.addEventListener('click', (e) => {
