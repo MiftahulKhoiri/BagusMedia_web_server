@@ -388,6 +388,16 @@ def api_rename_folder():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# =====================================================
+# UPLOAD MEDIA PAGE
+# =====================================================
+@filemanager.route("/upload")
+def upload():
+    if "user_id" not in session:
+        return redirect("/login")
+    return render_template("upload.html")
+
+
 
 # -----------------------
 # UPLOAD (multi-level)
