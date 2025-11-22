@@ -1,129 +1,154 @@
-/* ===== File: filemanager.css ===== */
+/* ========================= */
+/*  GLOBAL LAYOUT            */
+/* ========================= */
 
-/* Global */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f0f0f0;
+  background: #0c0f17;
+  color: #fff;
   display: flex;
   height: 100vh;
+  overflow: hidden;
 }
 
-/* Main Area */
+/* ========================= */
+/*   SIDEBAR FUTURISTIK      */
+/* ========================= */
+
+#sidebar {
+  width: 260px;
+  min-width: 150px;
+  max-width: 400px;
+  background: rgba(0, 15, 30, 0.7);
+  backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(0, 255, 255, 0.25);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.side-title {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #00eaff;
+  text-shadow: 0 0 8px #00eaff;
+}
+
+.side-item {
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  background: rgba(0, 20, 40, 0.5);
+  color: #dffcff;
+  cursor: pointer;
+  font-size: 16px;
+  border: 1px solid rgba(0, 255, 255, 0.15);
+  transition: 0.25s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.side-item:hover {
+  background: rgba(0, 50, 80, 0.8);
+  box-shadow: 0 0 12px #00eaff;
+  border-color: #00eaff;
+}
+
+/* ========================= */
+/*    DRAGBAR NEON           */
+/* ========================= */
+
+#dragbar {
+  width: 6px;
+  background: rgba(0, 255, 255, 0.3);
+  cursor: ew-resize;
+  box-shadow: 0 0 10px #00eaff;
+}
+
+#dragbar.active {
+  background: #00ffff;
+  box-shadow: 0 0 20px #00ffff;
+}
+
+/* ========================= */
+/*      MAIN AREA            */
+/* ========================= */
+
 #main {
   flex: 1;
   display: flex;
   flex-direction: column;
+  background: #0f121a;
+  color: #eee;
+  overflow: hidden;
 }
 
+/* TOPBAR */
 #topbar {
   padding: 10px;
-  background: #ffffff;
-  border-bottom: 1px solid #ddd;
+  background: rgba(0, 30, 50, 0.8);
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
   display: flex;
   gap: 10px;
+  backdrop-filter: blur(10px);
 }
 
 button {
   padding: 6px 10px;
-  border: 1px solid #aaa;
-  background: #fff;
+  border: 1px solid #00eaff;
+  background: rgba(0, 40, 70, 0.8);
+  color: #fff;
   cursor: pointer;
-  border-radius: 4px;
-  transition: 0.2s;
+  border-radius: 6px;
+  transition: 0.25s;
 }
 
 button:hover {
-  background: #eee;
+  background: #0099cc;
+  box-shadow: 0 0 12px #00eaff;
 }
 
+/* PATH */
 #pathDisplay {
   padding: 10px;
+  font-size: 15px;
   font-weight: bold;
-  background: #fafafa;
-  border-bottom: 1px solid #ddd;
+  background: rgba(0, 20, 40, 0.5);
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
 }
 
+/* FILELIST */
 #filelist {
   flex: 1;
   overflow-y: auto;
   padding: 10px;
 }
 
-/* Item box */
+/* Item */
 .item {
-  padding: 10px;
-  background: #fff;
-  margin-bottom: 6px;
-  border-radius: 6px;
+  padding: 12px;
+  background: rgba(25, 35, 55, 0.8);
+  margin-bottom: 8px;
+  border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: 0.2s;
+  transition: 0.25s;
+  border: 1px solid rgba(0, 255, 255, 0.15);
 }
 
 .item:hover {
-  background: #f7f7f7;
+  background: rgba(30, 55, 80, 0.9);
+  box-shadow: 0 0 10px #00eaff;
+  border-color: #00eaff;
 }
 
-.folder {
-  font-weight: bold;
-  cursor: pointer;
-}
-
-/* Preview box */
-.preview-box {
-  width: 200px;
-  background: #fff;
-  padding: 10px;
-  border-radius: 6px;
-  margin-top: 10px;
-  box-shadow: 0px 0px 4px rgba(0,0,0,0.1);
-}
-
+/* Media players */
 video, audio {
   width: 100%;
   margin-top: 6px;
-}
-
-/* FIX Layout di HP agar sidebar tidak hilang */
-body {
-  display: flex;
-  flex-direction: row;
-  height: 100vh;
-  overflow: hidden;
-}
-
-
-/* Main area */
-#main {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background: #f8f8f8;
-  position: relative;
-}
-
-/* Dragbar (garis kecil di antara sidebar & main) */
-#dragbar {
-  width: 6px;
-  background: #ddd;
-  cursor: ew-resize;
-  height: 100vh;
-}
-
-/* Saat dragging */
-#dragbar.active {
-  background: #bbb;
-}
-
-/* Collapse mode */
-body.sidebar-collapsed #sidebar {
-  width: 0;
-  min-width: 0;
-  overflow: hidden;
-}
-
-body.sidebar-collapsed #dragbar {
-  display: none;
+  background: #000;
+  border-radius: 8px;
 }
