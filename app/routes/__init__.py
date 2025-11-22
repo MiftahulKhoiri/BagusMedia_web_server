@@ -6,8 +6,8 @@ from .media import media
 from .profile import profile
 from .update import update_bp, register_ws
 from .about import about
-from .filemanager import filemanager
 from .admin import admin
+from .filemanager import filemanager
 
 def register_blueprints(app, sock=None):
     """
