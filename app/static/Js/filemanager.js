@@ -1,257 +1,332 @@
-/* ==========================================
-   STATE GLOBAL
-========================================== */
-let currentRoot = "mp3";
-let currentPath = "";
+/* Neon Android-style File Manager JS
+   Terhubung penuh ke API Flask yang kamu kirim.
+*/
 
-/* ==========================================
-   LOAD FILE LIST
-========================================== */
-async function loadFiles() {
-    const res = await fetch(`/filemanager/api/files?root=${currentRoot}&path=${currentPath}`);
-    const data = await res.json();
+(function(){
+  // state
+  let currentRoot = "mp3";
+  let currentPath = "";
+  let viewMode = "grid"; // or "list"
 
-    const list = document.getElementById("filelist");
-    list.innerHTML = "";
+  // elements
+  const drawer = document.getElementById("drawer");
+  const backdrop = document.getElementById("drawerBackdrop");
+  const openDrawerBtn = document.getElementById("openDrawer");
+  const closeDrawerBtn = document.getElementById("closeDrawer");
+  const drawerItems = document.querySelectorAll(".drawer-item");
+  const filelistEl = document.getElementById("filelist");
+  const pathDisplay = document.getElementById("pathDisplay");
+  const breadcrumb = document.getElementById("breadcrumb");
+  const toggleViewBtn = document.getElementById("toggleView");
+  const fileInput = document.getElementById("fileInput");
+  const fabNew = document.getElementById("fabNew");
+  const btnUp = document.getElementById("btnUp");
+  const btnNew = document.getElementById("btnNew");
+  const btnRename = document.getElementById("btnRename");
+  const btnDelete = document.getElementById("btnDelete");
+  const toastEl = document.getElementById("toast");
 
-    // FOLDER LIST
-    data.folders.forEach(folder => {
-        const div = document.createElement("div");
-        div.className = "item";
-        div.innerHTML = `
-            <div class="folder" onclick="openFolder('${folder.name}')">📁 ${folder.name}</div>
-            <button class="delete-btn" onclick="deleteFolder('${folder.name}')">🗑</button>
-        `;
-        list.appendChild(div);
+  // helpers
+  function toast(msg, time=1600){
+    toastEl.textContent = msg;
+    toastEl.classList.remove("hidden");
+    setTimeout(()=> toastEl.classList.add("hidden"), time);
+  }
+
+  function qs(id){ return document.getElementById(id) }
+
+  // DRAWER control
+  function openDrawer(){ drawer.classList.add("open"); backdrop.classList.remove("hidden"); }
+  function closeDrawer(){ drawer.classList.remove("open"); backdrop.classList.add("hidden"); }
+  openDrawerBtn.addEventListener("click", openDrawer);
+  closeDrawerBtn.addEventListener("click", closeDrawer);
+  backdrop.addEventListener("click", closeDrawer);
+
+  // swipe gesture for drawer (simple)
+  let startX = null;
+  window.addEventListener("touchstart", (e)=> startX = e.touches[0].clientX );
+  window.addEventListener("touchmove", (e)=>{
+    if (startX===null) return;
+    let dx = e.touches[0].clientX - startX;
+    // swipe right from left edge to open
+    if (startX < 30 && dx > 60) openDrawer();
+    // swipe left to close if drawer open
+    if (drawer.classList.contains("open") && dx < -30) closeDrawer();
+  });
+  window.addEventListener("touchend", ()=> startX = null);
+
+  // drawer items click -> switch root
+  drawerItems.forEach(it=>{
+    it.addEventListener("click", ()=> {
+      const root = it.dataset.root;
+      currentRoot = root;
+      currentPath = "";
+      closeDrawer();
+      loadFiles();
+    });
+  });
+
+  // Toggle view
+  toggleViewBtn.addEventListener("click", ()=>{
+    viewMode = (viewMode === "grid") ? "list" : "grid";
+    renderFiles(lastData);
+  });
+
+  // top controls
+  btnUp.addEventListener("click", ()=>{
+    if (!currentPath) return toast("Sudah di root");
+    currentPath = currentPath.split("/").slice(0,-1).join("/");
+    loadFiles();
+  });
+  btnNew.addEventListener("click", createFolderPrompt);
+  fabNew.addEventListener("click", createFolderPrompt);
+  btnRename.addEventListener("click", renameCurrentFolderPrompt);
+  btnDelete.addEventListener("click", deleteCurrentFolderPrompt);
+
+  // upload
+  fileInput.addEventListener("change", uploadFiles);
+
+  // drag & drop upload in filearea
+  const filearea = document.getElementById("filearea");
+  filearea.addEventListener("dragover", e=> { e.preventDefault(); filearea.style.opacity = 0.92; });
+  filearea.addEventListener("dragleave", e=> { filearea.style.opacity = 1; });
+  filearea.addEventListener("drop", e=>{
+    e.preventDefault();
+    filearea.style.opacity = 1;
+    const dt = e.dataTransfer;
+    if (!dt || !dt.files) return;
+    const files = dt.files;
+    uploadFileList(files);
+  });
+
+  // fetch & render
+  let lastData = {folders:[], files:[]};
+  async function loadFiles(){
+    try{
+      showLoading(true);
+      const url = `/filemanager/api/files?root=${encodeURIComponent(currentRoot)}&path=${encodeURIComponent(currentPath)}`;
+      const res = await fetch(url);
+      if (!res.ok) { toast("Gagal memuat"); showLoading(false); return; }
+      const data = await res.json();
+      lastData = data;
+      renderFiles(data);
+      updatePathUi();
+      showLoading(false);
+    }catch(err){
+      console.error(err);
+      toast("Error jaringan");
+      showLoading(false);
+    }
+  }
+
+  function showLoading(flag){
+    if(flag) filelistEl.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted)">Memuat...</div>`;
+  }
+
+  function updatePathUi(){
+    const display = currentPath || "/";
+    pathDisplay.textContent = `${currentRoot} / ${display}`;
+    breadcrumb.textContent = display === "/" ? "/" : display;
+  }
+
+  // render routine
+  function renderFiles(data){
+    filelistEl.className = (viewMode === "grid") ? "grid" : "list";
+    filelistEl.innerHTML = "";
+
+    // folders first
+    data.folders.forEach(f=>{
+      const el = document.createElement("div");
+      el.className = "tile";
+      el.innerHTML = `
+        <div class="thumb">📁</div>
+        <div class="meta">
+          <div class="name">${escapeHtml(f.name)}</div>
+          <div class="metainfo">${f.mtime} • folder</div>
+        </div>
+        <div class="actions">
+          <button class="btn" data-name="${escapeHtml(f.name)}" onclick="window.openFolderFromUI('${escapeForJS(f.name)}')">Open</button>
+          <button class="btn btn-danger" onclick="window.deleteFolderFromUI('${escapeForJS(f.name)}')">Hapus</button>
+        </div>
+      `;
+      filelistEl.appendChild(el);
     });
 
-    // FILE LIST
-    data.files.forEach(file => {
-        const div = document.createElement("div");
-        div.className = "item";
-
-        let thumb = "";
-        if (file.thumbnail) {
-            thumb = `<img src="${file.thumbnail}" style="width:60px;border-radius:6px;margin-right:10px;">`;
-        }
-
-        div.innerHTML = `
-            <div style="display:flex;align-items:center;gap:12px;">
-                ${thumb}
-                <div>
-                    <div>📄 ${file.name}</div>
-                    <small>${file.size} • ${file.mtime}</small>
-                </div>
-            </div>
-
-            <div style="display:flex;gap:10px;">
-                <a href="${file.download_url}" class="btn">⬇</a>
-                <button class="btn-danger" onclick="deleteFile('${file.name}')">🗑</button>
-            </div>
-        `;
-
-        list.appendChild(div);
+    // files
+    data.files.forEach(file=>{
+      const el = document.createElement("div");
+      el.className = "tile";
+      const thumbHtml = file.thumbnail ? `<div class="thumb" style="background-image:url('${file.thumbnail}';background-size:cover;background-position:center)"></div>` : `<div class="thumb">${getIconForFile(file.name)}</div>`;
+      el.innerHTML = `
+        ${thumbHtml}
+        <div class="meta">
+          <div class="name">${escapeHtml(file.name)}</div>
+          <div class="metainfo">${file.size} • ${file.mtime}</div>
+        </div>
+        <div class="actions">
+          <a class="btn" href="${file.download_url}">⬇</a>
+          <button class="btn btn-danger" onclick="window.deleteFileFromUI('${escapeForJS(file.name)}')">Hapus</button>
+        </div>
+      `;
+      filelistEl.appendChild(el);
     });
+  }
 
-    updatePathDisplay();
-}
+  // utility: small escaping helpers
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])) }
+  function escapeForJS(s){ return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'\\"') }
 
-/* ==========================================
-   SWITCH ROOT
-========================================== */
-function switchRoot(root) {
-    currentRoot = root;
-    currentPath = "";
-    loadFiles();
-}
+  // icons by extension
+  function getIconForFile(name){
+    const ext = name.split('.').pop().toLowerCase();
+    if (['mp3','wav','aac'].includes(ext)) return '🎵';
+    if (['mp4','mkv','webm'].includes(ext)) return '🎬';
+    if (['jpg','jpeg','png','gif','webp'].includes(ext)) return '🖼';
+    if (['pdf'].includes(ext)) return '📕';
+    if (['zip','rar','7z'].includes(ext)) return '🗜';
+    return '📄';
+  }
 
-/* ==========================================
-   BUKA FOLDER
-========================================== */
-function openFolder(folder) {
-    currentPath = (currentPath ? currentPath + "/" + folder : folder);
-    loadFiles();
-}
-
-/* ==========================================
-   UP ONE LEVEL
-========================================== */
-function goUp() {
-    if (!currentPath) return;
-    currentPath = currentPath.split("/").slice(0, -1).join("/");
-    loadFiles();
-}
-
-/* ==========================================
-   PATH DISPLAY
-========================================== */
-function updatePathDisplay() {
-    const p = currentPath || "/";
-    document.getElementById("pathDisplay").innerText = `📁 ${currentRoot} / ${p}`;
-}
-
-/* ==========================================
-   CREATE FOLDER
-========================================== */
-async function createFolder() {
+  // CRUD actions (call API)
+  async function createFolderPrompt(){
     const name = prompt("Nama folder baru:");
     if (!name) return;
+    try{
+      const res = await fetch("/filemanager/api/create-folder", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ root: currentRoot, path: currentPath, name: name })
+      });
+      const j = await res.json();
+      if (j.error) return toast(j.error);
+      toast("Folder dibuat");
+      loadFiles();
+    }catch(e){ toast("Gagal membuat") }
+  }
 
-    const res = await fetch("/filemanager/api/create-folder", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            root: currentRoot,
-            path: currentPath,
-            name: name
-        })
-    });
+  async function deleteFolderPrompt(){
+    const name = prompt("Masukkan nama folder yang ingin dihapus:");
+    if (!name) return;
+    if (!confirm(`Hapus folder '${name}'?`)) return;
+    try{
+      const res = await fetch("/filemanager/api/delete-folder", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ root: currentRoot, path: currentPath, foldername: name })
+      });
+      const j = await res.json();
+      if (j.error) return toast(j.error);
+      toast("Folder dihapus");
+      loadFiles();
+    }catch(e){ toast("Gagal") }
+  }
 
-    const data = await res.json();
-    if (data.error) alert(data.error);
-    loadFiles();
-}
+  async function deleteCurrentFolderPrompt(){
+    if (!currentPath) return toast("Tidak bisa hapus root");
+    const parts = currentPath.split("/");
+    const name = parts.pop();
+    if (!confirm(`Hapus folder '${name}'?`)) return;
+    try{
+      const res = await fetch("/filemanager/api/delete-folder", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ root: currentRoot, path: parts.join("/"), foldername: name })
+      });
+      const j = await res.json();
+      if (j.error) return toast(j.error);
+      currentPath = parts.join("/");
+      toast("Folder dihapus");
+      loadFiles();
+    }catch(e){ toast("Gagal") }
+  }
 
-/* ==========================================
-   DELETE FOLDER
-========================================== */
-async function deleteFolder(name) {
-    if (!confirm("Hapus folder ini?")) return;
-
-    const res = await fetch("/filemanager/api/delete-folder", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            root: currentRoot,
-            path: currentPath,
-            foldername: name
-        })
-    });
-
-    const data = await res.json();
-    if (data.error) alert(data.error);
-    loadFiles();
-}
-
-/* ==========================================
-   DELETE FILE
-========================================== */
-async function deleteFile(name) {
-    if (!confirm("Hapus file ini?")) return;
-
-    const res = await fetch("/filemanager/api/delete-file", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            root: currentRoot,
-            path: currentPath,
-            filename: name
-        })
-    });
-
-    const data = await res.json();
-    if (data.error) alert(data.error);
-    loadFiles();
-}
-
-/* ==========================================
-   RENAME CURRENT FOLDER
-========================================== */
-async function renameCurrentFolder() {
-    if (!currentPath) return alert("Tidak bisa rename root.");
-
-    const oldName = currentPath.split("/").pop();
-    const newName = prompt("Nama folder baru:", oldName);
+  async function renameCurrentFolderPrompt(){
+    if (!currentPath) return toast("Tidak bisa rename root");
+    const parts = currentPath.split("/");
+    const oldName = parts.pop();
+    const newName = prompt("Nama baru:", oldName);
     if (!newName) return;
+    try{
+      const res = await fetch("/filemanager/api/rename-folder", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ root: currentRoot, path: parts.join("/"), old_name: oldName, new_name: newName })
+      });
+      const j = await res.json();
+      if (j.error) return toast(j.error);
+      parts.push(j.new_name || newName);
+      currentPath = parts.join("/");
+      toast("Folder diganti");
+      loadFiles();
+    }catch(e){ toast("Gagal") }
+  }
 
-    const res = await fetch("/filemanager/api/rename-folder", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            root: currentRoot,
-            path: currentPath.split("/").slice(0, -1).join("/"),
-            old_name: oldName,
-            new_name: newName
-        })
-    });
+  // delete file
+  async function deleteFileByName(name){
+    if (!confirm(`Hapus file ${name}?`)) return;
+    try{
+      const res = await fetch("/filemanager/api/delete-file", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ root: currentRoot, path: currentPath, filename: name })
+      });
+      const j = await res.json();
+      if (j.error) return toast(j.error);
+      toast("File dihapus");
+      loadFiles();
+    }catch(e){ toast("Gagal") }
+  }
 
-    const data = await res.json();
-    if (data.error) return alert(data.error);
+  // upload
+  async function uploadFiles(){
+    const files = fileInput.files;
+    if (!files || files.length===0) return;
+    uploadFileList(files);
+  }
 
-    currentPath = currentPath.split("/").slice(0, -1).concat([data.new_name]).join("/");
-    loadFiles();
-}
-
-/* ==========================================
-   UPLOAD
-========================================== */
-async function uploadFiles() {
-    const input = document.getElementById("fileInput");
-    const files = input.files;
-    if (!files.length) return;
-
+  async function uploadFileList(filesLike){
     const form = new FormData();
-    for (let f of files) {
-        form.append("files", f);
-    }
+    for (const f of filesLike) form.append("files", f);
+    try{
+      const res = await fetch(`/filemanager/api/upload?root=${encodeURIComponent(currentRoot)}&path=${encodeURIComponent(currentPath)}`, {
+        method:"POST", body: form
+      });
+      const j = await res.json();
+      if (j.results){
+        toast("Upload selesai");
+        loadFiles();
+      } else if (j.error) {
+        toast(j.error);
+      } else {
+        toast("Selesai");
+        loadFiles();
+      }
+    }catch(e){ toast("Gagal upload"); console.error(e) }
+  }
 
-    const res = await fetch(`/filemanager/api/upload?root=${currentRoot}&path=${currentPath}`, {
-        method: "POST",
-        body: form
-    });
-
-    const data = await res.json();
-    console.log("Upload result:", data);
+  // open folder helper (exposed to inline onclick)
+  window.openFolderFromUI = function(name){
+    currentPath = (currentPath ? currentPath + "/" + name : name);
     loadFiles();
-}
+  };
 
-/* ==========================================
-   SIDEBAR DRAGBAR
-========================================== */
-const sidebar = document.getElementById("sidebar");
-const dragbar = document.getElementById("dragbar");
-const toggleBtn = document.getElementById("toggleSidebar");
-let dragging = false;
+  window.deleteFolderFromUI = function(name){
+    if (!confirm(`Hapus folder ${name}?`)) return;
+    fetch("/filemanager/api/delete-folder", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ root: currentRoot, path: currentPath, foldername: name })
+    }).then(r=>r.json()).then(j=>{
+      if (j.error) toast(j.error); else { toast("Folder dihapus"); loadFiles(); }
+    }).catch(()=>toast("Gagal"));
+  };
 
-/* Desktop drag */
-dragbar.addEventListener("mousedown", () => { dragging = true; dragbar.classList.add("active"); });
-document.addEventListener("mousemove", e => {
-    if (!dragging) return;
-    let newWidth = e.clientX;
-    if (newWidth < 150) newWidth = 150;
-    if (newWidth > 400) newWidth = 400;
-    sidebar.style.width = newWidth + "px";
-});
-document.addEventListener("mouseup", () => {
-    dragging = false;
-    dragbar.classList.remove("active");
-});
+  window.deleteFileFromUI = function(name){
+    deleteFileByName(name);
+  };
 
-/* Mobile drag */
-dragbar.addEventListener("touchstart", () => {
-    dragging = true; dragbar.classList.add("active");
-});
-document.addEventListener("touchmove", e => {
-    if (!dragging) return;
-    let newWidth = e.touches[0].clientX;
-    if (newWidth < 150) newWidth = 150;
-    if (newWidth > 400) newWidth = 400;
-    sidebar.style.width = newWidth + "px";
-});
-document.addEventListener("touchend", () => {
-    dragging = false; dragbar.classList.remove("active");
-});
+  // open file (download handled by link), but we could preview — left simple
 
-/* Toggle sidebar */
-toggleBtn.addEventListener("click", () => {
-    if (sidebar.style.width === "0px") {
-        sidebar.style.width = "260px";
-        dragbar.style.display = "block";
-    } else {
-        sidebar.style.width = "0px";
-        dragbar.style.display = "none";
-    }
-});
+  // initial load
+  loadFiles();
 
-/* Start */
-loadFiles();
+  // expose some actions to top-level buttons
+  window.createFolderPrompt = createFolderPrompt;
+  window.renameCurrentFolderPrompt = renameCurrentFolderPrompt;
+  window.deleteCurrentFolderPrompt = deleteCurrentFolderPrompt;
+})();
