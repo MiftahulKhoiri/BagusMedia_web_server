@@ -1,40 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced File Manager</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bagus File Manager — Neon Android</title>
   <link rel="stylesheet" href="/static/css/filemanager.css" />
 </head>
-
 <body>
-  <!-- SIDEBAR -->
-  <div id="sidebar">
-    <h3 class="side-title">⚡ Root Folders</h3>
+  <!-- DRAWER / SIDEBAR -->
+  <div id="drawerBackdrop" class="backdrop hidden"></div>
+  <aside id="drawer" class="drawer">
+    <div class="drawer-head">
+      <div class="logo">⚡ BagusFM</div>
+      <button id="closeDrawer" class="icon-btn">✕</button>
+    </div>
+    <div class="drawer-list">
+      <div class="drawer-item" data-root="mp3">🎵 Music</div>
+      <div class="drawer-item" data-root="video">🎬 Video</div>
+      <div class="drawer-item" data-root="upload">⬆ Upload Temp</div>
+    </div>
+    <div class="drawer-foot">
+      <small>Neon Android • v1</small>
+    </div>
+  </aside>
 
-    <div class="side-item" onclick="switchRoot('mp3')">🎵 MP3</div>
-    <div class="side-item" onclick="switchRoot('video')">🎬 Video</div>
-    <div class="side-item" onclick="switchRoot('upload')">⬆ Upload Temp</div>
-  </div>
+  <!-- APP -->
+  <div id="app">
+    <header class="topbar">
+      <div class="left">
+        <button id="openDrawer" class="icon-btn">☰</button>
+        <div id="breadcrumb" class="breadcrumb">/</div>
+      </div>
 
-  <!-- DRAGBAR -->
-  <div id="dragbar"></div>
+      <div class="right">
+        <button id="toggleView" class="icon-btn" title="Toggle view">◼</button>
+        <button id="searchBtn" class="icon-btn">🔎</button>
+      </div>
+    </header>
 
-  <!-- MAIN AREA -->
-  <div id="main">
-    <div id="topbar">
-      <button id="toggleSidebar">☰</button>
-      <button onclick="goUp()">⬆ Up</button>
-      <button onclick="createFolder()">📁 New Folder</button>
-      <button onclick="renameCurrentFolder()">✏ Rename Folder</button>
-      <button onclick="deleteCurrentFolder()">🗑 Delete Folder</button>
-      <input type="file" id="fileInput" multiple onchange="uploadFiles()" />
+    <!-- Search / Info row -->
+    <div id="infoRow" class="info-row">
+      <div id="pathDisplay" class="path-chip">/</div>
+      <div id="controls" class="controls">
+        <button class="small-btn" id="btnUp">⬆ Up</button>
+        <button class="small-btn" id="btnNew">📁 New</button>
+        <button class="small-btn" id="btnRename">✏ Rename</button>
+        <button class="small-btn" id="btnDelete">🗑 Delete</button>
+      </div>
     </div>
 
-    <div id="pathDisplay"></div>
-    <div id="filelist"></div>
+    <!-- FILE AREA -->
+    <main id="filearea">
+      <div id="filelist" class="grid"></div>
+    </main>
+
+    <!-- Floating Action Button -->
+    <div id="fabGroup">
+      <label for="fileInput" class="fab" title="Upload">⬆</label>
+      <button id="fabNew" class="fab mini" title="New Folder">＋</button>
+    </div>
+
+    <input id="fileInput" type="file" multiple class="hidden-file" />
+
+    <!-- toast -->
+    <div id="toast" class="toast hidden"></div>
   </div>
 
-  <script src="/static/Js/filemanager.js"></script>
+  <script src="/static/js/filemanager.js" defer></script>
 </body>
 </html>
