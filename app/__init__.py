@@ -1,4 +1,3 @@
-# app/__init__.py
 import os
 import platform
 import sqlite3
@@ -11,14 +10,8 @@ from flask_sock import Sock
 # 1. 🔍 DETEKSI PATH STORAGE (ANDROID / WINDOWS / LINUX / MAC)
 # ============================================================
 def detect_storage_paths():
-    """
-    Menentukan folder penyimpanan utama secara otomatis.
-    Berguna agar FileManager bisa berjalan di Android & PC tanpa konfigurasi manual.
-    """
-
     system = platform.system().lower()
 
-    # --------- ANDROID / TERMUX DETECTION ---------
     android_paths = [
         "/storage/emulated/0",
         "/sdcard",
@@ -38,7 +31,7 @@ def detect_storage_paths():
                 "UPLOAD_TEMP": os.path.join(p, "Download", "UploadTemp")
             }
 
-    # --------- WINDOWS DETECTION ---------
+    # Windows
     if "windows" in system:
         home = os.path.expanduser("~")
         return {
@@ -52,7 +45,7 @@ def detect_storage_paths():
             "UPLOAD_TEMP": os.path.join(home, "Downloads", "UploadTemp")
         }
 
-    # --------- LINUX / MACOS DETECTION ---------
+    # Linux / MacOS
     home = os.path.expanduser("~")
     return {
         "ROOT": home,
@@ -67,10 +60,9 @@ def detect_storage_paths():
 
 
 # ============================================================
-# 2. 🗂 DATABASE SETUP (CREATE TABLE + MIGRATION)
+# 2. 🗂 DATABASE SETUP + MIGRATION
 # ============================================================
 def init_database(db_path):
-    """Membuat tabel `users` jika belum ada."""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
@@ -96,7 +88,6 @@ def init_database(db_path):
 
 
 def ensure_role_column(db_path):
-    """Menambah kolom role jika belum ada (idempotent)."""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
@@ -111,7 +102,6 @@ def ensure_role_column(db_path):
 
 
 def ensure_other_user_columns(db_path):
-    """Tambah kolom tambahan jika sebelumnya tidak ada."""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
@@ -129,18 +119,19 @@ def ensure_other_user_columns(db_path):
 
     for col, sql in optional.items():
         if col not in existing:
-            try: cursor.execute(sql)
-            except: pass
+            try:
+                cursor.execute(sql)
+            except:
+                pass
 
     conn.commit()
     conn.close()
 
 
 # ============================================================
-# 3. 👑 BUAT USER ROOT DEFAULT
+# 3. 👑 ROOT USER DEFAULT
 # ============================================================
 def ensure_root_user(db_path):
-    """Membuat user root secara otomatis jika belum ada."""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
@@ -170,7 +161,6 @@ def ensure_root_user(db_path):
 # 4. 📁 PROFIL JSON DEFAULT
 # ============================================================
 def ensure_profile_json(path):
-    """Membuat file profile.json default jika belum ada."""
     if not os.path.exists(path):
         import json
         default = {
@@ -187,17 +177,9 @@ def ensure_profile_json(path):
 
 
 # ============================================================
-# 5. 🚀 CREATE_APP (INTI APLIKASI)
+# 5. 🚀 INTI APLIKASI: create_app()
 # ============================================================
 def create_app():
-    """
-    Fungsi utama pembuat aplikasi Flask.
-    - Auto deteksi storage OS
-    - Auto konfigurasi folder untuk FileManager
-    - Auto database migration
-    - Register semua blueprint
-    """
-
     app = Flask(__name__)
     sock = Sock(app)
 
@@ -205,11 +187,15 @@ def create_app():
     app.secret_key = "bagus-secret-key"
 
     # ---------------------------------------------------------
-    # 🔥 AUTO DETECT ANDROID / PC STORAGE
+    # 🔥 FIX ERROR: Tambahkan PROJECT_ROOT
+    # ---------------------------------------------------------
+    app.config["PROJECT_ROOT"] = base_dir
+
+    # ---------------------------------------------------------
+    # 📦 DETEKSI STORAGE
     # ---------------------------------------------------------
     paths = detect_storage_paths()
 
-    # Simpan semua path yang terdeteksi ke config Flask
     app.config["ANDROID_STORAGE"] = paths["ROOT"]
     app.config["MP3_FOLDER"]      = paths["MUSIC"]
     app.config["VIDEO_FOLDER"]    = paths["VIDEO"]
@@ -219,11 +205,10 @@ def create_app():
     app.config["WHATSAPP_FOLDER"] = paths["WHATSAPP"]
     app.config["UPLOAD_FOLDER"]   = paths["UPLOAD_TEMP"]
 
-    # Buat UploadTemp bila belum ada
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
     # ---------------------------------------------------------
-    # 🗄 DATABASE INIT + MIGRATION
+    # 🗄 DATABASE INIT
     # ---------------------------------------------------------
     db_path = os.path.join(base_dir, "database.db")
     app.config["DATABASE"] = db_path
@@ -235,7 +220,7 @@ def create_app():
     ensure_profile_json(os.path.join(base_dir, "profile.json"))
 
     # ---------------------------------------------------------
-    # 🔗 REGISTER BLUEPRINTS (ROUTES)
+    # 🔗 REGISTER BLUEPRINTS
     # ---------------------------------------------------------
     from .routes import register_blueprints
     register_blueprints(app, sock)
