@@ -94,18 +94,6 @@ body {
   overflow: hidden;
 }
 
-/* Sidebar fix */
-#sidebar {
-  width: 220px;
-  min-width: 220px;
-  max-width: 220px;
-  background: #ffffff;
-  border-right: 1px solid #ddd;
-  overflow-y: auto;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 10;
-}
 
 /* Main area */
 #main {
