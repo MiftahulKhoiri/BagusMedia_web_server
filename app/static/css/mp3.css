@@ -1,343 +1,62 @@
-/* =========================================================
-   🎧 PEMUTAR MP3 - BAGUS MEDIA SERVER (Versi Seragam)
-   ========================================================= */
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
 body {
-    background: radial-gradient(circle at center, #000010 0%, #020111 100%);
+    margin: 0;
+    background: #111;
     color: #fff;
-    min-height: 100vh;
-    overflow-x: hidden;
+    font-family: Arial;
 }
 
-/* ===== Kanvas Neon ===== */
-#neon-particles {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-}
-
-/* ===== Header ===== */
-.header {
+.player-wrapper {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: rgba(20, 20, 40, 0.8);
-    padding: 25px 0 15px;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-.logo-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.logo {
-    width: 60px;
-    height: 60px;
-    filter: drop-shadow(0 0 8px cyan);
-}
-
-.logo-container h1 {
-    font-size: 1.8rem;
-    margin-top: 10px;
-    color: cyan;
-    text-shadow: 0 0 10px cyan;
-}
-
-/* ===== Menu di bawah logo ===== */
-.menu {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-    margin-top: 15px;
-}
-
-.menu-item {
-    color: cyan;
-    text-decoration: none;
-    font-size: 16px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    transition: color 0.3s, text-shadow 0.3s, background 0.3s;
-}
-
-.menu-item:hover {
-    color: #ff00ff;
-    text-shadow: 0 0 10px #ff00ff;
-    background: rgba(255, 255, 255, 0.05);
-}
-
-/* ===== Konten Utama ===== */
-.main-content {
-    display: flex;
-    justify-content: center;
-    padding: 40px 10px;
-}
-
-.player-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 40px;
-    width: 100%;
-    max-width: 1100px;
-    align-items: stretch;
-}
-
-/* ===== Pemutar Musik ===== */
-.music-player, .playlist-container {
-    background: rgba(30, 30, 50, 0.7);
-    border-radius: 20px;
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
-    flex: 1;
-    min-width: 320px;
-    padding: 25px;
-    text-align: center;
-}
-
-/* ===== Pemutar Musik Detail ===== */
-.now-playing h2 {
-    font-size: 1.1rem;
-    margin-top: 10px;
-    color: #0ff;
-}
-
-/* ===== Visualizer ===== */
-.visualizer {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    height: 40px;
-    margin: 10px 0;
-    gap: 4px;
-}
-
-.visualizer div {
-    width: 6px;
-    background: cyan;
-    height: 10px;
-    border-radius: 2px;
-    animation: visualizerOff 1s infinite;
-}
-
-@keyframes visualizerOff {
-    0%, 100% { height: 8px; opacity: 0.4; }
-    50% { height: 12px; opacity: 0.6; }
-}
-
-.visualizer.active div {
-    animation: visualizerOn 0.5s infinite;
-}
-
-@keyframes visualizerOn {
-    0% { height: 10px; opacity: 0.7; }
-    50% { height: 35px; opacity: 1; }
-    100% { height: 10px; opacity: 0.7; }
-}
-
-/* ===== Kontrol Pemutar ===== */
-.player-controls {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.control-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: #0ff;
-    font-size: 1.4rem;
-    border-radius: 10px;
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.control-btn:hover {
-    background: rgba(255, 255, 255, 0.25);
-    color: #ff00ff;
-    box-shadow: 0 0 10px #ff00ff;
-}
-
-/* ===== Playlist ===== */
-.playlist-container h3 {
-    color: #ff00ff;
-    margin-bottom: 15px;
-}
-
-.playlist-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.1);
-    margin: 6px 0;
-    padding: 8px 12px;
-    border-radius: 10px;
-    transition: 0.3s;
-}
-
-.playlist-item:hover {
-    background: rgba(0, 255, 255, 0.25);
-    transform: scale(1.02);
-}
-
-.playlist-item button {
-    background: transparent;
-    border: none;
-    color: cyan;
-    font-size: 1.2em;
-    cursor: pointer;
-}
-
-/* ===== Responsif ===== */
-@media (max-width: 768px) {
-    .player-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-    }
-}
-
-/* ==============================
-   PLAYLIST CARD STYLING
-============================== */
-
-.playlist-container {
-    padding: 10px;
+    gap: 20px;
+    padding: 20px;
 }
 
 .playlist {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    width: 40%;
+    background: #222;
+    padding: 10px;
+    border-radius: 10px;
+    height: 90vh;
+    overflow-y: auto;
 }
 
-.playlist-item {
+.track {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
-    background: rgba(0, 255, 100, 0.07);
-    border: 1px solid #00ff88;
-    border-radius: 10px;
-    box-shadow: 0 0 8px #00ff88 inset;
-    transition: 0.2s;
-}
-
-.playlist-item:hover {
-    background: rgba(0, 255, 100, 0.18);
-    transform: scale(1.03);
-}
-
-.track-name {
-    font-size: 16px;
-    font-weight: bold;
-    color: #ccffcc;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.track-name::before {
-    content: "🎵";
-    font-size: 20px;
-}
-
-.play-track {
-    padding: 8px 12px;
-    background: #00cc44;
-    border: none;
-    border-radius: 50%;
-    font-size: 18px;
-    color: white;
+    padding: 10px;
+    margin-bottom: 5px;
+    background: #333;
+    border-radius: 5px;
     cursor: pointer;
-    transition: 0.2s;
 }
 
-.play-track:hover {
-    background: #00ff55;
-    transform: scale(1.2);
+.track.playing {
+    background: #008cff;
 }
 
-/* Highlight track yang sedang diputar */
-.playing {
-    border-color: #00ffcc;
-    box-shadow: 0 0 12px #00ffcc;
-    background: rgba(0, 255, 255, 0.20);
+.player {
+    width: 60%;
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    height: 90vh;
 }
 
-/* MINI PLAYER */
-.mini-player {
-  position: fixed;
-  right: 18px;
-  bottom: 18px;
-  width: 280px;
-  background: rgba(10,10,12,0.96);
-  border: 1px solid rgba(255,255,255,0.06);
-  backdrop-filter: blur(6px);
-  color: #fff;
-  padding: 10px;
-  border-radius: 10px;
-  z-index: 9999;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  transition: transform .18s ease, opacity .18s ease;
+.controls button {
+    font-size: 20px;
+    margin: 5px;
 }
 
-.mini-player.hidden { display: none; opacity: 0; transform: translateY(8px); }
-.mini-player.visible { display: flex; opacity: 1; transform: translateY(0); }
-
-.mini-info { flex: 1; overflow: hidden; }
-#mini-title {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.bar {
+    width: 100%;
+    height: 6px;
+    background: #555;
+    border-radius: 5px;
+    overflow: hidden;
 }
 
-.mini-controls { display:flex; gap:6px; align-items:center; }
-.mini-controls button {
-  border: none;
-  background: rgba(255,255,255,0.04);
-  color: #fff;
-  padding: 6px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-}
-.mini-close {
-  background: transparent;
-  border: none;
-  color: #ddd;
-  padding: 6px;
-  cursor: pointer;
-  margin-left: 6px;
-  font-size: 14px;
-}
-
-/* highlight currently playing in playlist */
-.playlist-item.playing {
-  background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-  border-left: 4px solid #6effa1;
-  padding-left: 10px;
+#progress {
+    height: 6px;
+    width: 0%;
+    background: #00ffea;
 }
