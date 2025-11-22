@@ -9,32 +9,6 @@ body {
   height: 100vh;
 }
 
-/* Sidebar */
-#sidebar {
-  width: 280px;
-  background: #ffffff;
-  border-right: 1px solid #ddd;
-  padding: 10px;
-  overflow-y: auto;
-}
-
-#sidebar h3 {
-  margin-top: 0;
-  font-size: 18px;
-}
-
-.side-item {
-  padding: 8px;
-  cursor: pointer;
-  border-radius: 4px;
-  margin-bottom: 5px;
-  transition: 0.2s;
-}
-
-.side-item:hover {
-  background: #e0e0e0;
-}
-
 /* Main Area */
 #main {
   flex: 1;
