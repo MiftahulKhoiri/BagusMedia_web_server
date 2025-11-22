@@ -196,3 +196,8 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
 });
+
+setInterval(() => {
+  document.getElementById("debug-audio-url").textContent =
+    "AUDIO URL: " + audio.src;
+}, 500);
