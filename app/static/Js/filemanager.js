@@ -5,7 +5,7 @@
 (function(){
   // state
   let currentRoot = "mp3";
-  let currentPath = "";
+  let currentPath = "/";
   let viewMode = "grid"; // or "list"
 
   // elements
