@@ -39,15 +39,17 @@
   </ul>
 </main>
 
-<!-- MINI PLAYER (sticky bottom) -->
+<!-- MINI PLAYER -->
 <div id="mini-player" class="mini-player collapsed" aria-hidden="false">
   <div class="mini-left">
     <img id="mini-cover" src="{{ url_for('static', filename='icon/Mp3.png') }}" alt="cover">
   </div>
+
   <div class="mini-center">
     <div id="mini-title" class="mini-title">Tidak ada lagu</div>
     <div id="mini-artist" class="mini-artist">—</div>
   </div>
+
   <div class="mini-right">
     <button id="mini-prev" class="icon-btn">⏮</button>
     <button id="mini-play" class="control-btn">▶</button>
@@ -57,7 +59,10 @@
 
 <!-- FULL PLAYER (overlay modal) -->
 <div id="full-player" class="full-player hidden" aria-hidden="true">
- <div id="player-bg-blur"></div>
+
+  <!-- BACKGROUND BLUR (WAJIB ADA) -->
+  <div id="player-bg-blur" class="bg-blur"></div>
+
   <div class="full-top">
     <button id="close-full" class="icon-btn">⬇</button>
   </div>
@@ -74,6 +79,7 @@
   <audio id="audio-player"></audio>
 
   <div class="full-controls">
+
     <div class="time-row">
       <span id="current-time">0:00</span>
       <div class="progress-outer" id="progress-outer">
@@ -93,6 +99,7 @@
     <div class="volume-row">
       <input id="volume-slider" type="range" min="0" max="100" value="70">
     </div>
+
   </div>
 </div>
 
