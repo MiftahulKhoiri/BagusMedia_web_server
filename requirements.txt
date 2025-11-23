@@ -4,3 +4,4 @@ Werkzeug
 gunicorn
 psutil
 mutagen
+requests
