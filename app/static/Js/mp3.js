@@ -1,6 +1,9 @@
 // static/Js/mp3.js
 document.addEventListener("DOMContentLoaded", () => {
-  // elements
+
+  // ========================
+  // ELEMENTS
+  // ========================
   const playlistEls = Array.from(document.querySelectorAll(".sm-track"));
   const audio = document.getElementById("audio-player");
 
@@ -15,23 +18,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // full player
   const full = document.getElementById("full-player");
-  const closeFull = document.getElementById("close-full");
   const fullTitle = document.getElementById("full-title");
   const fullArtist = document.getElementById("full-artist");
   const fullCoverEl = document.getElementById("full-cover");
+  const closeFull = document.getElementById("close-full");
 
+  // full player buttons
   const playBtn = document.getElementById("play-btn");
-  const pauseBtn = document.getElementById("pause-btn");
   const prevBtn = document.getElementById("prev-btn");
   const nextBtn = document.getElementById("next-btn");
 
+  // progress & volume
   const progress = document.getElementById("progress");
   const currentTimeEl = document.getElementById("current-time");
   const durationEl = document.getElementById("duration");
   const progressOuter = document.getElementById("progress-outer");
   const volumeSlider = document.getElementById("volume-slider");
 
-  // state
+  // background blur element (Spotify style)
+  const bgBlur = document.getElementById("player-bg-blur");
+
+  // ========================
+  // STATE
+  // ========================
   let idx = 0;
   const tracks = playlistEls.map(el => el.dataset.src);
   const titles = playlistEls.map(el => el.querySelector(".track-title").textContent.trim());
@@ -41,25 +50,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!audio) return;
 
-  // helper
+  // ========================
+  // HELPERS
+  // ========================
   function formatTime(sec){
     if (!sec || isNaN(sec)) return "0:00";
-    const m = Math.floor(sec/60);
-    const s = Math.floor(sec%60).toString().padStart(2,"0");
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60).toString().padStart(2,"0");
     return `${m}:${s}`;
   }
 
-  // Ambil nama file dari URL src
   function filenameFromSrc(src){
-    try{
+    try {
       const p = src.split("/");
       return decodeURIComponent(p[p.length - 1]);
-    }catch{
+    } catch {
       return src;
     }
   }
 
-  // klik playlist
+  // ========================
+  // PLAYLIST CLICK
+  // ========================
   playlistEls.forEach((el, i) => {
     const btn = el.querySelector(".track-play-btn");
 
@@ -74,7 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // PLAY TRACK
+  // ========================
+  // START TRACK
+  // ========================
   function startTrack(i){
     if (!tracks.length) return;
 
@@ -82,22 +96,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const src = tracks[idx];
     const title = titles[idx] || "Unknown";
 
-    // update UI
     miniTitle.textContent = title;
     fullTitle.textContent = title;
     miniArtist.textContent = "Unknown Artist";
     fullArtist.textContent = "Unknown Artist";
 
-    // tampilkan mini player
     mini.classList.remove("collapsed");
 
-    // ==== COVER HERE ====
+    // ---- COVER ----
     const filename = filenameFromSrc(src);
     const coverUrl = "/media/cover/mp3/" + encodeURIComponent(filename);
 
     if (miniCoverEl) miniCoverEl.src = coverUrl;
     if (fullCoverEl) fullCoverEl.src = coverUrl;
-    // =====================
+
+    // ---- BLUR BACKGROUND ----
+    if (bgBlur){
+      bgBlur.style.backgroundImage = `url('${coverUrl}')`;
+      bgBlur.style.opacity = "1";
+    }
 
     audio.src = src;
     audio.load();
@@ -114,6 +131,9 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
+  // ========================
+  // UI UPDATES
+  // ========================
   function highlightPlaying(){
     playlistEls.forEach((el, i) => {
       el.classList.toggle("playing", i === idx);
@@ -125,11 +145,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (playBtn) playBtn.textContent = playing ? "⏸" : "▶";
   }
 
-  // MINI PLAYER controls
-  if (miniPlay) miniPlay.addEventListener("click", () => {
+  // ========================
+  // MINI PLAYER CONTROLS
+  // ========================
+  miniPlay.addEventListener("click", () => {
     if (!audio.src) return;
     if (audio.paused){
-      audio.play().then(()=>{isPlaying=true;updatePlayButtons(true)}).catch(()=>{});
+      audio.play().then(() => {
+        isPlaying = true;
+        updatePlayButtons(true);
+      });
     } else {
       audio.pause();
       isPlaying = false;
@@ -137,51 +162,58 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  if (miniPrev) miniPrev.addEventListener("click", prevTrack);
-  if (miniNext) miniNext.addEventListener("click", nextTrack);
+  miniPrev.addEventListener("click", prevTrack);
+  miniNext.addEventListener("click", nextTrack);
 
-  // open full view
   mini.addEventListener("click", (e) => {
     if (e.target.closest(".mini-right")) return;
     full.classList.remove("hidden");
   });
 
-  if (closeFull) closeFull.addEventListener("click", () => {
+  closeFull.addEventListener("click", () => {
     full.classList.add("hidden");
   });
 
-  // FULL CONTROLS
-  if (playBtn) playBtn.addEventListener("click", () => {
+  // ========================
+  // FULL PLAYER CONTROLS
+  // ========================
+  playBtn.addEventListener("click", () => {
     if (!audio.src) return;
+
     if (audio.paused){
-      audio.play().then(()=>{isPlaying=true;updatePlayButtons(true)}).catch(()=>{});
+      audio.play().then(() => {
+        isPlaying = true;
+        updatePlayButtons(true);
+      });
     } else {
       audio.pause();
-      isPlaying=false;
+      isPlaying = false;
       updatePlayButtons(false);
     }
   });
 
-  if (prevBtn) prevBtn.addEventListener("click", prevTrack);
-  if (nextBtn) nextBtn.addEventListener("click", nextTrack);
+  prevBtn.addEventListener("click", prevTrack);
+  nextBtn.addEventListener("click", nextTrack);
 
-  // PREV / NEXT logic
   function prevTrack(){
-    if (isShuffle) idx = Math.floor(Math.random() * tracks.length);
+    if (isShuffle) idx = Math.floor(Math.random()*tracks.length);
     else idx = (idx - 1 + tracks.length) % tracks.length;
     startTrack(idx);
   }
 
   function nextTrack(){
-    if (isRepeat) startTrack(idx);
-    else if (isShuffle) idx = Math.floor(Math.random() * tracks.length);
+    if (isRepeat) return startTrack(idx);
+    if (isShuffle) idx = Math.floor(Math.random()*tracks.length);
     else idx = (idx + 1) % tracks.length;
     startTrack(idx);
   }
 
-  // progress bar
+  // ========================
+  // PROGRESS BAR
+  // ========================
   audio.addEventListener("timeupdate", () => {
     if (!audio.duration) return;
+
     const pct = (audio.currentTime / audio.duration) * 100;
     progress.style.width = pct + "%";
 
@@ -189,26 +221,24 @@ document.addEventListener("DOMContentLoaded", () => {
     durationEl.textContent = formatTime(audio.duration);
   });
 
-  // seek
-  if (progressOuter && progressOuter.addEventListener)
+  if (progressOuter)
     progressOuter.addEventListener("click", (e) => {
       const rect = progressOuter.getBoundingClientRect();
       const pct = (e.clientX - rect.left) / rect.width;
       if (audio.duration) audio.currentTime = pct * audio.duration;
     });
 
-  // volume
-  if (volumeSlider)
+  // ========================
+  // VOLUME
+  // ========================
+  if (volumeSlider){
     volumeSlider.addEventListener("input", (e) => {
       audio.volume = e.target.value / 100;
     });
+    audio.volume = volumeSlider.value / 100;
+  }
 
-  audio.addEventListener("ended", () => {
-    nextTrack();
-  });
-
-  // default volume
-  if (volumeSlider) audio.volume = volumeSlider.value / 100;
+  audio.addEventListener("ended", nextTrack);
 
   window._mp3 = { startTrack, nextTrack, prevTrack, tracks };
 });
