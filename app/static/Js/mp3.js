@@ -23,20 +23,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const fullCoverEl = document.getElementById("full-cover");
   const closeFull = document.getElementById("close-full");
 
-  // full player buttons
+  // buttons
   const playBtn = document.getElementById("play-btn");
   const prevBtn = document.getElementById("prev-btn");
   const nextBtn = document.getElementById("next-btn");
+  const shuffleBtn = document.getElementById("shuffle-btn");
+  const repeatBtn = document.getElementById("repeat-btn");
 
-  // progress & volume
+  // progress
   const progress = document.getElementById("progress");
   const currentTimeEl = document.getElementById("current-time");
   const durationEl = document.getElementById("duration");
   const progressOuter = document.getElementById("progress-outer");
+
+  // volume
   const volumeSlider = document.getElementById("volume-slider");
 
-  // background blur
+  // blur bg
   const bgBlur = document.getElementById("player-bg-blur");
+
+  // lirik
+  const lyricsBox = document.getElementById("lyrics-lines");
 
   // ========================
   // STATE
@@ -61,104 +68,106 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function filenameFromSrc(src){
-    try{
+    try {
       const p = src.split("/");
       return decodeURIComponent(p[p.length - 1]);
-    }catch{
+    } catch {
       return src;
     }
   }
 
-  // ========================================
-  // 🎨 1. EXTRACT DOMINANT COLOR FROM IMAGE
-  // ========================================
-  function extractColor(imageUrl, callback){
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = imageUrl;
+  // ========================
+  // LRC SYSTEM
+  // ========================
+  async function loadLyrics(filename) {
+    const url = "/media/lyrics/mp3/" + encodeURIComponent(filename);
 
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-
-      canvas.width = img.width;
-      canvas.height = img.height;
-
-      ctx.drawImage(img, 0, 0);
-
-      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-
-      let r = 0, g = 0, b = 0, count = 0;
-
-      for (let i = 0; i < data.length; i += 4 * 40) {
-        r += data[i];
-        g += data[i + 1];
-        b += data[i + 2];
-        count++;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        lyricsBox.innerHTML = "<p class='no-lyrics'>Tidak ada lirik</p>";
+        return [];
       }
 
-      r = Math.floor(r / count);
-      g = Math.floor(g / count);
-      b = Math.floor(b / count);
+      const text = await res.text();
+      return parseLRC(text);
 
-      callback(`rgb(${r}, ${g}, ${b})`);
-    };
-
-    img.onerror = () => callback("rgb(80,80,80)");
+    } catch {
+      lyricsBox.innerHTML = "<p class='no-lyrics'>Tidak ada lirik</p>";
+      return [];
+    }
   }
 
-  // ========================================
-  // 🎨 2. APPLY COLOR THEME TO CSS VARIABLES
-  // ========================================
-  function applyTheme(color){
-    const root = document.documentElement;
+  function parseLRC(text) {
+    const lines = text.split("\n");
+    const parsed = [];
 
-    // Ubah warna utama
-    root.style.setProperty("--accent", color);
+    for (let line of lines) {
+      const match = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
+      if (!match) continue;
 
-    // Buat warna kedua (lebih gelap)
-    root.style.setProperty("--accent-2", color);
+      const min = parseInt(match[1]);
+      const sec = parseFloat(match[2]);
+      const time = min * 60 + sec;
+      const lyric = match[3].trim();
 
-    // shadow soft
-    root.style.setProperty("--accent-soft", color.replace("rgb", "rgba").replace(")", ",0.25)"));
+      parsed.push({ time, lyric });
+    }
+
+    return parsed;
   }
 
-  // ========================
-  // PLAYLIST CLICK
-  // ========================
-  playlistEls.forEach((el, i) => {
-    const btn = el.querySelector(".track-play-btn");
-    el.addEventListener("click", () => startTrack(i));
-    if (btn) btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      startTrack(i);
+  function highlightLyrics(lyrics, currentTime) {
+    let activeIndex = -1;
+
+    for (let i = 0; i < lyrics.length; i++) {
+      if (currentTime >= lyrics[i].time) activeIndex = i;
+    }
+
+    [...lyricsBox.children].forEach((el, i) => {
+      el.classList.toggle("active", i === activeIndex);
     });
-  });
+
+    if (activeIndex >= 0) {
+      lyricsBox.children[activeIndex].scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+  }
+
+  // ========================
+  // APPLY PRIMARY COLOR
+  // ========================
+  function applyThemeColor(color){
+    document.documentElement.style.setProperty("--accent", color);
+    document.documentElement.style.setProperty("--accent-2", color);
+    progress.style.background = `linear-gradient(90deg, ${color}, ${color})`;
+    playBtn.style.background = color;
+  }
 
   // ========================
   // START TRACK
   // ========================
   function startTrack(i){
-    if (!tracks.length) return;
-
     idx = i;
+
     const src = tracks[idx];
     const title = titles[idx] || "Unknown";
+    const filename = filenameFromSrc(src);
+
+    const coverUrl = "/media/cover/mp3/" + encodeURIComponent(filename);
 
     miniTitle.textContent = title;
     fullTitle.textContent = title;
-
     miniArtist.textContent = "Unknown Artist";
     fullArtist.textContent = "Unknown Artist";
 
     mini.classList.remove("collapsed");
 
-    // COVER
-    const filename = filenameFromSrc(src);
-    const coverUrl = "/media/cover/mp3/" + encodeURIComponent(filename);
-
-    miniCoverEl.src = coverUrl;
-    fullCoverEl.src = coverUrl;
+    // COVER SET
+    if (miniCoverEl) miniCoverEl.src = coverUrl;
+    if (fullCoverEl) fullCoverEl.src = coverUrl;
 
     // BLUR BG
     if (bgBlur){
@@ -166,30 +175,71 @@ document.addEventListener("DOMContentLoaded", () => {
       bgBlur.style.opacity = "1";
     }
 
-    // 🎨 APPLY DYNAMIC THEME
-    extractColor(coverUrl, (color) => {
-      applyTheme(color);
+    // COLOR EXTRACT
+    setTimeout(() => extractColorFromImage(fullCoverEl), 50);
+
+    // LYRICS
+    loadLyrics(filename).then((lyrics) => {
+      lyricsBox.innerHTML = "";
+      lyrics.forEach(line => {
+        const p = document.createElement("p");
+        p.textContent = line.lyric;
+        lyricsBox.appendChild(p);
+      });
+
+      audio.ontimeupdate = () => {
+        highlightLyrics(lyrics, audio.currentTime);
+      };
     });
 
     // PLAY
     audio.src = src;
     audio.load();
-
     audio.oncanplay = () => {
-      audio.play().then(() => {
-        isPlaying = true;
-        updatePlayButtons(true);
-        highlightPlaying();
-      });
+      audio.play();
+      isPlaying = true;
+      updatePlayButtons(true);
+      highlightPlaying();
     };
   }
 
   // ========================
-  // UI UPDATES
+  // COLOR EXTRACTION
+  // ========================
+  function extractColorFromImage(img){
+    try{
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+
+      const data = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+
+      let r=0,g=0,b=0,count=0;
+      for(let i=0;i<data.length;i+=40){
+        r+=data[i];
+        g+=data[i+1];
+        b+=data[i+2];
+        count++;
+      }
+      r=Math.floor(r/count);
+      g=Math.floor(g/count);
+      b=Math.floor(b/count);
+
+      applyThemeColor(`rgb(${r},${g},${b})`);
+
+    }catch(e){
+      console.log("No color extract:",e);
+    }
+  }
+
+  // ========================
+  // UI
   // ========================
   function highlightPlaying(){
-    playlistEls.forEach((el, i) => {
-      el.classList.toggle("playing", i === idx);
+    playlistEls.forEach((el,i)=>{
+      el.classList.toggle("playing", i===idx);
     });
   }
 
@@ -199,22 +249,37 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ========================
-  // MINI PLAYER CONTROLS
+  // PLAYLIST CLICK
   // ========================
-  miniPlay.addEventListener("click", () => {
-    if (audio.paused) audio.play(), updatePlayButtons(true);
-    else audio.pause(), updatePlayButtons(false);
+  playlistEls.forEach((el,i)=>{
+    el.addEventListener("click", ()=> startTrack(i));
+  });
+
+  // ========================
+  // MINI PLAYER
+  // ========================
+  miniPlay.addEventListener("click", ()=>{
+    if (!audio.src) return;
+
+    if (audio.paused){
+      audio.play();
+      updatePlayButtons(true);
+    } else {
+      audio.pause();
+      updatePlayButtons(false);
+    }
   });
 
   miniPrev.addEventListener("click", prevTrack);
   miniNext.addEventListener("click", nextTrack);
 
-  mini.addEventListener("click", (e) => {
-    if (e.target.closest(".mini-right")) return;
-    full.classList.remove("hidden");
+  mini.addEventListener("click",(e)=>{
+    if (!e.target.closest(".mini-right")){
+      full.classList.remove("hidden");
+    }
   });
 
-  closeFull.addEventListener("click", () => {
+  closeFull.addEventListener("click",()=>{
     full.classList.add("hidden");
   });
 
@@ -223,27 +288,51 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========================
   playBtn.addEventListener("click", () => {
     if (!audio.src) return;
-    if (audio.paused) audio.play(), updatePlayButtons(true);
-    else audio.pause(), updatePlayButtons(false);
+
+    if (audio.paused){
+      audio.play();
+      updatePlayButtons(true);
+    } else {
+      audio.pause();
+      updatePlayButtons(false);
+    }
   });
 
   prevBtn.addEventListener("click", prevTrack);
   nextBtn.addEventListener("click", nextTrack);
 
+  shuffleBtn.addEventListener("click", ()=>{
+    isShuffle = !isShuffle;
+    shuffleBtn.style.opacity = isShuffle ? "1" : ".4";
+  });
+
+  repeatBtn.addEventListener("click", ()=>{
+    isRepeat = !isRepeat;
+    repeatBtn.style.opacity = isRepeat ? "1" : ".4";
+  });
+
   function prevTrack(){
-    idx = (idx - 1 + tracks.length) % tracks.length;
+    idx = isShuffle ?
+      Math.floor(Math.random()*tracks.length) :
+      (idx - 1 + tracks.length) % tracks.length;
+
     startTrack(idx);
   }
 
   function nextTrack(){
-    idx = (idx + 1) % tracks.length;
+    if (isRepeat) return startTrack(idx);
+
+    idx = isShuffle ?
+      Math.floor(Math.random()*tracks.length) :
+      (idx + 1) % tracks.length;
+
     startTrack(idx);
   }
 
   // ========================
   // PROGRESS
   // ========================
-  audio.addEventListener("timeupdate", () => {
+  audio.addEventListener("timeupdate", ()=>{
     if (!audio.duration) return;
 
     const pct = (audio.currentTime / audio.duration) * 100;
@@ -253,19 +342,22 @@ document.addEventListener("DOMContentLoaded", () => {
     durationEl.textContent = formatTime(audio.duration);
   });
 
-  progressOuter.addEventListener("click", (e) => {
-    const r = progressOuter.getBoundingClientRect();
-    const pct = (e.clientX - r.left) / r.width;
+  progressOuter.addEventListener("click",(e)=>{
+    const rect = progressOuter.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
     audio.currentTime = pct * audio.duration;
   });
 
   // ========================
   // VOLUME
   // ========================
-  volumeSlider.addEventListener("input", (e) => {
+  volumeSlider.addEventListener("input",(e)=>{
     audio.volume = e.target.value / 100;
   });
+  audio.volume = volumeSlider.value / 100;
 
   audio.addEventListener("ended", nextTrack);
 
+  // expose for debug
+  window._mp3 = { startTrack, nextTrack, prevTrack, tracks };
 });
