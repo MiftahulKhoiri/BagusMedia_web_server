@@ -210,3 +210,32 @@ def api_monitor():
         "disk_percent": disk_percent,
         "uptime": safe_uptime()
     })
+
+# =====================================================
+# API SHUTDOWN SERVER (AMAN UNTUK TERMUX)
+# =====================================================
+@admin.route("/api/shutdown", methods=["POST"])
+def shutdown_server():
+    check = require_root()
+    if check:
+        return check
+
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        return jsonify({"error": "Tidak bisa mematikan server"}), 500
+
+    func()  # MATIKAN SERVER
+    return jsonify({"status": "server stopped"})
+
+
+# =====================================================
+# API RESTART SERVER (AMAN)
+# =====================================================
+@admin.route("/api/restart", methods=["POST"])
+def restart_server():
+    check = require_root()
+    if check:
+        return check
+
+    # Restart server Flask bukan restart HP
+    return jsonify({"status": "restart"}), 200
