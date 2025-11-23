@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressOuter = document.getElementById("progress-outer");
   const volumeSlider = document.getElementById("volume-slider");
 
-  // background blur element (Spotify style)
+  // background blur
   const bgBlur = document.getElementById("player-bg-blur");
 
   // ========================
@@ -61,12 +61,66 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function filenameFromSrc(src){
-    try {
+    try{
       const p = src.split("/");
       return decodeURIComponent(p[p.length - 1]);
-    } catch {
+    }catch{
       return src;
     }
+  }
+
+  // ========================================
+  // 🎨 1. EXTRACT DOMINANT COLOR FROM IMAGE
+  // ========================================
+  function extractColor(imageUrl, callback){
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = imageUrl;
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      ctx.drawImage(img, 0, 0);
+
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+      let r = 0, g = 0, b = 0, count = 0;
+
+      for (let i = 0; i < data.length; i += 4 * 40) {
+        r += data[i];
+        g += data[i + 1];
+        b += data[i + 2];
+        count++;
+      }
+
+      r = Math.floor(r / count);
+      g = Math.floor(g / count);
+      b = Math.floor(b / count);
+
+      callback(`rgb(${r}, ${g}, ${b})`);
+    };
+
+    img.onerror = () => callback("rgb(80,80,80)");
+  }
+
+  // ========================================
+  // 🎨 2. APPLY COLOR THEME TO CSS VARIABLES
+  // ========================================
+  function applyTheme(color){
+    const root = document.documentElement;
+
+    // Ubah warna utama
+    root.style.setProperty("--accent", color);
+
+    // Buat warna kedua (lebih gelap)
+    root.style.setProperty("--accent-2", color);
+
+    // shadow soft
+    root.style.setProperty("--accent-soft", color.replace("rgb", "rgba").replace(")", ",0.25)"));
   }
 
   // ========================
@@ -74,12 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========================
   playlistEls.forEach((el, i) => {
     const btn = el.querySelector(".track-play-btn");
-
-    el.addEventListener("click", (e) => {
-      e.preventDefault();
-      startTrack(i);
-    });
-
+    el.addEventListener("click", () => startTrack(i));
     if (btn) btn.addEventListener("click", (e) => {
       e.stopPropagation();
       startTrack(i);
@@ -98,24 +147,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     miniTitle.textContent = title;
     fullTitle.textContent = title;
+
     miniArtist.textContent = "Unknown Artist";
     fullArtist.textContent = "Unknown Artist";
 
     mini.classList.remove("collapsed");
 
-    // ---- COVER ----
+    // COVER
     const filename = filenameFromSrc(src);
     const coverUrl = "/media/cover/mp3/" + encodeURIComponent(filename);
 
-    if (miniCoverEl) miniCoverEl.src = coverUrl;
-    if (fullCoverEl) fullCoverEl.src = coverUrl;
+    miniCoverEl.src = coverUrl;
+    fullCoverEl.src = coverUrl;
 
-    // ---- BLUR BACKGROUND ----
+    // BLUR BG
     if (bgBlur){
       bgBlur.style.backgroundImage = `url('${coverUrl}')`;
       bgBlur.style.opacity = "1";
     }
 
+    // 🎨 APPLY DYNAMIC THEME
+    extractColor(coverUrl, (color) => {
+      applyTheme(color);
+    });
+
+    // PLAY
     audio.src = src;
     audio.load();
 
@@ -124,9 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
         isPlaying = true;
         updatePlayButtons(true);
         highlightPlaying();
-      }).catch(err => {
-        console.log("PLAY ERR:", err);
-        updatePlayButtons(false);
       });
     };
   }
@@ -141,25 +194,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updatePlayButtons(playing){
-    if (miniPlay) miniPlay.textContent = playing ? "⏸" : "▶";
-    if (playBtn) playBtn.textContent = playing ? "⏸" : "▶";
+    miniPlay.textContent = playing ? "⏸" : "▶";
+    playBtn.textContent = playing ? "⏸" : "▶";
   }
 
   // ========================
   // MINI PLAYER CONTROLS
   // ========================
   miniPlay.addEventListener("click", () => {
-    if (!audio.src) return;
-    if (audio.paused){
-      audio.play().then(() => {
-        isPlaying = true;
-        updatePlayButtons(true);
-      });
-    } else {
-      audio.pause();
-      isPlaying = false;
-      updatePlayButtons(false);
-    }
+    if (audio.paused) audio.play(), updatePlayButtons(true);
+    else audio.pause(), updatePlayButtons(false);
   });
 
   miniPrev.addEventListener("click", prevTrack);
@@ -179,37 +223,25 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========================
   playBtn.addEventListener("click", () => {
     if (!audio.src) return;
-
-    if (audio.paused){
-      audio.play().then(() => {
-        isPlaying = true;
-        updatePlayButtons(true);
-      });
-    } else {
-      audio.pause();
-      isPlaying = false;
-      updatePlayButtons(false);
-    }
+    if (audio.paused) audio.play(), updatePlayButtons(true);
+    else audio.pause(), updatePlayButtons(false);
   });
 
   prevBtn.addEventListener("click", prevTrack);
   nextBtn.addEventListener("click", nextTrack);
 
   function prevTrack(){
-    if (isShuffle) idx = Math.floor(Math.random()*tracks.length);
-    else idx = (idx - 1 + tracks.length) % tracks.length;
+    idx = (idx - 1 + tracks.length) % tracks.length;
     startTrack(idx);
   }
 
   function nextTrack(){
-    if (isRepeat) return startTrack(idx);
-    if (isShuffle) idx = Math.floor(Math.random()*tracks.length);
-    else idx = (idx + 1) % tracks.length;
+    idx = (idx + 1) % tracks.length;
     startTrack(idx);
   }
 
   // ========================
-  // PROGRESS BAR
+  // PROGRESS
   // ========================
   audio.addEventListener("timeupdate", () => {
     if (!audio.duration) return;
@@ -221,24 +253,19 @@ document.addEventListener("DOMContentLoaded", () => {
     durationEl.textContent = formatTime(audio.duration);
   });
 
-  if (progressOuter)
-    progressOuter.addEventListener("click", (e) => {
-      const rect = progressOuter.getBoundingClientRect();
-      const pct = (e.clientX - rect.left) / rect.width;
-      if (audio.duration) audio.currentTime = pct * audio.duration;
-    });
+  progressOuter.addEventListener("click", (e) => {
+    const r = progressOuter.getBoundingClientRect();
+    const pct = (e.clientX - r.left) / r.width;
+    audio.currentTime = pct * audio.duration;
+  });
 
   // ========================
   // VOLUME
   // ========================
-  if (volumeSlider){
-    volumeSlider.addEventListener("input", (e) => {
-      audio.volume = e.target.value / 100;
-    });
-    audio.volume = volumeSlider.value / 100;
-  }
+  volumeSlider.addEventListener("input", (e) => {
+    audio.volume = e.target.value / 100;
+  });
 
   audio.addEventListener("ended", nextTrack);
 
-  window._mp3 = { startTrack, nextTrack, prevTrack, tracks };
 });
