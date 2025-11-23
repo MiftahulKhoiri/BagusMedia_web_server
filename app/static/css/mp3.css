@@ -1,62 +1,53 @@
-body {
-    margin: 0;
-    background: #111;
-    color: #fff;
-    font-family: Arial;
+/* mobile-first spotify-ish */
+:root{
+  --bg: #0b0b0b;
+  --panel: #0f1113;
+  --muted: #9aa0a6;
+  --accent: #1DB954;
+  --accent-2: #12a94b;
 }
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter, system-ui, Arial;background:var(--bg);color:#fff;-webkit-font-smoothing:antialiased}
+.sm-header{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:linear-gradient(180deg,#070707,transparent)}
+.sm-header h1{font-size:16px;margin:0}
+.icon-btn{background:transparent;border:none;color:#fff;font-size:18px;padding:8px;border-radius:8px}
+.icon-btn:active{opacity:.8}
+.sm-main{padding:10px 12px 86px} /* bottom space for mini player */
+.sm-playlist{list-style:none;padding:0;margin:0;display:block}
+.sm-track{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:10px;margin-bottom:8px;background:linear-gradient(180deg,#0f1213,#0b0f10);cursor:pointer;transition:transform .12s,background .12s}
+.sm-track:active{transform:scale(.998)}
+.left{display:flex;gap:10px;align-items:center}
+.track-index{width:34px;text-align:center;color:var(--muted);font-size:13px}
+.track-info{display:flex;flex-direction:column}
+.track-title{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.track-sub{font-size:12px;color:var(--muted)}
+.track-play-btn{background:transparent;border:none;color:var(--muted);font-size:18px;padding:6px}
+.track-play-btn:hover{color:var(--accent);}
 
-.player-wrapper {
-    display: flex;
-    gap: 20px;
-    padding: 20px;
-}
+.mini-player{position:fixed;left:10px;right:10px;bottom:12px;height:64px;background:linear-gradient(90deg,#09100f,#07110f);border-radius:12px;display:flex;align-items:center;padding:8px;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.mini-player.collapsed{height:64px}
+.mini-left img{width:48px;height:48px;border-radius:6px;object-fit:cover}
+.mini-center{flex:1;overflow:hidden}
+.mini-title{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-artist{font-size:12px;color:var(--muted)}
+.mini-right{display:flex;gap:6px;align-items:center}
 
-.playlist {
-    width: 40%;
-    background: #222;
-    padding: 10px;
-    border-radius: 10px;
-    height: 90vh;
-    overflow-y: auto;
-}
+.full-player.hidden{display:none}
+.full-player{position:fixed;left:0;right:0;bottom:0;top:0;background:linear-gradient(180deg,#071213,#000);display:flex;flex-direction:column;align-items:center;padding:18px 20px;z-index:60}
+.cover-wrap img{width:72%;max-width:420px;border-radius:10px;object-fit:cover;box-shadow: 0 12px 30px rgba(0,0,0,.6)}
+.full-info{margin-top:16px;text-align:center}
+.full-title{font-size:18px;font-weight:600}
+.full-artist{font-size:13px;color:var(--muted);margin-top:6px}
+.time-row{width:100%;display:flex;align-items:center;gap:10px;margin-top:20px}
+.progress-outer{flex:1;height:6px;background:#222;border-radius:6px;overflow:hidden;position:relative}
+.progress{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.buttons-row{display:flex;gap:18px;align-items:center;justify-content:center;margin-top:18px}
+.play-btn{width:66px;height:66px;border-radius:50%;background:var(--accent);border:none;color:#000;font-size:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(29,185,84,.2)}
+.volume-row{width:90%;margin-top:14px}
+#volume-slider{width:100%}
 
-.track {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    margin-bottom: 5px;
-    background: #333;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.track.playing {
-    background: #008cff;
-}
-
-.player {
-    width: 60%;
-    background: #222;
-    padding: 20px;
-    border-radius: 10px;
-    height: 90vh;
-}
-
-.controls button {
-    font-size: 20px;
-    margin: 5px;
-}
-
-.bar {
-    width: 100%;
-    height: 6px;
-    background: #555;
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-#progress {
-    height: 6px;
-    width: 0%;
-    background: #00ffea;
+/* small tweaks */
+@media(min-width:700px){
+  .sm-main{padding:26px 30px 110px}
+  .mini-player{left:24px;right:24px;bottom:20px;height:72px}
 }
