@@ -1,48 +1,98 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pemutar Musik MP3</title>
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/mp3.css') }}">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Player — BAGUS MEDIA (Mobile)</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mp3.css') }}">
 </head>
 <body>
 
-<div class="player-wrapper">
+<!-- HEADER -->
+<header class="sm-header">
+  <div class="sm-left">
+    <button id="back-btn" class="icon-btn">←</button>
+    <h1>My Music</h1>
+  </div>
+  <div class="sm-right">
+    <button id="menu-btn" class="icon-btn">⋮</button>
+  </div>
+</header>
 
-    <!-- PLAYLIST -->
-    <div class="playlist" id="playlist">
-        {% for file in mp3_files %}
-        <div class="track" data-src="{{ url_for('media.serve_media', folder='mp3', filename=file) }}">
-            <span>{{ file }}</span>
-            <button class="play-btn">▶</button>
+<!-- CONTENT (playlist) -->
+<main class="sm-main">
+  <ul id="playlist" class="sm-playlist">
+    {% for file in mp3_files %}
+    <li class="sm-track" data-src="{{ url_for('media.serve_media', folder='mp3', filename=file) }}">
+      <div class="left">
+        <div class="track-index">{{ loop.index }}</div>
+        <div class="track-info">
+          <div class="track-title">{{ file }}</div>
+          <div class="track-sub">Unknown Artist</div>
         </div>
-        {% endfor %}
+      </div>
+      <div class="right">
+        <button class="track-play-btn">▶</button>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</main>
+
+<!-- MINI PLAYER (sticky bottom) -->
+<div id="mini-player" class="mini-player collapsed" aria-hidden="false">
+  <div class="mini-left">
+    <img id="mini-cover" src="{{ url_for('static', filename='icon/Mp3.png') }}" alt="cover">
+  </div>
+  <div class="mini-center">
+    <div id="mini-title" class="mini-title">Tidak ada lagu</div>
+    <div id="mini-artist" class="mini-artist">—</div>
+  </div>
+  <div class="mini-right">
+    <button id="mini-prev" class="icon-btn">⏮</button>
+    <button id="mini-play" class="control-btn">▶</button>
+    <button id="mini-next" class="icon-btn">⏭</button>
+  </div>
+</div>
+
+<!-- FULL PLAYER (overlay modal) -->
+<div id="full-player" class="full-player hidden" aria-hidden="true">
+  <div class="full-top">
+    <button id="close-full" class="icon-btn">⬇</button>
+  </div>
+
+  <div class="cover-wrap">
+    <img id="full-cover" src="{{ url_for('static', filename='icon/Mp3.png') }}" alt="cover">
+  </div>
+
+  <div class="full-info">
+    <div id="full-title" class="full-title">Tidak ada lagu</div>
+    <div id="full-artist" class="full-artist">—</div>
+  </div>
+
+  <audio id="audio-player"></audio>
+
+  <div class="full-controls">
+    <div class="time-row">
+      <span id="current-time">0:00</span>
+      <div class="progress-outer" id="progress-outer">
+        <div id="progress" class="progress"></div>
+      </div>
+      <span id="duration">0:00</span>
     </div>
 
-    <!-- PLAYER -->
-    <div class="player">
-        <h2 id="title">Pilih Lagu</h2>
-
-        <audio id="audio"></audio>
-
-        <div class="controls">
-            <button id="prev">⏮</button>
-            <button id="play">▶</button>
-            <button id="pause">⏸</button>
-            <button id="next">⏭</button>
-        </div>
-
-        <div class="progress-box">
-            <span id="current">0:00</span>
-            <div class="bar">
-                <div id="progress"></div>
-            </div>
-            <span id="duration">0:00</span>
-        </div>
+    <div class="buttons-row">
+      <button id="shuffle-btn" class="icon-btn">🔀</button>
+      <button id="prev-btn" class="icon-btn">⏮</button>
+      <button id="play-btn" class="play-btn">▶</button>
+      <button id="next-btn" class="icon-btn">⏭</button>
+      <button id="repeat-btn" class="icon-btn">🔁</button>
     </div>
 
+    <div class="volume-row">
+      <input id="volume-slider" type="range" min="0" max="100" value="70">
+    </div>
+  </div>
 </div>
 
 <script src="{{ url_for('static', filename='Js/mp3.js') }}"></script>
