@@ -166,3 +166,13 @@ def serve_mp3_cover(filename):
 
     # fallback
     return send_file(default_img, mimetype="image/png")
+
+@media.route("/media/lyrics/mp3/<filename>")
+def serve_lyrics(filename):
+    lyrics_folder = os.path.join(current_app.static_folder, "lyrics")
+    path = os.path.join(lyrics_folder, filename + ".lrc")
+    
+    if os.path.exists(path):
+        return send_from_directory(lyrics_folder, filename + ".lrc")
+    
+    return "", 404
