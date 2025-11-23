@@ -1,13 +1,13 @@
 # app/routes/media.py
+import io
 import os
 import shutil
 from flask import Blueprint, render_template, request, jsonify, redirect, session, current_app,send_file
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
 from .utils import allowed_file, get_media_files,require_root
-import io
 from mutagen.id3 import ID3
-
+import requests
 
 # =====================================================
 # BLUEPRINT MEDIA
@@ -107,36 +107,62 @@ def serve_media(folder, filename):
     # Folder tidak ada
     return "Folder tidak valid", 404
 
-# route baru - letakkan setelah serve_media
 @media.route("/media/cover/mp3/<path:filename>")
 def serve_mp3_cover(filename):
     """
-    Kembalikan cover art (APIC) dari file MP3, atau default icon bila tidak ada.
+    Cover otomatis:
+    1. Cek file MP3 apakah punya cover → tampilkan
+    2. Jika tidak → cek cache lokal → tampilkan
+    3. Jika tidak ada cache → cari ke internet → simpan → tampilkan
     """
-    safe_name = secure_filename(filename)
-    mp3_path = os.path.join(current_app.config.get("MP3_FOLDER", ""), safe_name)
 
-    # jika file mp3 tidak ada, kembalikan gambar default
-    default_img = os.path.join(current_app.root_path, "static", "icon", "Mp3.png")
-    if not os.path.exists(mp3_path):
-        return send_file(default_img, mimetype="image/png")
+    safe_name = os.path.basename(filename)
+    mp3_path = os.path.join(current_app.config["MP3_FOLDER"], safe_name)
 
-    # baca tag ID3
+    default_img = os.path.join(current_app.root_path, "static/icon/Mp3.png")
+    cache_folder = os.path.join(current_app.root_path, "static/cache/covers")
+    os.makedirs(cache_folder, exist_ok=True)
+
+    # lokasi cache
+    cache_file = os.path.join(cache_folder, safe_name + ".jpg")
+
+    # STEP 1 — Ambil COVER dari file MP3 jika ada
     try:
         tags = ID3(mp3_path)
-    except Exception:
-        # error baca tag → fallback ke default
-        return send_file(default_img, mimetype="image/png")
+        for key, val in tags.items():
+            if key.startswith("APIC"):
+                img_data = val.data
+                return send_file(io.BytesIO(img_data), mimetype=val.mime)
+    except:
+        pass
 
-    # cari frame APIC
-    for key, val in tags.items():
-        if key.startswith("APIC"):
-            apic = val
-            mime = apic.mime or "image/jpeg"
-            img_data = apic.data
-            buf = io.BytesIO(img_data)
-            buf.seek(0)
-            return send_file(buf, mimetype=mime)
+    # STEP 2 — Jika ada cache lokal → pakai itu
+    if os.path.exists(cache_file):
+        return send_file(cache_file, mimetype="image/jpeg")
 
-    # tidak ada APIC → default
+    # STEP 3 — CARI COVER dari internet
+    # Ambil judul dari nama file
+    q = os.path.splitext(safe_name)[0]
+    q = q.replace("_", " ").replace("-", " ")
+
+    # API iTunes Search (COVER ALBUM BAGUS!)
+    try:
+        api = f"https://itunes.apple.com/search?term={q}&media=music&limit=1"
+        r = requests.get(api, timeout=5).json()
+
+        if r["resultCount"] > 0:
+            artwork = r["results"][0]["artworkUrl100"].replace("100x100", "600x600")
+
+            # download cover
+            img = requests.get(artwork, timeout=5).content
+
+            # simpan cache
+            with open(cache_file, "wb") as f:
+                f.write(img)
+
+            return send_file(io.BytesIO(img), mimetype="image/jpeg")
+    except Exception as e:
+        print("COVER NET ERROR:", e)
+
+    # fallback
     return send_file(default_img, mimetype="image/png")
