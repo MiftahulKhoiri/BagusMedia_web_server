@@ -124,7 +124,7 @@ def generate_thumbnail_if_possible(video_folder, filename):
         return None
 
     cmd = [
-        ffmpeg, "-y", "-ss", "00:00:02",
+        ffmpeg, "-y", "-ss", "00:00:15",
         "-i", src,
         "-frames:v", "1",
         "-q:v", "2",
